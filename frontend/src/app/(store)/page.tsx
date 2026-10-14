@@ -23,14 +23,19 @@ export default async function HomePage() {
   const categoryData = await loadHomepageCategories();
   return (
     <HomepageInteractions>
-      <a className="skip-link" href="#main-content">Skip to content</a>
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
       <StoreHeader categories={categoryData.categories} />
       <main id="main-content" className="sky-main w-full pt-40 bg-surface min-h-screen">
         <div className="flex flex-col w-full">
           <GadgetBanner />
           <HeroCarousel />
           <ServiceAssurance />
-          <CategoryCollection initialCategories={categoryData.categories} unavailable={categoryData.unavailable} />
+          <CategoryCollection
+            initialCategories={categoryData.categories}
+            unavailable={categoryData.unavailable}
+          />
           <BrandCollection />
           <SmartphoneCollection />
           <FeaturedOffers />

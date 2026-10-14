@@ -20,13 +20,26 @@ export function useLiveCategories(initial: HomepageCategory[]) {
     queryFn: async ({ signal }): Promise<Snapshot> => {
       const previous = cache.getQueryData<Snapshot>(key);
       const response = await fetch("/catalog/categories/tree/", {
-        signal, cache: "no-store", credentials: "omit",
-        headers: previous && previous.revision >= 0 ? { "If-None-Match": `"categories-${previous.revision}"` } : {},
+        signal,
+        cache: "no-store",
+        credentials: "omit",
+        headers:
+          previous && previous.revision >= 0
+            ? { "If-None-Match": `"categories-${previous.revision}"` }
+            : {},
       });
       if (response.status === 304 && previous) return previous;
       if (!response.ok) throw new Error("Category updates are temporarily unavailable.");
       return snapshotSchema.parse(await response.json());
     },
   });
-  return { categories: treeRows(query.data.nodes).map(row => ({ ...row.node, breadcrumb: row.path, depth: row.depth })), error: query.error, synchronized: query.data.revision >= 0 };
+  return {
+    categories: treeRows(query.data.nodes).map((row) => ({
+      ...row.node,
+      breadcrumb: row.path,
+      depth: row.depth,
+    })),
+    error: query.error,
+    synchronized: query.data.revision >= 0,
+  };
 }

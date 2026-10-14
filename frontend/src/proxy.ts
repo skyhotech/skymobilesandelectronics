@@ -13,10 +13,16 @@ export async function proxy(request: NextRequest) {
   const session = request.cookies.get("sessionid");
   if (!session) return login();
   try {
-    const origin = new URL(process.env.API_INTERNAL_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api/v1").origin;
+    const origin = new URL(
+      process.env.API_INTERNAL_BASE_URL ||
+        process.env.NEXT_PUBLIC_API_BASE_URL ||
+        "http://localhost:8000/api/v1",
+    ).origin;
     const result = await fetch(`${origin}/api/v1/management/session/`, {
       headers: { Cookie: `sessionid=${encodeURIComponent(session.value)}` },
-      redirect: "error", cache: "no-store", signal: AbortSignal.timeout(5000),
+      redirect: "error",
+      cache: "no-store",
+      signal: AbortSignal.timeout(5000),
     });
     if (!result.ok) throw new Error("Session service unavailable");
     const data = await result.json();
@@ -26,7 +32,8 @@ export async function proxy(request: NextRequest) {
     return response;
   } catch {
     return new NextResponse("Unable to verify your session. Please try again shortly.", {
-      status: 503, headers: { "Cache-Control": "no-store", "Retry-After": "10" },
+      status: 503,
+      headers: { "Cache-Control": "no-store", "Retry-After": "10" },
     });
   }
 }

@@ -18,11 +18,21 @@ test("create a parent and subcategory with file-manager uploads", async ({ page,
       await dialog.getByLabel("Name", { exact: true }).fill(`${tag}-${suffix}`);
       await dialog.getByLabel("Slug", { exact: true }).fill(`${tag}-${suffix}`);
       await expect(dialog.getByLabel("Existing artwork")).toHaveCount(0);
-      if (suffix === "child") await dialog.getByLabel("Parent category").selectOption(String(ids[0]));
-      await dialog.getByLabel("Upload image").setInputFiles("public/images/homepage/categories-v2/earbuds.webp");
-      await expect(dialog.getByRole("img", { name: "Category image preview" })).toHaveAttribute("src", /\/media\/categories\/optimized\//);
+      if (suffix === "child")
+        await dialog.getByLabel("Parent category").selectOption(String(ids[0]));
+      await dialog
+        .getByLabel("Upload image")
+        .setInputFiles("public/images/homepage/categories-v2/earbuds.webp");
+      await expect(dialog.getByRole("img", { name: "Category image preview" })).toHaveAttribute(
+        "src",
+        /\/media\/categories\/optimized\//,
+      );
       await dialog.getByLabel("Show on homepage", { exact: true }).check();
-      const saved = page.waitForResponse(response => response.url().endsWith("/management/api/categories/") && response.request().method() === "POST");
+      const saved = page.waitForResponse(
+        (response) =>
+          response.url().endsWith("/management/api/categories/") &&
+          response.request().method() === "POST",
+      );
       await dialog.getByRole("button", { name: "Save category", exact: true }).click();
       const response = await saved;
       expect(response.status()).toBe(201);
@@ -37,12 +47,18 @@ test("create a parent and subcategory with file-manager uploads", async ({ page,
     await store.goto("/");
     const child = store.locator(".category-tile").filter({ hasText: `${tag}-child` });
     await expect(child).toContainText(`In ${tag}-parent`);
-    await child.locator("img").evaluate(async image => (image as HTMLImageElement).decode());
+    await child.locator("img").evaluate(async (image) => (image as HTMLImageElement).decode());
     await store.close();
   } finally {
     const session = await (await page.request.get("/management/api/session/")).json();
     for (const id of ids.reverse()) {
-      expect((await page.request.delete(`/management/api/categories/${id}/`, { headers: { "X-CSRFToken": session.csrfToken } })).status()).toBe(204);
+      expect(
+        (
+          await page.request.delete(`/management/api/categories/${id}/`, {
+            headers: { "X-CSRFToken": session.csrfToken },
+          })
+        ).status(),
+      ).toBe(204);
     }
   }
 });

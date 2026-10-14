@@ -7,7 +7,13 @@ export function treeRows<T extends TreeNode>(nodes: T[]) {
     if (!children.has(parent)) children.set(parent, []);
     children.get(parent)!.push(node);
   }
-  for (const siblings of children.values()) siblings.sort((a, b) => (a.display_order || 0) - (b.display_order || 0) || a.name.localeCompare(b.name) || a.id - b.id);
+  for (const siblings of children.values())
+    siblings.sort(
+      (a, b) =>
+        (a.display_order || 0) - (b.display_order || 0) ||
+        a.name.localeCompare(b.name) ||
+        a.id - b.id,
+    );
   const rows: { node: T; depth: number; path: string }[] = [];
   const seen = new Set<number>();
   function visit(parent: number | null, depth: number, names: string[]) {
@@ -23,7 +29,7 @@ export function treeRows<T extends TreeNode>(nodes: T[]) {
 }
 
 export function isDescendant(nodes: TreeNode[], candidate: number, ancestor: number): boolean {
-  const byId = new Map(nodes.map(node => [node.id, node]));
+  const byId = new Map(nodes.map((node) => [node.id, node]));
   const seen = new Set<number>();
   let current: number | null | undefined = candidate;
   while (current != null && !seen.has(current)) {

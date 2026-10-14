@@ -1,7 +1,15 @@
 import { expect, test } from "@playwright/test";
 
-test("protected pages reject missing and forged sessions; public routes stay accessible", async ({ request, context, baseURL }) => {
-  for (const path of ["/management/admin", "/management/admin/products", "/management/admin/categories"]) {
+test("protected pages reject missing and forged sessions; public routes stay accessible", async ({
+  request,
+  context,
+  baseURL,
+}) => {
+  for (const path of [
+    "/management/admin",
+    "/management/admin/products",
+    "/management/admin/categories",
+  ]) {
     const response = await request.get(path, { maxRedirects: 0 });
     expect(response.status()).toBe(307);
     expect(new URL(response.headers().location, baseURL).pathname).toBe("/management/admin/login");

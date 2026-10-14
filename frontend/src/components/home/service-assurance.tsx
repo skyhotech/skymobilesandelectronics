@@ -3,12 +3,21 @@ import Image from "next/image";
 // Adapted from the supplied Stitch homepage reference.
 export function ServiceAssurance() {
   return (
-    <section className="w-full bg-surface-canvas shadow-[0_2px_12px_rgba(11,28,72,0.04)] relative z-20" id="services">
+    <section
+      className="w-full bg-surface-canvas shadow-[0_2px_12px_rgba(11,28,72,0.04)] relative z-20"
+      id="services"
+    >
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="flex items-center gap-4 p-3 rounded-2xl bg-surface-subtle transition-all hover:bg-navy-tint">
             <div className="service-benefit-icon shrink-0">
-              <Image src="/images/homepage/service-icons/genuine.webp" alt="" width={64} height={64} unoptimized />
+              <Image
+                src="/images/homepage/service-icons/genuine.webp"
+                alt=""
+                width={64}
+                height={64}
+                unoptimized
+              />
             </div>
             <div>
               <h4 className="font-title-md text-title-md font-bold text-primary">
@@ -21,7 +30,13 @@ export function ServiceAssurance() {
           </div>
           <div className="flex items-center gap-4 p-3 rounded-2xl bg-surface-subtle transition-all hover:bg-navy-tint">
             <div className="service-benefit-icon shrink-0">
-              <Image src="/images/homepage/service-icons/stores.webp" alt="" width={64} height={64} unoptimized />
+              <Image
+                src="/images/homepage/service-icons/stores.webp"
+                alt=""
+                width={64}
+                height={64}
+                unoptimized
+              />
             </div>
             <div>
               <h4 className="font-title-md text-title-md font-bold text-primary">
@@ -34,7 +49,13 @@ export function ServiceAssurance() {
           </div>
           <div className="flex items-center gap-4 p-3 rounded-2xl bg-surface-subtle transition-all hover:bg-navy-tint">
             <div className="service-benefit-icon shrink-0">
-              <Image src="/images/homepage/service-icons/emi.webp" alt="" width={64} height={64} unoptimized />
+              <Image
+                src="/images/homepage/service-icons/emi.webp"
+                alt=""
+                width={64}
+                height={64}
+                unoptimized
+              />
             </div>
             <div>
               <h4 className="font-title-md text-title-md font-bold text-primary">
@@ -47,7 +68,13 @@ export function ServiceAssurance() {
           </div>
           <div className="flex items-center gap-4 p-3 rounded-2xl bg-surface-subtle transition-all hover:bg-navy-tint">
             <div className="service-benefit-icon shrink-0">
-              <Image src="/images/homepage/service-icons/service.webp" alt="" width={64} height={64} unoptimized />
+              <Image
+                src="/images/homepage/service-icons/service.webp"
+                alt=""
+                width={64}
+                height={64}
+                unoptimized
+              />
             </div>
             <div>
               <h4 className="font-title-md text-title-md font-bold text-primary">

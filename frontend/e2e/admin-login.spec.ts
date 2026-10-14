@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-test("password visibility toggles without submitting and login fits smaller screens", async ({ page }) => {
+test("password visibility toggles without submitting and login fits smaller screens", async ({
+  page,
+}) => {
   let submissions = 0;
   await page.route("**/management/api/session/", async (route) => {
     if (route.request().method() === "POST") submissions++;
@@ -25,7 +27,9 @@ test("password visibility toggles without submitting and login fits smaller scre
     await page.setViewportSize({ width, height: 900 });
     await expect(page.getByRole("heading", { name: "Welcome back." })).toBeVisible();
     await expect(page.getByRole("button", { name: "Sign in", exact: true })).toBeVisible();
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
   }
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.screenshot({ path: "../.run/admin-login-desktop.png", fullPage: true });

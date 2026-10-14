@@ -13,7 +13,14 @@ export function MediaImage({ src, ...props }: Props) {
 
 function ResolvedImage({ source, ...props }: Omit<Props, "src"> & { source: string }) {
   const [failed, setFailed] = useState(false);
-  return <Image {...props} alt={props.alt} src={failed ? "/images/image-placeholder.svg" : source}
-    sizes={props.sizes || "(max-width: 640px) 50vw, 25vw"} unoptimized
-    onError={() => setFailed(true)} />;
+  return (
+    <Image
+      {...props}
+      alt={props.alt}
+      src={failed ? "/images/image-placeholder.svg" : source}
+      sizes={props.sizes || "(max-width: 640px) 50vw, 25vw"}
+      unoptimized
+      onError={() => setFailed(true)}
+    />
+  );
 }
