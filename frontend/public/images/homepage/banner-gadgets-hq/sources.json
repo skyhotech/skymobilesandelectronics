@@ -1,0 +1,250 @@
+[
+  {
+    "name": "televisions",
+    "source": "sky-platform\\docs\\design-reference\\homepage\\category-artwork-v2\\televisions.png",
+    "width": 635,
+    "height": 640,
+    "bytes": 112510
+  },
+  {
+    "name": "air-conditioner",
+    "source": "sky-platform\\frontend\\public\\images\\homepage\\banner-gadgets\\air-conditioner.png",
+    "width": 640,
+    "height": 551,
+    "bytes": 20820
+  },
+  {
+    "name": "fridge",
+    "source": "sky-platform\\frontend\\public\\images\\homepage\\banner-gadgets\\fridge.png",
+    "width": 597,
+    "height": 640,
+    "bytes": 30424
+  },
+  {
+    "name": "washing-machine",
+    "source": "sky-platform\\frontend\\public\\images\\homepage\\banner-gadgets\\washing-machine.png",
+    "width": 618,
+    "height": 640,
+    "bytes": 59586
+  },
+  {
+    "name": "desktop-pc",
+    "source": "sky-platform\\frontend\\public\\images\\homepage\\banner-gadgets\\desktop-pc.png",
+    "width": 637,
+    "height": 640,
+    "bytes": 66304
+  },
+  {
+    "name": "laptops",
+    "source": "sky-platform\\docs\\design-reference\\homepage\\category-artwork-v2\\laptops.png",
+    "width": 636,
+    "height": 640,
+    "bytes": 40296
+  },
+  {
+    "name": "tablet",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/ipad-air-select-11in-wifi-blue-202405?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 563,
+    "height": 640,
+    "bytes": 50668
+  },
+  {
+    "name": "phone-cutout",
+    "source": "sky-platform\\docs\\design-reference\\homepage\\category-artwork-v2\\smartphones.png",
+    "width": 640,
+    "height": 632,
+    "bytes": 49246
+  },
+  {
+    "name": "earbuds",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/airpods-pro-3-hero-select-202509?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 583,
+    "height": 640,
+    "bytes": 22622
+  },
+  {
+    "name": "headphones",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/airpods-max-select-202409-midnight_FV1?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 640,
+    "height": 476,
+    "bytes": 54390
+  },
+  {
+    "name": "watches",
+    "source": "sky-platform\\docs\\design-reference\\homepage\\category-artwork-v2\\watches.png",
+    "width": 624,
+    "height": 640,
+    "bytes": 59852
+  },
+  {
+    "name": "3dot-basspop",
+    "source": "https://api.3dotworld.in/uploads/1781262928488-514442633-1.png",
+    "width": 640,
+    "height": 640,
+    "bytes": 49128
+  },
+  {
+    "name": "3dot-arion",
+    "source": "https://api.3dotworld.in/uploads/1780909545376-67956862-ARIONX.png",
+    "width": 640,
+    "height": 640,
+    "bytes": 46564
+  },
+  {
+    "name": "smart-speaker",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/homepod-mini-select-midnight-202610_FV1?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 333,
+    "height": 314,
+    "bytes": 51434
+  },
+  {
+    "name": "speakers",
+    "source": "sky-platform\\docs\\design-reference\\homepage\\category-artwork-v2\\speakers.png",
+    "width": 640,
+    "height": 636,
+    "bytes": 108442
+  },
+  {
+    "name": "mouse",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MXK53?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 640,
+    "height": 191,
+    "bytes": 18322
+  },
+  {
+    "name": "keyboard",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MJLX4?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 640,
+    "height": 264,
+    "bytes": 24512
+  },
+  {
+    "name": "trackpad",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MXK93?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 640,
+    "height": 136,
+    "bytes": 10138
+  },
+  {
+    "name": "stylus",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MX2D3?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 34,
+    "height": 640,
+    "bytes": 1898
+  },
+  {
+    "name": "usb-hub",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MUF82?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 277,
+    "height": 640,
+    "bytes": 3704
+  },
+  {
+    "name": "usb-cable",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MQKJ3?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 566,
+    "height": 609,
+    "bytes": 29122
+  },
+  {
+    "name": "chargers",
+    "source": "sky-platform\\docs\\design-reference\\homepage\\category-artwork-v2\\chargers.png",
+    "width": 587,
+    "height": 640,
+    "bytes": 33216
+  },
+  {
+    "name": "power-banks",
+    "source": "sky-platform\\docs\\design-reference\\homepage\\category-artwork-v2\\power-banks.png",
+    "width": 640,
+    "height": 617,
+    "bytes": 43636
+  },
+  {
+    "name": "magsafe",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MGD74?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 593,
+    "height": 640,
+    "bytes": 11034
+  },
+  {
+    "name": "phone-case",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MK8T4?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 320,
+    "height": 640,
+    "bytes": 15270
+  },
+  {
+    "name": "tracker-keyring",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MKG24_GEO_IN?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 279,
+    "height": 640,
+    "bytes": 40512
+  },
+  {
+    "name": "tablet-keyboard",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MGYY4?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 636,
+    "height": 640,
+    "bytes": 49170
+  },
+  {
+    "name": "game-controller",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/HSG32?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 640,
+    "height": 441,
+    "bytes": 43888
+  },
+  {
+    "name": "mobile-controller",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/HS4G2?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 640,
+    "height": 266,
+    "bytes": 52520
+  },
+  {
+    "name": "cloud-controller",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/HS462?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 640,
+    "height": 279,
+    "bytes": 46114
+  },
+  {
+    "name": "tv-streamer",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/apple-tv-4k-hero-select-202610?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 640,
+    "height": 631,
+    "bytes": 27674
+  },
+  {
+    "name": "tv-remote",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/appletv-witb-remote-202610?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 162,
+    "height": 640,
+    "bytes": 9124
+  },
+  {
+    "name": "indoor-camera",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/HSN72?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 506,
+    "height": 640
+  },
+  {
+    "name": "video-doorbell",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/HSN92?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 239,
+    "height": 640
+  },
+  {
+    "name": "climate-sensor",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/HSBJ2?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 640,
+    "height": 624
+  },
+  {
+    "name": "smart-thermostat",
+    "source": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/HQ2E2?wid=1000&hei=1000&fmt=png-alpha",
+    "width": 640,
+    "height": 422
+  }
+]

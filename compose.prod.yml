@@ -1,0 +1,93 @@
+name: sky-platform-prod
+services:
+  backend:
+    build: ./backend
+    user: ${MEDIA_APP_UID:-10001}:${MEDIA_APP_GID:-10001}
+    env_file: ${BACKEND_ENV_FILE:-./backend/.env.production}
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.production
+      MEDIA_ROOT: /app/media
+      PRIVATE_MEDIA_ROOT: /app/private-media
+    volumes:
+      - type: bind
+        source: ${MEDIA_HOST_ROOT:-/srv/sky/media}
+        target: /app/media
+        bind: { create_host_path: false }
+      - type: bind
+        source: ${PRIVATE_MEDIA_HOST_ROOT:-/srv/sky/private-media}
+        target: /app/private-media
+        bind: { create_host_path: false }
+    depends_on:
+      mysql: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    command: ["uvicorn", "config.asgi:application", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:8000/api/v1/health/live/', headers={'X-Forwarded-Proto':'https','Host':'backend'}))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    mem_limit: 1g
+    cpus: 2
+    restart: unless-stopped
+    logging: &logging
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${PUBLIC_API_BASE_URL:?Set the public HTTPS API URL}
+        NEXT_PUBLIC_MEDIA_ORIGIN: ${PUBLIC_MEDIA_ORIGIN:-}
+        API_INTERNAL_BASE_URL: http://backend:8000/api/v1
+    environment:
+      API_INTERNAL_BASE_URL: http://backend:8000/api/v1
+    depends_on: [backend]
+    mem_limit: 768m
+    restart: unless-stopped
+    logging: *logging
+  nginx:
+    image: nginx:stable-alpine
+    environment:
+      SERVER_NAME: ${SERVER_NAME:?Set your approved hostname}
+      NGINX_ENVSUBST_FILTER: SERVER_NAME
+    ports: ["80:8080", "443:8443"]
+    volumes:
+      - ./infrastructure/nginx/production.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - type: bind
+        source: ${MEDIA_HOST_ROOT:-/srv/sky/media}
+        target: /srv/media
+        read_only: true
+        bind: { create_host_path: false }
+      - ${TLS_HOST_ROOT:-/srv/sky/tls}:/etc/nginx/tls:ro
+    depends_on: [backend, frontend]
+    mem_limit: 128m
+    restart: unless-stopped
+    logging: *logging
+  mysql:
+    image: mysql:8.4
+    env_file: ${MYSQL_ENV_FILE:-./.env.mysql.production}
+    volumes: [mysql_data:/var/lib/mysql]
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_0900_as_cs", "--max-connections=60"]
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=$$MYSQL_PASSWORD mysql --protocol=TCP -h 127.0.0.1 -u $$MYSQL_USER -D $$MYSQL_DATABASE -e 'SELECT 1'"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    mem_limit: 2g
+    restart: unless-stopped
+    logging: *logging
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "noeviction"]
+    volumes: [redis_data:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    mem_limit: 512m
+    restart: unless-stopped
+    logging: *logging
+volumes:
+  mysql_data:
+  redis_data:

@@ -1,0 +1,132 @@
+[
+  {
+    "name": "phone",
+    "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black?wid=500&hei=500&fmt=png-alpha",
+    "alpha": [
+      0,
+      255
+    ],
+    "bytes": 44479
+  },
+  {
+    "name": "earbuds",
+    "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/airpods-pro-3-hero-select-202509?wid=500&hei=500&fmt=png-alpha",
+    "alpha": [
+      0,
+      255
+    ],
+    "bytes": 119767
+  },
+  {
+    "name": "mouse",
+    "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MXK53?wid=500&hei=500&fmt=png-alpha",
+    "alpha": [
+      0,
+      255
+    ],
+    "bytes": 38279
+  },
+  {
+    "name": "headphones",
+    "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/airpods-max-select-202409-midnight_FV1?wid=500&hei=500&fmt=png-alpha"
+  },
+  {
+    "name": "tablet",
+    "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/ipad-air-select-11in-wifi-blue-202405?wid=500&hei=500&fmt=png-alpha"
+  },
+  {
+    "name": "laptops",
+    "source": "Existing generated category artwork",
+    "file": "laptops.png"
+  },
+  {
+    "name": "watches",
+    "source": "Existing generated category artwork",
+    "file": "watches.png"
+  },
+  {
+    "name": "speakers",
+    "source": "Existing generated category artwork",
+    "file": "speakers.png"
+  },
+  {
+    "name": "chargers",
+    "source": "Existing generated category artwork",
+    "file": "chargers.png"
+  },
+  {
+    "name": "power-banks",
+    "source": "Existing generated category artwork",
+    "file": "power-banks.png"
+  },
+  {
+    "name": "televisions",
+    "source": "Existing generated category artwork",
+    "file": "televisions.png"
+  },
+  {
+    "name": "appliances",
+    "source": "Existing generated category artwork",
+    "file": "appliances.png"
+  },
+  {
+    "name": "keyboard",
+    "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MJLX4?wid=500&hei=500&fmt=png-alpha",
+    "file": "keyboard.webp"
+  },
+  {
+    "name": "trackpad",
+    "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MXK93?wid=500&hei=500&fmt=png-alpha",
+    "file": "trackpad.webp"
+  },
+  {
+    "name": "stylus",
+    "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MX2D3?wid=500&hei=500&fmt=png-alpha",
+    "file": "stylus.webp"
+  },
+  {
+    "name": "usb-hub",
+    "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MUF82?wid=500&hei=500&fmt=png-alpha",
+    "file": "usb-hub.webp"
+  },
+  {
+    "name": "usb-cable",
+    "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MQKJ3?wid=500&hei=500&fmt=png-alpha",
+    "file": "usb-cable.webp"
+  },
+  {
+    "name": "magsafe",
+    "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MGD74?wid=500&hei=500&fmt=png-alpha",
+    "file": "magsafe.webp"
+  },
+  {
+    "name": "phone-case",
+    "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MK8T4?wid=500&hei=500&fmt=png-alpha",
+    "file": "phone-case.webp"
+  },
+  {
+    "name": "tracker-keyring",
+    "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MKG24_GEO_IN?wid=500&hei=500&fmt=png-alpha",
+    "file": "tracker-keyring.webp"
+  },
+  {
+    "name": "tablet-keyboard",
+    "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MGYY4?wid=500&hei=500&fmt=png-alpha",
+    "file": "tablet-keyboard.webp"
+  },
+  {
+    "name": "smart-speaker",
+    "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/homepod-mini-select-midnight-202610_FV1?wid=500&hei=500&fmt=png-alpha",
+    "file": "smart-speaker.webp"
+  },
+  {
+    "name": "3dot-basspop",
+    "url": "https://api.3dotworld.in/uploads/1781262928488-514442633-1.png",
+    "file": "3dot-basspop.webp"
+  },
+  {
+    "name": "3dot-arion",
+    "url": "https://api.3dotworld.in/uploads/1780909545376-67956862-ARIONX.png",
+    "file": "3dot-arion.webp"
+  }
+]

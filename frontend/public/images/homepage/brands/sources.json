@@ -1,0 +1,82 @@
+[
+  {
+    "brand": "3dot",
+    "source": "https://3dotworld.in/assets/logo-noBg-BCGJv4d6.png",
+    "file": "3dot.webp"
+  },
+  {
+    "brand": "apple",
+    "source": "https://www.apple.com/in/",
+    "file": "apple.svg"
+  },
+  {
+    "brand": "boat",
+    "source": "https://www.boat-lifestyle.com/cdn/shop/files/boAt_logo_black_24889e30-925c-4185-a028-9fef497a8e44.svg?v=1732879339",
+    "file": "boat.svg"
+  },
+  {
+    "brand": "bose",
+    "source": "https://www.bose.com/on/demandware.static/Sites-Bose_US-Site/-/default/dwa6ee6e78/images/logo.svg",
+    "file": "bose.svg"
+  },
+  {
+    "brand": "haier",
+    "source": "https://image.haier.com/in/images/haier2019_logo_wx.png",
+    "file": "haier.webp"
+  },
+  {
+    "brand": "hp",
+    "source": "https://www.hp.com/in-en/home.html",
+    "file": "hp.svg"
+  },
+  {
+    "brand": "marshall",
+    "source": "https://www.marshall.com/us/en",
+    "file": "marshall.svg"
+  },
+  {
+    "brand": "motorola",
+    "source": "https://motorolain.vtexassets.com/arquivos/motorola-batwing-house-of-moto-indigo.png",
+    "file": "motorola.webp"
+  },
+  {
+    "brand": "nothing",
+    "source": "https://in.nothing.tech/",
+    "file": "nothing.svg"
+  },
+  {
+    "brand": "oneplus",
+    "source": "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/oneplus.svg",
+    "file": "oneplus.svg"
+  },
+  {
+    "brand": "oppo",
+    "source": "https://www.oppo.com/content/dam/oppo/common/file/image/logo.png",
+    "file": "oppo.webp"
+  },
+  {
+    "brand": "poco",
+    "source": "https://i01.appmifile.com/webfile/globalimg/i18n/poco/POCO.png",
+    "file": "poco.webp"
+  },
+  {
+    "brand": "samsung",
+    "source": "https://www.samsung.com/in/",
+    "file": "samsung.svg"
+  },
+  {
+    "brand": "vivo",
+    "source": "https://www.vivo.com/in",
+    "file": "vivo.svg"
+  },
+  {
+    "brand": "xiaomi",
+    "source": "https://i01.appmifile.com/webfile/globalimg/mobile/logo/mi.png",
+    "file": "xiaomi.webp"
+  },
+  {
+    "brand": "realme",
+    "source": "https://static2.realme.net/static/index.Cb5d5GP1.css",
+    "file": "realme.svg"
+  }
+]
