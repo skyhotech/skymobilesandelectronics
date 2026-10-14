@@ -39,6 +39,8 @@ const referenceSchema = z.object({
     .regex(/^[a-zA-Z0-9_-]+$/, "Use letters, digits, hyphens or underscores"),
   is_active: z.boolean(),
   image_url: z.string(),
+  show_on_homepage: z.boolean(),
+  display_order: z.string().regex(/^\d{0,9}$/, "Use a whole number"),
 });
 const productSchema = referenceSchema.extend({
   sku: z.string().trim().min(1).max(64),
@@ -289,6 +291,12 @@ export function ManagementDashboard({
                             <th>Price</th>
                           </>
                         )}
+                        {resource === "brands" && (
+                          <>
+                            <th>Homepage</th>
+                            <th>Order</th>
+                          </>
+                        )}
                         <th>Status</th>
                         <th>Actions</th>
                       </tr>
@@ -309,6 +317,18 @@ export function ManagementDashboard({
                                   currency: entry.currency,
                                 }).format(Number(entry.price))}
                               </td>
+                            </>
+                          )}
+                          {resource === "brands" && (
+                            <>
+                              <td>
+                                <span
+                                  className={`${styles.badge} ${entry.show_on_homepage ? "" : styles.inactive}`}
+                                >
+                                  {entry.show_on_homepage ? "Shown" : "Hidden"}
+                                </span>
+                              </td>
+                              <td>{String(entry.display_order ?? 0)}</td>
                             </>
                           )}
                           <td>
@@ -475,6 +495,8 @@ function Editor({
       name: entry === "new" ? "" : entry.name,
       slug: entry === "new" ? "" : entry.slug,
       is_active: entry === "new" ? true : entry.is_active,
+      show_on_homepage: entry === "new" ? resource === "brands" : Boolean(entry.show_on_homepage),
+      display_order: entry === "new" ? "0" : String(entry.display_order ?? 0),
       image_url:
         entry === "new"
           ? ""
@@ -500,10 +522,11 @@ function Editor({
   });
   const save = useMutation({
     mutationFn: (values: Fields) => {
+      const { show_on_homepage, display_order, ...rest } = values;
       const data =
         resource === "products"
           ? {
-              ...values,
+              ...rest,
               brand: Number(values.brand),
               category: Number(values.category),
               compare_at_price: values.compare_at_price || null,
@@ -514,6 +537,8 @@ function Editor({
               slug: values.slug,
               is_active: values.is_active,
               logo_url: values.image_url,
+              show_on_homepage,
+              display_order: Number(display_order || 0),
             };
       return managementApi(
         `${resource}/${entry === "new" ? "" : `${entry.id}/`}`,
@@ -620,6 +645,22 @@ function Editor({
           <input type="checkbox" {...form.register("is_active")} />
           Active
         </label>
+        {resource === "brands" && (
+          <>
+            <label className={styles.check}>
+              <input type="checkbox" {...form.register("show_on_homepage")} />
+              Show on homepage
+            </label>
+            <label>
+              Display order
+              <input inputMode="numeric" {...form.register("display_order")} />
+              <small className={styles.muted}>
+                Lower numbers appear first in “Shop Your Favourite Brands”. A logo is required to
+                show a brand on the homepage.
+              </small>
+            </label>
+          </>
+        )}
         {Object.keys(errors).length > 0 && (
           <div role="alert" className={styles.error}>
             {Object.entries(errors).map(([key, value]) => (

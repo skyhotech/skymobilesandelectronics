@@ -151,7 +151,24 @@ class BrandSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Brand
-        fields = ("id", "name", "slug", "is_active", "logo_url")
+        fields = (
+            "id",
+            "name",
+            "slug",
+            "is_active",
+            "logo_url",
+            "show_on_homepage",
+            "display_order",
+        )
+
+    def validate(self, attrs):
+        visible = attrs.get("show_on_homepage", getattr(self.instance, "show_on_homepage", False))
+        logo = attrs.get("logo", getattr(self.instance, "logo", ""))
+        if visible and not logo:
+            raise serializers.ValidationError(
+                {"logo_url": "A logo is required for brands shown on the homepage."}
+            )
+        return attrs
 
 
 @method_decorator(never_cache, name="dispatch")

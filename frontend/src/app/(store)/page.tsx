@@ -18,9 +18,13 @@ import { WhatsAppLink } from "@/components/home/whatsapp-link";
 import { WhySky } from "@/components/home/why-sky";
 import { GadgetBanner } from "@/components/home/gadget-banner";
 import { loadHomepageCategories } from "@/lib/categories-server";
+import { loadHomepageBrands } from "@/lib/brands-server";
 
 export default async function HomePage() {
-  const categoryData = await loadHomepageCategories();
+  const [categoryData, brands] = await Promise.all([
+    loadHomepageCategories(),
+    loadHomepageBrands(),
+  ]);
   return (
     <HomepageInteractions>
       <a className="skip-link" href="#main-content">
@@ -36,7 +40,7 @@ export default async function HomePage() {
             initialCategories={categoryData.categories}
             unavailable={categoryData.unavailable}
           />
-          <BrandCollection />
+          <BrandCollection brands={brands} />
           <SmartphoneCollection />
           <FeaturedOffers />
           <LaptopCollection />

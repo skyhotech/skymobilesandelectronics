@@ -6,6 +6,8 @@ export type Reference = {
   is_active: boolean;
   parent?: number | null;
   parent_name?: string;
+  show_on_homepage?: boolean;
+  display_order?: number;
 };
 export type Product = Reference & {
   sku: string;

@@ -1,6 +1,7 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
+from apps.brands.api import HomepageBrandList
 from apps.categories.api import CategoryImageUpload, HomepageCategoryList, PublicCategoryTree
 from apps.media_library.api import MediaAssetViewSet, MediaUpload
 from apps.products.management_api import management_urlpatterns
@@ -15,6 +16,7 @@ urlpatterns = [
     path("management/media/upload/", MediaUpload.as_view(), name="media-upload"),
     path("management/", include(media_router.urls)),
     path("categories/", HomepageCategoryList.as_view(), name="homepage-categories"),
+    path("brands/", HomepageBrandList.as_view(), name="homepage-brands"),
     path(
         "management/category-images/", CategoryImageUpload.as_view(), name="category-image-upload"
     ),

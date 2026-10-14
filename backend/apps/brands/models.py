@@ -6,9 +6,11 @@ class Brand(models.Model):
     name = models.CharField(max_length=120, unique=True)
     slug = models.SlugField(max_length=140, unique=True)
     is_active = models.BooleanField(default=True)
+    show_on_homepage = models.BooleanField(default=False)
+    display_order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["display_order", "name"]
         verbose_name_plural = "brands"
 
     def __str__(self):
