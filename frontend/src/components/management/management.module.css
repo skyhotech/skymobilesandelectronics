@@ -946,9 +946,23 @@
     border-color 0.15s,
     box-shadow 0.15s;
 }
-.categoryAdminCard[data-over="true"] {
+.categoryAdminCard[data-dragging="true"] {
   border-color: #3766ac;
-  box-shadow: 0 0 0 3px #3766ac20;
+  box-shadow:
+    0 0 0 3px #3766ac30,
+    0 16px 36px #14315c26;
+  transform: scale(1.03);
+  opacity: 0.92;
+  position: relative;
+  z-index: 2;
+}
+.categoryAdminCard[data-dragging="true"] .categoryDragHandle {
+  cursor: grabbing;
+}
+.categorySaving {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #7c8a9e;
 }
 .categoryCardTop {
   display: flex;
