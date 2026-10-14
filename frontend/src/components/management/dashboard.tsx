@@ -18,7 +18,7 @@ import {
 } from "@/lib/management-api";
 import styles from "./management.module.css";
 import { CategoryForm } from "./category-form";
-import { CategoryCards } from "./category-cards";
+import { CategoryCards, categoryUrl } from "./category-cards";
 import { MediaUploadField } from "./media-upload-field";
 
 type Resource = "products" | "brands" | "categories";
@@ -65,6 +65,32 @@ export function ManagementDashboard({
   const [editing, setEditing] = useState<Entry | "new" | null>(null);
   const [deleting, setDeleting] = useState<Entry | null>(null);
   const [notice, setNotice] = useState("");
+  // Category folder is client state: opening a subcategory is instant (no route round-trip).
+  const [categoryParent, setCategoryParent] = useState<number | null>(parentId);
+  const [routeParent, setRouteParent] = useState<number | null>(parentId);
+  if (routeParent !== parentId) {
+    // The route itself changed (e.g. sidebar link or server navigation) — follow it.
+    setRouteParent(parentId);
+    setCategoryParent(parentId);
+  }
+  useEffect(() => {
+    if (resource !== "categories") return;
+    const sync = () => {
+      const match = window.location.pathname.match(
+        /\/management\/admin\/categories(?:\/(\d+))?\/?$/,
+      );
+      if (match) setCategoryParent(match[1] ? Number(match[1]) : null);
+    };
+    window.addEventListener("popstate", sync);
+    return () => window.removeEventListener("popstate", sync);
+  }, [resource]);
+  const openCategory = (id: number | null) => {
+    const url = categoryUrl(id);
+    if (window.location.pathname !== url) window.history.pushState(null, "", url);
+    setCategoryParent(id);
+    setNotice("");
+    window.scrollTo({ top: 0 });
+  };
   const session = useQuery({
     queryKey: ["management", "session"],
     queryFn: () => managementApi<Session>("session/"),
@@ -174,15 +200,17 @@ export function ManagementDashboard({
           </div>
         </aside>
         <main className={`${styles.main} ${styles.dashboardMain}`}>
-          <div className={styles.intro}>
-            <div>
-              <p className={styles.eyebrow}>YOUR STORE WORKSPACE</p>
-              <h1>Manage your catalog</h1>
-              <p className={styles.muted}>
-                Create products, organize brands and keep your catalog up to date.
-              </p>
+          {resource !== "categories" && (
+            <div className={styles.intro}>
+              <div>
+                <p className={styles.eyebrow}>YOUR STORE WORKSPACE</p>
+                <h1>Manage your catalog</h1>
+                <p className={styles.muted}>
+                  Create products, organize brands and keep your catalog up to date.
+                </p>
+              </div>
             </div>
-          </div>
+          )}
 
           {logout.error && (
             <p className={styles.error} role="alert">
@@ -194,29 +222,32 @@ export function ManagementDashboard({
               {notice}
             </p>
           )}
-          <div className={styles.toolbar}>
-            <input
-              className={styles.search}
-              aria-label={`Search ${resource}`}
-              placeholder={`Search ${resource}…`}
-              value={search}
-              onChange={(event) => {
-                setSearch(event.target.value);
-                setPage(1);
-              }}
-            />
-            <button
-              className={styles.primary}
-              disabled={permissionError}
-              onClick={() => setEditing("new")}
-            >
-              Add {singular[resource]}
-            </button>
-          </div>
+          {resource !== "categories" && (
+            <div className={styles.toolbar}>
+              <input
+                className={styles.search}
+                aria-label={`Search ${resource}`}
+                placeholder={`Search ${resource}…`}
+                value={search}
+                onChange={(event) => {
+                  setSearch(event.target.value);
+                  setPage(1);
+                }}
+              />
+              <button
+                className={styles.primary}
+                disabled={permissionError}
+                onClick={() => setEditing("new")}
+              >
+                Add {singular[resource]}
+              </button>
+            </div>
+          )}
           {resource === "categories" && (
             <CategoryCards
-              parentId={parentId}
-              search={search}
+              parentId={categoryParent}
+              onNavigate={openCategory}
+              onAdd={() => setEditing("new")}
               onEdit={setEditing}
               onDelete={(entry) => {
                 remove.reset();
@@ -337,18 +368,19 @@ export function ManagementDashboard({
               )}
             </section>
           )}
-          <p className={styles.notice}>
-            {resource === "categories"
-              ? "Manage the live Explore Our Categories cards here. Active categories marked Show on homepage appear on the website and in the mobile category feed."
-              : "Catalog changes are saved in MySQL through Django REST Framework. Orders, checkout and payments are being developed separately."}
-          </p>
+          {resource !== "categories" && (
+            <p className={styles.notice}>
+              Catalog changes are saved in MySQL through Django REST Framework. Orders, checkout and
+              payments are being developed separately.
+            </p>
+          )}
           {editing && resource === "categories" && (
             <Modal
               title={`${editing === "new" ? "Add" : "Edit"} category`}
               onClose={() => setEditing(null)}
             >
               <CategoryForm
-                parentId={parentId}
+                parentId={categoryParent}
                 entry={editing}
                 onClose={() => setEditing(null)}
                 onSaved={() => {

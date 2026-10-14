@@ -17,7 +17,7 @@ export default async function AdminSection({
   if (parentId !== null && !Number.isSafeInteger(parentId)) notFound();
   return (
     <ManagementDashboard
-      key={`${section}-${parentId}`}
+      key={section}
       section={section as "products" | "brands" | "categories"}
       parentId={parentId}
     />
