@@ -12,12 +12,14 @@ files rather than fake APIs or nonfunctional screens.
   Celery, Pillow, OpenAPI tooling, pytest, and Ruff. No global application pip packages were installed.
 - `mobile_app/`: Flutter Android/iOS project, Riverpod, Dio, go_router, secure storage,
   image caching, WebSocket client, and Flutter test packages.
-- `.tools/`: ignored local Node/npm, Git, Flutter SDK, and bootstrap tooling. These are not shipped
-  or committed. Python 3.13 was downloaded through uv's managed Python installation.
-  On this machine `E:\sky-platform-tools` is a directory junction to `.tools` so Flutter's
-  native-asset hooks can use paths without spaces. It contains no separate copy of the project.
-  The environment helper reads ignored `.tools/local-paths.json` and uses that alias and a
-  project-local Pub cache. Recreate a no-spaces SDK path on a fresh Windows checkout if needed.
+- `.tools/`: ignored; contains only `local-paths.json`. The local Node/npm, Git, Flutter SDK,
+  PostgreSQL binaries, Pub cache and bootstrap tooling live **outside the project** in
+  `E:\sky-platform-tools` (no spaces in path for Flutter native-asset hooks, and kept out of the
+  AI/editor workspace). Python 3.13 was downloaded through uv's managed Python installation.
+  `scripts/env.ps1` reads `.tools/local-paths.json` (`tools_alias`) and uses that folder and its
+  Pub cache. Recreate a no-spaces SDK path on a fresh Windows checkout if needed.
+- `.run/`: ignored runtime logs only. Old screenshots, DB dumps and the stopped PostgreSQL
+  cluster were archived to `E:\sky-platform-archive\run-2026-10-14`.
 - `compose.dev.yml`: persistent development MySQL/Redis, bound to loopback only.
 - `scripts/`: rerunnable setup, checks, foreground startup, and service shutdown for Windows/Linux.
 
@@ -95,7 +97,7 @@ There is no production Compose/TLS/backup automation yet.
 
 The Nginx media snippet serves only preprocessed, versioned image files from a read-only static
 location. Upload validation, processing tasks, and storage metadata have not been implemented.
-See [media plan](docs/media-optimization.md) and [verification](docs/verification.md).
+See [media plan](docs/media-optimization.md) and [verification](docs/archive/verification.md).
 
 
 ## Persistent media storage

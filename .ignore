@@ -1,0 +1,50 @@
+# Paths excluded from AI agents / ripgrep searches to save tokens.
+# (.ignore is honored by ripgrep; same list is in .geminiignore.)
+
+# Local SDKs, runtime data, backups
+**/.tools/
+**/.run/
+**/data/media/
+**/data/private-media/
+**/backend/media/
+
+# Dependencies and build output
+**/node_modules/
+**/.next/
+**/.venv/
+**/build/
+**/.dart_tool/
+**/__pycache__/
+**/.pytest_cache/
+**/.ruff_cache/
+**/coverage/
+**/test-results/
+**/playwright-report/
+
+# Large binary / reference assets
+**/docs/design-reference/
+**/docs/archive/
+**/frontend/public/
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.ico
+*.zip
+
+# Generated / lock / noisy files
+**/package-lock.json
+**/pubspec.lock
+**/tsconfig.tsbuildinfo
+**/next-env.d.ts
+*.log
+*.dump
+*.min.js
+*.map
+
+# Secrets
+.env
+**/.env
+**/.env.local
+**/.env.*.local

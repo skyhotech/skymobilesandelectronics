@@ -27,16 +27,17 @@ Django migrations are authoritative. See DATABASE_SCHEMA.md and mysql-schema.sql
 
 ## Migration and recovery
 
-On 2026-10-14 the local PostgreSQL data was exported and loaded into MySQL through Django serialization. The following ignored recovery artifacts were preserved:
+On 2026-10-14 the local PostgreSQL data was exported and loaded into MySQL through Django serialization. The following recovery artifacts were preserved outside the project in `E:\sky-platform-archive\run-2026-10-14\` (formerly `.run/`):
 
-- `.run/pre-mysql-backup.dump`: native PostgreSQL backup.
-- `.run/postgres-data.json`: portable Django data, including credential hashes; keep private.
-- `.run/postgres-source.env`: old connection settings; keep private.
-- `.run/pre-mysql-root.env`: previous Compose environment.
-- `.run/mysql-migrated-backup.sql`: native MySQL data backup.
-- `.run/postgres-data/`: untouched original PostgreSQL cluster, now stopped.
+- `pre-mysql-backup.dump`: native PostgreSQL backup.
+- `postgres-data.json`: portable Django data, including credential hashes; keep private.
+- `postgres-source.env`: old connection settings; keep private.
+- `pre-mysql-root.env`: previous Compose environment.
+- `mysql-migrated-backup.sql`: native MySQL data backup.
+- `pre-universal-media.sql`: MySQL backup taken before the universal media migration.
+- `postgres-data/`: untouched original PostgreSQL cluster, now stopped.
 
-The old helper is archived at `.run/legacy-local-postgres.py`; active startup scripts and Python dependencies use MySQL only. PostgreSQL binaries remain available under `.tools/postgresql/` for deliberate recovery. Reverting engines requires stopping backend writes, restoring the old connection and deliberately reconciling any new MySQL writes. Merely pointing to the old database would lose access to those new changes.
+The old helper is archived there as `legacy-local-postgres.py`; active startup scripts and Python dependencies use MySQL only. PostgreSQL binaries remain available under `E:\sky-platform-tools\postgresql\` for deliberate recovery. Reverting engines requires stopping backend writes, restoring the old connection and deliberately reconciling any new MySQL writes. Merely pointing to the old database would lose access to those new changes.
 
 MySQL backup example (prompts for the password):
 
