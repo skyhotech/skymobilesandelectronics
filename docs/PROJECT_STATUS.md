@@ -1,5 +1,16 @@
 # Project status - 15 October 2026
 
+## Category drag animation
+
+Added a viewport-wide floating category preview with perspective tilt, glow,
+highlighted targets and animated sibling movement. Pointer identity/capture,
+Escape, blur, invalid drops and reduced-motion preferences are handled; existing
+up/down controls and backend reorder permissions remain unchanged.
+Verified live owner browser flow: floating preview outside grid, Escape cancellation,
+saved reorder, nested navigation, reload persistence, storefront synchronization and
+390px overflow check. Test-created categories were removed by its cleanup. Frontend
+lint, typecheck and production build passed. Touch-device behavior is NOT TESTED.
+
 ## Login Redis outage fix
 
 Docker Engine was stopped, making configured loopback Redis cache/Channels/broker connections time out. Started Docker Desktop and the existing Redis-only Compose service without changing database volumes. Verified PING, cross-process cache access, Channels delivery and broker connection.

@@ -62,6 +62,14 @@ test("nested category cards, URL navigation, drag order and live storefront", as
     const destination = page.getByRole("article", { name: `${tag}-child`, exact: true });
     await handle.hover();
     await page.mouse.down();
+    await page.mouse.move(20, 100, { steps: 8 });
+    await expect(page.getByTestId("category-drag-preview")).toBeVisible();
+    await expect(page.getByTestId("category-drag-preview")).toContainText(`${tag}-sibling`);
+    await page.keyboard.press("Escape");
+    await page.mouse.up();
+    await expect(page.getByTestId("category-drag-preview")).toHaveCount(0);
+    await handle.hover();
+    await page.mouse.down();
     await destination.hover();
     await destination.hover();
     await page.mouse.up();

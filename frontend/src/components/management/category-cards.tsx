@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { categoryTreeSnapshotSchema, type HomepageCategory } from "@/lib/categories";
 import { managementApi, type Reference } from "@/lib/management-api";
@@ -131,7 +132,42 @@ export function CategoryCards({
   const [moveError, setMoveError] = useState<string | null>(null);
   const queue = useRef<Promise<void>>(Promise.resolve());
   const pending = useRef(0);
-  const drag = useRef<{ id: number; x: number; y: number; moved: boolean } | null>(null);
+  const drag = useRef<{ id: number; pointerId: number; overId: number | null; x: number; y: number; moved: boolean } | null>(null);
+  const [floating, setFloating] = useState<{ node: HomepageCategory; x: number; y: number; width: number } | null>(null);
+  const floatingRef = useRef<HTMLDivElement>(null);
+  const workspaceRef = useRef<HTMLElement>(null);
+  const positions = useRef(new Map<number, DOMRect>());
+  const [over, setOver] = useState<number | null>(null);
+  const cancelDrag = () => {
+    drag.current = null;
+    setPreview(null);
+    setFloating(null);
+    setOver(null);
+  };
+  useEffect(() => {
+    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") cancelDrag(); };
+    const blur = () => cancelDrag();
+    window.addEventListener("keydown", escape);
+    window.addEventListener("blur", blur);
+    return () => { window.removeEventListener("keydown", escape); window.removeEventListener("blur", blur); };
+  }, []);
+  useLayoutEffect(() => {
+    const next = new Map<number, DOMRect>();
+    workspaceRef.current?.querySelectorAll<HTMLElement>("article[data-card-id]").forEach(element => {
+      const id = Number(element.dataset.cardId);
+      element.getAnimations().forEach(animation => animation.cancel());
+      const rect = element.getBoundingClientRect();
+      next.set(id, rect);
+      const previous = positions.current.get(id);
+      if (previous && preview && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const x = previous.left - rect.left, y = previous.top - rect.top;
+        if (Math.abs(x) + Math.abs(y) > 2) element.animate([
+          { translate: `${x}px ${y}px` }, { translate: "0px 0px" },
+        ], { duration: 280, easing: "cubic-bezier(.2,.8,.2,1)" });
+      }
+    });
+    positions.current = next;
+  });
   const snapshot = useQuery({
     queryKey: treeKey,
     queryFn: async () => categoryTreeSnapshotSchema.parse(await managementApi("categories/tree/")),
@@ -222,7 +258,7 @@ export function CategoryCards({
             matchesFilter(node) && `${node.name} ${node.slug}`.toLowerCase().includes(needle),
         )
         .sort((a, b) => a.name.localeCompare(b.name))
-    : siblings;
+    : sorted;
 
   const stats = {
     total: nodes.length,
@@ -245,6 +281,8 @@ export function CategoryCards({
     document.elementFromPoint(x, y)?.closest<HTMLElement>("[data-card-id]");
   /** Move the dragged card to the hovered card's slot in the preview order. */
   const updatePreview = (activeId: number, overId: number) => {
+    if (drag.current?.overId === overId) return;
+    if (drag.current) drag.current.overId = overId;
     const base = preview?.order ?? sorted.map((node) => node.id);
     const order = base.filter((id) => id !== activeId);
     const overIndex = order.indexOf(overId);
@@ -345,7 +383,17 @@ export function CategoryCards({
   const parentOfCurrent = currentCategory ? currentCategory.parent : null;
 
   return (
-    <section className={styles.workspace} aria-label="Category manager">
+    <section ref={workspaceRef} className={styles.workspace} aria-label="Category manager">
+      {floating && createPortal(<div
+        ref={floatingRef}
+        className={styles.floatingCard}
+        data-testid="category-drag-preview"
+        aria-hidden="true"
+        style={{ width: floating.width, transform: `perspective(900px) translate3d(${floating.x}px, ${floating.y}px, 0)` }}
+      >
+        <div className={styles.floatingArtwork}><MediaImage src={floating.node.image_url} alt="" width={240} height={150} /></div>
+        <strong>{floating.node.name}</strong><span>Drop on a category to reorder · Esc to cancel</span>
+      </div>, document.body)}
       <header className={styles.pageHeader}>
         <nav aria-label="Category breadcrumbs" className={styles.breadcrumbs}>
           <a
@@ -565,9 +613,11 @@ export function CategoryCards({
                     key={node.id}
                     data-card-id={node.id}
                     data-dragging={preview?.id === node.id}
+                    data-drop-target={over === node.id && preview?.id !== node.id}
                     data-inactive={!node.is_active}
                     aria-label={node.name}
                     className={styles.card}
+                    style={{ order: preview ? preview.order.indexOf(node.id) : undefined }}
                   >
                     <a
                       href={categoryUrl(node.id)}
@@ -591,9 +641,11 @@ export function CategoryCards({
                           title="Drag to reorder"
                           style={{ touchAction: "none" }}
                           onPointerDown={(event) => {
-                            if (event.button !== 0) return;
+                            if (event.button !== 0 || !event.isPrimary || drag.current) return;
                             drag.current = {
                               id: node.id,
+                              pointerId: event.pointerId,
+                              overId: null,
                               x: event.clientX,
                               y: event.clientY,
                               moved: false,
@@ -602,11 +654,22 @@ export function CategoryCards({
                           }}
                           onPointerMove={(event) => {
                             const active = drag.current;
-                            if (!active) return;
+                            if (!active || active.pointerId !== event.pointerId) return;
                             active.moved ||=
                               Math.hypot(event.clientX - active.x, event.clientY - active.y) > 6;
                             if (!active.moved) return;
+                            event.preventDefault();
+                            if (!preview) setPreview({ id: active.id, order: sorted.map(item => item.id) });
+                            if (!floating) {
+                              const rect = event.currentTarget.closest("article")!.getBoundingClientRect();
+                              setFloating({ node, x: event.clientX - rect.width * .7, y: event.clientY - 24, width: Math.min(rect.width, 300) });
+                            }
+                            if (floatingRef.current) {
+                              const tilt = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "" : ` rotateX(6deg) rotateY(${Math.max(-12, Math.min(12, (event.clientX - active.x) / 25))}deg) rotateZ(-2deg)`;
+                              floatingRef.current.style.transform = `perspective(900px) translate3d(${event.clientX - floatingRef.current.offsetWidth * .7}px, ${event.clientY - 24}px, 0)${tilt}`;
+                            }
                             const element = target(event.clientX, event.clientY);
+                            setOver(element ? Number(element.dataset.cardId) : null);
                             if (element) {
                               const overId = Number(element.dataset.cardId);
                               if (overId !== active.id) updatePreview(active.id, overId);
@@ -618,21 +681,20 @@ export function CategoryCards({
                           }}
                           onPointerUp={(event) => {
                             const active = drag.current;
+                            if (!active || active.pointerId !== event.pointerId) return;
                             const order = preview?.order;
-                            drag.current = null;
-                            setPreview(null);
+                            const validDrop = !!target(event.clientX, event.clientY);
+                            cancelDrag();
                             if (event.currentTarget.hasPointerCapture(event.pointerId))
                               event.currentTarget.releasePointerCapture(event.pointerId);
-                            if (!active?.moved || !order) return;
+                            if (!active?.moved || !order || !validDrop) return;
                             const original = sorted.map((item) => item.id);
                             if (order.every((id, i) => id === original[i])) return;
                             const position = order.indexOf(active.id);
                             commitMove(active.id, order[position + 1] ?? null);
                           }}
-                          onPointerCancel={() => {
-                            drag.current = null;
-                            setPreview(null);
-                          }}
+                          onPointerCancel={(event) => { if (drag.current?.pointerId === event.pointerId) cancelDrag(); }}
+                          onLostPointerCapture={(event) => { if (drag.current?.pointerId === event.pointerId) cancelDrag(); }}
                         >
                           <svg viewBox="0 0 20 20" aria-hidden="true">
                             <circle cx="7" cy="5" r="1.3" />
@@ -702,7 +764,7 @@ export function CategoryCards({
                 );
               })}
               {!searching && view === "grid" && (
-                <button type="button" className={styles.addTile} onClick={onAdd}>
+                <button type="button" className={styles.addTile} style={{ order: siblings.length + 1 }} onClick={onAdd}>
                   <span className={styles.addTileIcon}>{Icon.plus}</span>
                   <span>
                     {currentCategory
@@ -715,6 +777,7 @@ export function CategoryCards({
                 <div
                   data-card-id="0"
                   className={styles.dropEnd}
+                  style={{ order: siblings.length + 2 }}
                   aria-label="End of category list"
                 />
               )}

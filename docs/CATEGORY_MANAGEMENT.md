@@ -1,5 +1,12 @@
 # Categories and subcategories
 
+Category drag handles lift a floating card that follows the pointer across the
+viewport, with 3D tilt, a soft glow and animated sibling movement. Drop on a
+category in the current folder to save the order. Escape, interrupted gestures,
+or dropping outside a valid target cancel the drag. Positions are category
+ordering, not permanent free-form website coordinates. Reduced-motion settings
+disable tilt and movement animations; up/down buttons remain available.
+
 Open `/management/admin/`, select **Categories**, then **Add category**.
 Leave **Parent category** empty for a main category, or choose any category
 to create its subcategory. Nesting supports up to 12 levels. Edit and delete use the existing category controls.
