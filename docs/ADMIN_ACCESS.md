@@ -1,5 +1,14 @@
 # SKY frontend management
 
+## Rebuilt dashboard
+
+The dashboard now includes four catalog summary cards, storefront visibility bars,
+the five most recently updated products, missing-image/inactive-product counts and
+a Themes shortcut. All counts and recent records come from the owner-only overview
+API; recent products link to their brand product panel. Empty, loading and failed
+refresh states are supported, preserving previously loaded data on a refresh error.
+The current homepage/theme and existing catalog management flows are preserved.
+
 ## Themes and filters
 
 Themes appears directly below Dashboard at `/management/admin/themes`. The existing

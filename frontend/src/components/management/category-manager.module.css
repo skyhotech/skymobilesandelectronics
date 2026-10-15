@@ -310,9 +310,11 @@
   .brandPinned .titleBlock p { font-size: 12px; }
 }
 @media (max-width: 767px) {
-  .brandPinned { height: max(420px, calc(100dvh - var(--admin-header-height, 88px) - var(--admin-mobile-navigation-height, 0px) - 50px)); gap: 12px; }
+  .brandPinned { height: max(580px, calc(100dvh - var(--admin-header-height, 88px) - var(--admin-mobile-navigation-height, 0px) - 50px)); gap: 12px; }
   .brandPinned .body { gap: 12px; }
   .brandPinned .treePanel { height: 144px; max-height: 144px; }
+  .brandPinned .toolbar { gap: 6px; }
+  .brandPinned .segmented button { padding: 7px 8px; font-size: 11px; }
   .brandPinned .titleRow { flex-wrap: nowrap; gap: 8px; }
   .brandPinned .titleBlock p { display: none; }
   .brandPinned .headerActions { width: auto; flex: none; }

@@ -63,10 +63,28 @@ class ManagementHomepageCountsSerializer(ManagementCountsSerializer):
     homepage = serializers.IntegerField(min_value=0)
 
 
+class ManagementProductCountsSerializer(ManagementCountsSerializer):
+    published = serializers.IntegerField(min_value=0)
+    missing_images = serializers.IntegerField(min_value=0)
+
+
+class RecentProductSerializer(serializers.ModelSerializer):
+    brand_name = serializers.CharField(source="brand.name", read_only=True)
+    image_url = MediaReferenceField(source="image", read_only=True)
+
+    class Meta:
+        model = Product
+        fields = (
+            "id", "name", "brand", "brand_name", "price", "currency",
+            "is_active", "image_url", "updated_at",
+        )
+
+
 class ManagementOverviewSerializer(serializers.Serializer):
     brands = ManagementHomepageCountsSerializer()
     categories = ManagementHomepageCountsSerializer()
-    products = ManagementCountsSerializer()
+    products = ManagementProductCountsSerializer()
+    recent_products = RecentProductSerializer(many=True)
 
 
 @method_decorator(never_cache, name="dispatch")
@@ -84,7 +102,16 @@ class ManagementOverview(APIView):
         data = {
             "brands": {**counts(Brand), "homepage": published_brands().count()},
             "categories": {**counts(Category), "homepage": len(published_categories())},
-            "products": counts(Product),
+            "products": Product.objects.aggregate(
+                total=Count("pk"), active=Count("pk", filter=Q(is_active=True)),
+                published=Count("pk", filter=Q(
+                    is_active=True, brand__is_active=True, category__is_active=True,
+                )),
+                missing_images=Count("pk", filter=Q(image="")),
+            ),
+            "recent_products": Product.objects.select_related("brand").order_by(
+                "-updated_at", "-id",
+            )[:5],
         }
         return Response(ManagementOverviewSerializer(data).data)
 

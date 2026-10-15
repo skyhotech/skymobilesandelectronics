@@ -1307,18 +1307,6 @@ components:
       required:
       - nodes
       - revision
-    ManagementCounts:
-      type: object
-      properties:
-        total:
-          type: integer
-          minimum: 0
-        active:
-          type: integer
-          minimum: 0
-      required:
-      - active
-      - total
     ManagementError:
       type: object
       properties:
@@ -1350,11 +1338,36 @@ components:
         categories:
           $ref: '#/components/schemas/ManagementHomepageCounts'
         products:
-          $ref: '#/components/schemas/ManagementCounts'
+          $ref: '#/components/schemas/ManagementProductCounts'
+        recent_products:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecentProduct'
       required:
       - brands
       - categories
       - products
+      - recent_products
+    ManagementProductCounts:
+      type: object
+      properties:
+        total:
+          type: integer
+          minimum: 0
+        active:
+          type: integer
+          minimum: 0
+        published:
+          type: integer
+          minimum: 0
+        missing_images:
+          type: integer
+          minimum: 0
+      required:
+      - active
+      - missing_images
+      - published
+      - total
     ManagementSearchResponse:
       type: object
       properties:
@@ -1881,6 +1894,43 @@ components:
       - name
       - parent_name
       - slug
+    RecentProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 220
+        brand:
+          type: integer
+        brand_name:
+          type: string
+          readOnly: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        is_active:
+          type: boolean
+        image_url:
+          type: string
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - brand
+      - brand_name
+      - id
+      - image_url
+      - name
+      - price
+      - updated_at
     StatusEnum:
       enum:
       - processing

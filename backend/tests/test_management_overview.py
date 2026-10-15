@@ -61,10 +61,14 @@ def test_overview_counts_real_records_and_publication_rules(owner_client):
     response = owner_client.get(URL)
     assert response.status_code == 200
     assert "no-store" in response["Cache-Control"]
-    assert response.json() == {
+    payload = response.json()
+    recent = payload.pop("recent_products")
+    assert [row["name"] for row in recent] == ["Draft", "Active"]
+    assert all(row["brand_name"] == "Visible" for row in recent)
+    assert payload == {
         "brands": {"total": 4, "active": 3, "homepage": 1},
         "categories": {"total": total + 5, "active": active + 4, "homepage": homepage + 2},
-        "products": {"total": 2, "active": 1},
+        "products": {"total": 2, "active": 1, "published": 1, "missing_images": 2},
     }
 
 
@@ -80,3 +84,20 @@ def test_overview_rejects_anonymous_and_non_owner():
 def test_overview_is_read_only(owner_client, method):
     response = getattr(owner_client, method)(URL, {}, content_type="application/json")
     assert response.status_code == 405
+
+
+def test_overview_recent_products_are_bounded_and_publication_matches_catalog(owner_client):
+    brand = Brand.objects.create(name="Recent", slug="recent", is_active=False)
+    category = Category.objects.create(name="Recent", slug="recent")
+    rows = [Product.objects.create(
+        sku=f"REC-{index}", name=f"Recent {index}", slug=f"recent-{index}", price="100",
+        brand=brand, category=category, is_active=True, image="products/test.webp",
+    ) for index in range(7)]
+    response = owner_client.get(URL).json()
+    assert response["products"] == {
+        "total": 7, "active": 7, "published": 0, "missing_images": 0,
+    }
+    assert [row["id"] for row in response["recent_products"]] == [row.pk for row in rows[-5:][::-1]]
+    rows[0].name = "Updated first"
+    rows[0].save()
+    assert owner_client.get(URL).json()["recent_products"][0]["id"] == rows[0].pk

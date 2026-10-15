@@ -1,5 +1,21 @@
 # Project status - 15 October 2026
 
+## Rebuilt dashboard
+
+The dashboard now includes four catalog summary cards, storefront visibility bars,
+the five most recently updated products, missing-image/inactive-product counts and
+a Themes shortcut. All counts and recent records come from the owner-only overview
+API; recent products link to their brand product panel. Empty, loading and failed
+refresh states are supported, preserving previously loaded data on a refresh error.
+The current homepage/theme and existing catalog management flows are preserved.
+
+Verified: 7 backend overview tests, 30 frontend unit tests, typecheck, lint, Django
+system check, OpenAPI validation and production build passed. Two live browser
+flows covered real counts, four viewport widths, recent-product navigation, stale
+refresh/recovery and brand scrolling. Desktop/mobile dashboard screenshots reviewed.
+Mobile Brands controls were compacted and its minimum height corrected to retain
+a usable card viewport. No migrations. Production and Playwright MCP NOT TESTED.
+
 ## Theme preview card
 
 Default theme now has a live homepage preview card, pointer-driven 3D tilt, Active
