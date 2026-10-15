@@ -125,6 +125,10 @@
   color: #60708a;
 }
 .header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 3px 16px #11264b18;
   background: #11264b;
   color: white;
   padding: 20px 5%;
@@ -132,6 +136,27 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
+}
+.headerBrand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+.headerLogo {
+  width: 48px;
+  height: 48px;
+  flex: none;
+  object-fit: contain;
+  border-radius: 10px;
+  background: white;
+}
+.headerBrand:focus-visible {
+  outline: 2px solid #b4ceff;
+  outline-offset: 5px;
+  border-radius: 8px;
 }
 .header strong {
   font-size: 18px;
@@ -147,6 +172,10 @@
   align-items: center;
   gap: 15px;
   font-size: 13px;
+}
+@media (max-width: 640px) {
+  .header { flex-wrap: wrap; gap: 12px; }
+  .headerActions { width: 100%; justify-content: space-between; }
 }
 .main {
   max-width: 1280px;
@@ -683,7 +712,7 @@
 .dashboardLayout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
-  min-height: calc(100dvh - 85px);
+  min-height: calc(100dvh - var(--admin-header-height, 88px));
 }
 .sidebar {
   min-width: 0;
@@ -693,9 +722,9 @@
   display: flex;
   flex-direction: column;
   position: sticky;
-  top: 0;
+  top: var(--admin-header-height, 88px);
   align-self: start;
-  min-height: calc(100dvh - 85px);
+  min-height: calc(100dvh - var(--admin-header-height, 88px));
 }
 .sidebar h2 {
   font-size: 21px;

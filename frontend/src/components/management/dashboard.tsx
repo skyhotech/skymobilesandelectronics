@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -62,6 +63,7 @@ export function ManagementDashboard({
 }) {
   const router = useRouter();
   const cache = useQueryClient();
+  const headerRef = useRef<HTMLElement>(null);
   const resource = section;
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -127,6 +129,15 @@ export function ManagementDashboard({
   useEffect(() => {
     if (session.data && !session.data.user) router.replace("/management/admin/login");
   }, [session.data, router]);
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const measure = () => header.parentElement?.style.setProperty("--admin-header-height", `${header.getBoundingClientRect().height}px`);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, [session.data?.user]);
   const permissionError =
     entries.error instanceof ManagementError &&
     (entries.error.status === 401 || entries.error.status === 403);
@@ -155,11 +166,14 @@ export function ManagementDashboard({
     );
   return (
     <div className={styles.shell}>
-      <header className={styles.header}>
-        <div>
+      <header ref={headerRef} className={styles.header} aria-label="Management navigation">
+        <Link href="/management/admin" className={styles.headerBrand} aria-label="SKY management home">
+          <Image src="/images/homepage/545193f58191.webp" alt="SKY Mobile & Electronics" width={48} height={48} priority className={styles.headerLogo} />
+          <div>
           <strong>SKY Management</strong>
           <span>Catalog & store operations</span>
-        </div>
+          </div>
+        </Link>
         <div className={styles.headerActions}>
           <span>{session.data.user.username}</span>
           <Link href="/">View website ↗</Link>

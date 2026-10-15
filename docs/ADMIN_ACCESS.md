@@ -1,5 +1,9 @@
 # SKY frontend management
 
+The management top bar stays visible while scrolling and uses the existing SKY
+logo linked to the dashboard. The sidebar offsets itself below the bar, including
+when mobile controls wrap. View website and Sign out remain accessible.
+
 ## Live homepage brands
 
 Brands uses the same workspace/card styling as Categories: summary totals,
