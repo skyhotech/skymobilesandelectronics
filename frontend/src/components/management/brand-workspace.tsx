@@ -55,4 +55,3 @@ export function BrandWorkspace({ onAdd, onEdit, onDelete }: {
     </div>
   </section>;
 }
-
