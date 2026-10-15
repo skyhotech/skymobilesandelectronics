@@ -52,7 +52,7 @@ function applyMove(
   };
 }
 
-const Icon = {
+export const Icon = {
   plus: (
     <svg viewBox="0 0 20 20" aria-hidden="true">
       <path d="M10 4v12M4 10h12" />

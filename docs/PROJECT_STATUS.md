@@ -1,5 +1,22 @@
 # Project status - 15 October 2026
 
+## Brands workspace matches Categories
+
+Replaced the brand table with the shared Categories workspace styling: summary
+tiles, directory sidebar, search/status filters, grid/list controls, large logo
+cards, edit/delete actions, add tile and floating drag preview. Card clicks open
+the existing brand editor. Brands remain flat; category nesting is unchanged.
+Full-directory fetching reuses existing paginated APIs and invalidation keys.
+Filtered ordering is disabled; up/down controls and live homepage updates remain.
+
+Frontend unit tests: 28 passed; typecheck, targeted lint and production build
+passed. Desktop screenshot visually inspected. No backend changes or migrations;
+Both live brand/category browser regressions passed, including brand card editing,
+search/layout controls, 390/768/1024/1440px overflow, drag cancellation/persistence
+and homepage synchronization. Temporary records were cleaned up.
+the prior 89-test backend result was not rerun for this UI-only change. Production,
+touch devices and Playwright MCP remain NOT TESTED.
+
 ## Brand thumbnails and drag ordering
 
 Admin brand rows now show shared media thumbnails and floating 3D drag previews.

@@ -20,7 +20,7 @@ import styles from "./management.module.css";
 import { CategoryForm } from "./category-form";
 import { CategoryCards, categoryUrl } from "./category-cards";
 import { MediaUploadField } from "./media-upload-field";
-import { BrandRows } from "./brand-rows";
+import { BrandWorkspace } from "./brand-workspace";
 
 type Resource = "products" | "brands" | "categories";
 type Entry = Reference | Product;
@@ -104,7 +104,7 @@ export function ManagementDashboard({
     queryKey: ["management", resource, search, page],
     queryFn: () =>
       managementApi<Page<Entry>>(`${resource}/?search=${encodeURIComponent(search)}&page=${page}`),
-    enabled: Boolean(session.data?.user) && resource !== "categories",
+    enabled: Boolean(session.data?.user) && resource === "products",
     retry: false,
   });
   const logout = useMutation({
@@ -122,14 +122,6 @@ export function ManagementDashboard({
       if (page > 1 && entries.data?.results.length === 1) setPage(page - 1);
       cache.invalidateQueries({ queryKey: ["management", resource] });
       cache.invalidateQueries({ queryKey: ["management", "references"] });
-    },
-  });
-  const moveBrand = useMutation({
-    mutationFn: ({ id, before }: { id: number; before: number | null }) => managementApi("brands/move/", "POST", { id, before }),
-    onSuccess: async () => {
-      setNotice("Brand order saved.");
-      await cache.invalidateQueries({ queryKey: ["management", "brands"] });
-      await cache.invalidateQueries({ queryKey: ["public", "brands"] });
     },
   });
   useEffect(() => {
@@ -211,7 +203,7 @@ export function ManagementDashboard({
           </div>
         </aside>
         <main className={`${styles.main} ${styles.dashboardMain}`}>
-          {resource !== "categories" && (
+          {resource === "products" && (
             <div className={styles.intro}>
               <div>
                 <p className={styles.eyebrow}>YOUR STORE WORKSPACE</p>
@@ -233,7 +225,7 @@ export function ManagementDashboard({
               {notice}
             </p>
           )}
-          {resource !== "categories" && (
+          {resource === "products" && (
             <div className={styles.toolbar}>
               <input
                 className={styles.search}
@@ -254,6 +246,7 @@ export function ManagementDashboard({
               </button>
             </div>
           )}
+          {resource === "brands" && <BrandWorkspace onAdd={() => setEditing("new")} onEdit={setEditing} onDelete={entry => { remove.reset(); setDeleting(entry); }} />}
           {resource === "categories" && (
             <CategoryCards
               parentId={categoryParent}
@@ -266,7 +259,7 @@ export function ManagementDashboard({
               }}
             />
           )}
-          {resource !== "categories" && (
+          {resource === "products" && (
             <section className={styles.panel} aria-label={`${resource} list`}>
               {entries.isPending ? (
                 <p className={styles.empty} role="status">
@@ -290,11 +283,6 @@ export function ManagementDashboard({
                 </div>
               ) : (
                 <div className={styles.tableWrap}>
-                  {resource === "brands" && <>
-                    <p>Drag a handle onto a brand to place it before that row. Clear search to reorder. Use ↑ or ⇣ for keyboard ordering.</p>
-                    {moveBrand.isPending && <p role="status">Saving brand order…</p>}
-                    {moveBrand.error && <p role="alert">{moveBrand.error.message}</p>}
-                  </>}
                   <table className={styles.table}>
                     <thead>
                       <tr>
@@ -305,18 +293,12 @@ export function ManagementDashboard({
                             <th>Price</th>
                           </>
                         )}
-                        {resource === "brands" && (
-                          <>
-                            <th>Homepage</th>
-                            <th>Order</th>
-                          </>
-                        )}
                         <th>Status</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {resource === "brands" ? <BrandRows brands={entries.data.results} disabled={!!search.trim()} saving={moveBrand.isPending} onMove={(id, before) => moveBrand.mutate({ id, before })} onEdit={setEditing} onDelete={entry => { remove.reset(); setDeleting(entry); }} /> : entries.data.results.map((entry) => (
+                      {entries.data.results.map((entry) => (
                         <tr key={entry.id}>
                           <td>
                             <strong>{entry.name}</strong>
@@ -390,7 +372,7 @@ export function ManagementDashboard({
               )}
             </section>
           )}
-          {resource !== "categories" && (
+          {resource === "products" && (
             <p className={styles.notice}>
               Catalog changes are saved in MySQL through Django REST Framework. Orders, checkout and
               payments are being developed separately.

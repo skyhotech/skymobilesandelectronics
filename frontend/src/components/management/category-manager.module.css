@@ -333,6 +333,10 @@
   height: 16px;
 }
 .treeLink {
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
   flex: 1;
   min-width: 0;
   display: flex;
@@ -610,6 +614,10 @@
   .card[data-drop-target="true"] { transform: none; }
 }
 .cardLink {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
   position: absolute;
   inset: 0;
   z-index: 1;

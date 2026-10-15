@@ -35,6 +35,22 @@ test("brand thumbnails and drag order persist and update the live homepage", asy
     const first = page.locator(`[data-brand-row="${ids[0]}"]`);
     const second = page.locator(`[data-brand-row="${ids[1]}"]`);
     await expect(first.getByRole("img", { name: `${tag}-a logo` })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Brands", exact: true })).toBeVisible();
+    await page.getByLabel("Search brands", { exact: true }).fill(tag);
+    await expect(page.locator("article[data-brand-row]")).toHaveCount(2);
+    await expect(page.getByRole("button", { name: `Drag ${tag}-b`, exact: true })).toBeDisabled();
+    await page.getByLabel("Search brands", { exact: true }).clear();
+    await page.getByRole("button", { name: "List view", exact: true }).click();
+    await expect(page.getByRole("button", { name: "List view", exact: true })).toHaveAttribute("aria-pressed", "true");
+    await page.getByRole("button", { name: "Grid view", exact: true }).click();
+    await first.getByRole("button", { name: `Edit ${tag}-a details`, exact: true }).click();
+    await expect(page.getByRole("dialog").getByLabel("Name", { exact: true })).toHaveValue(`${tag}-a`);
+    await page.getByRole("dialog").getByRole("button", { name: "Cancel", exact: true }).click();
+    for (const width of [390, 768, 1024, 1440]) {
+      await page.setViewportSize({ width, height: 1000 });
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+      if (width === 390 || width === 1440) await page.screenshot({ path: `../.run/brands-cards-${width}.png`, fullPage: true });
+    }
     expect(await first.getByRole("img").evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true);
     const handle = page.getByRole("button", { name: `Drag ${tag}-b`, exact: true });
     await handle.hover(); await page.mouse.down();

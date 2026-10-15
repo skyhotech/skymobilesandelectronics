@@ -2,12 +2,16 @@
 
 ## Live homepage brands
 
-The Brands management table shows logo thumbnails, with a fallback for missing
-images. Drag the dotted handle onto another row to place the brand before it;
-the order saves automatically. Clear search before reordering. Escape or a drop
-outside a row cancels. Keyboard users can use Move up or Move to end. Changes
-apply to global brand order, including homepage cards; thumbnails are not editable
-by dragging. Use the existing Edit form to replace a logo.
+Brands uses the same workspace/card styling as Categories: summary totals,
+directory sidebar, search/status filters, grid/list toggle, image cards, Edit/Delete
+controls and an Add brand tile. All brands are loaded across API pages, so filters
+and counts cover the complete directory. Clicking a brand card opens its edit form.
+Brands remain a flat directory.
+
+Drag a handle onto another card to place the brand before it; the order saves
+automatically. Clear search and select All before reordering. Escape or an invalid
+drop cancels. Keyboard users can use Move up/down. Homepage order updates
+automatically. Use Edit to replace a logo; missing images use the shared fallback.
 
 In Brands, edit the name/logo/display order and enable Active + Show on homepage.
 The "Authorized Retail Partner / Shop Your Favourite Brands" section in an
