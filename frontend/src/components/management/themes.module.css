@@ -1,0 +1,21 @@
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 540px)); gap: 28px; perspective: 1200px; padding: 8px 0 20px; }
+.card { min-width: 0; overflow: hidden; border: 1px solid #cbdcf0; border-radius: 18px; background: #fff; box-shadow: 0 12px 32px #16396118, 0 2px 5px #1639610a; transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)); transition: transform 240ms ease-out, box-shadow 240ms ease; }
+.card:hover { box-shadow: 0 24px 50px #1639612b, 0 5px 14px #16396112; }
+.browserBar { display: flex; gap: 12px; justify-content: space-between; align-items: center; padding: 12px 16px; color: #71849c; background: #f0f5fb; font-size: 11px; border-bottom: 1px solid #dbe5f1; }
+.browserBar > span:first-child { color: #95abc5; letter-spacing: 3px; }
+.browserBar strong { font-size: 10px; font-weight: 600; color: #42658d; }
+.preview { position: relative; width: 100%; aspect-ratio: 1440 / 1000; overflow: hidden; background: #f4f8fd; border-bottom: 1px solid #dbe5f1; }
+.preview iframe { display: block; width: 1440px; height: 1000px; border: 0; transform: scale(var(--preview-scale, 0)); transform-origin: top left; pointer-events: none; }
+.body { padding: 22px; }
+.heading { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; }
+.heading label { display: flex; gap: 9px; align-items: center; font-size: 18px; color: #173963; }
+.heading input { accent-color: #165fb7; }
+.active { color: #176944; background: #e8f6ee; border: 1px solid #c4e8d4; border-radius: 20px; padding: 5px 11px; font-size: 11px; font-weight: 700; }
+.body p { color: #63778f; font-size: 13px; line-height: 1.6; margin: 14px 0 20px; }
+.actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.actions button { padding: 11px 20px; border: 0; border-radius: 9px; background: #173e70; color: white; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.actions a { color: #255e9f; font-size: 12px; text-underline-offset: 3px; }
+.actions :is(button, a):focus-visible { outline: 3px solid #86b7f0; outline-offset: 4px; }
+.notice { color: #176944; font-size: 13px; line-height: 1.6; }
+@media (prefers-reduced-motion: reduce), (pointer: coarse) { .card { transform: none; transition: none; } }
+@media (max-width: 640px) { .body { padding: 16px; } .browserBar { gap: 6px; padding: 10px; } .heading label { font-size: 16px; } }

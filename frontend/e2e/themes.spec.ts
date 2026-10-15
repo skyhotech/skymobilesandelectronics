@@ -15,6 +15,12 @@ test("Themes sits below Dashboard with the existing default theme selected", asy
   await expect(navigation.getByRole("link", { name: "Themes", exact: true })).toHaveAttribute("aria-current", "page");
   await expect(page.getByRole("radio", { name: "Default theme", exact: true })).toBeChecked();
   await expect(page.getByRole("radio")).toHaveCount(1);
+  const homepage = await page.request.get("/");
+  expect(homepage.headers()["x-frame-options"]).toBe("SAMEORIGIN");
+  expect(homepage.headers()["content-security-policy"]).toContain("frame-ancestors 'self'");
+  expect((await page.request.get("/management/admin/themes")).headers()["x-frame-options"]).toBe("DENY");
+  const card = page.getByRole("article", { name: "Default theme preview card" });
+  await expect(page.frameLocator('iframe[title="Default theme homepage preview"]').locator("#hero")).toBeVisible();
   for (const width of [390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await expect(page.getByRole("radio", { name: "Default theme", exact: true })).toBeVisible();
@@ -23,4 +29,14 @@ test("Themes sits below Dashboard with the existing default theme selected", asy
   await page.reload();
   await expect(page.getByRole("radio", { name: "Default theme", exact: true })).toBeChecked();
   await expect(page.getByRole("link", { name: /View current homepage/ })).toHaveAttribute("href", "/");
+  await page.getByRole("button", { name: "Apply theme", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText("Default theme is already active");
+  await page.getByRole("heading", { name: "Themes", exact: true }).click();
+  await card.hover({ position: { x: 30, y: 50 } });
+  await expect.poll(() => card.evaluate(element => element.style.getPropertyValue("--tilt-y"))).not.toBe("0deg");
+  await page.getByRole("button", { name: "Apply theme", exact: true }).focus();
+  await expect.poll(() => card.evaluate(element => element.style.getPropertyValue("--tilt-y"))).toBe("0deg");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect.poll(() => card.evaluate(element => getComputedStyle(element).transform)).toBe("none");
+  await page.screenshot({ path: "../.run/theme-preview-desktop.png", fullPage: true });
 });

@@ -1,5 +1,16 @@
 # Project status - 15 October 2026
 
+## Theme preview card
+
+Default theme now has a live homepage preview card, pointer-driven 3D tilt, Active
+badge and Apply theme confirmation. The current homepage remains unchanged;
+there are no alternative themes or simulated persistence. Homepage framing is
+restricted to the same origin; admin routes retain frame denial.
+
+Verified: theme browser test passed at 390/768/1024/1440px, including actual iframe
+content, Apply confirmation, refresh, focus reset, reduced motion and frame headers.
+Desktop screenshot visually inspected. Typecheck, lint and production build passed.
+
 ## Listing filters and Themes
 
 Added shared validated price filters and owner product status/category/order filters,

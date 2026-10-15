@@ -6,6 +6,12 @@ Themes appears directly below Dashboard at `/management/admin/themes`. The exist
 homepage is the selected Default theme and the only option. This page is a starting
 point for future themes; it does not change the current homepage or save a new design.
 
+The Default theme is presented as a responsive 3D preview card showing the real
+homepage. Apply theme confirms it is already active; View current homepage opens
+the full page. Tilt resets on focus and respects reduced motion/touch devices.
+Only the homepage permits same-origin framing for this preview; admin pages and
+external framing remain blocked.
+
 Brands and Categories retain status/search controls and add a Filters popup for
 homepage enabled/disabled settings, images present/missing and name/saved ordering.
 Clear all filters resets search, status and extra filters. Reordering is available
