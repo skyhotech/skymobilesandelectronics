@@ -3,154 +3,25 @@ info:
   title: SKY Platform API
   version: 1.0.0
 paths:
-  /api/schema/:
+  /api/v1/brands/:
     get:
-      operationId: schema_retrieve
-      description: |-
-        OpenApi3 schema for this API. Format can be selected via content negotiation.
-
-        - YAML: application/vnd.oai.openapi
-        - JSON: application/vnd.oai.openapi+json
-      parameters:
-      - in: query
-        name: format
-        schema:
-          type: string
-          enum:
-          - json
-          - yaml
-      - in: query
-        name: lang
-        schema:
-          type: string
-          enum:
-          - af
-          - ar
-          - ar-dz
-          - ast
-          - az
-          - be
-          - bg
-          - bn
-          - br
-          - bs
-          - ca
-          - ckb
-          - cs
-          - cy
-          - da
-          - de
-          - dsb
-          - el
-          - en
-          - en-au
-          - en-gb
-          - eo
-          - es
-          - es-ar
-          - es-co
-          - es-mx
-          - es-ni
-          - es-ve
-          - et
-          - eu
-          - fa
-          - fi
-          - fr
-          - fy
-          - ga
-          - gd
-          - gl
-          - he
-          - hi
-          - hr
-          - hsb
-          - hu
-          - hy
-          - ia
-          - id
-          - ig
-          - io
-          - is
-          - it
-          - ja
-          - ka
-          - kab
-          - kk
-          - km
-          - kn
-          - ko
-          - ky
-          - lb
-          - lt
-          - lv
-          - mk
-          - ml
-          - mn
-          - mr
-          - ms
-          - my
-          - nb
-          - ne
-          - nl
-          - nn
-          - os
-          - pa
-          - pl
-          - pt
-          - pt-br
-          - ro
-          - ru
-          - sk
-          - sl
-          - sq
-          - sr
-          - sr-latn
-          - sv
-          - sw
-          - ta
-          - te
-          - tg
-          - th
-          - tk
-          - tr
-          - tt
-          - udm
-          - ug
-          - uk
-          - ur
-          - uz
-          - vi
-          - zh-hans
-          - zh-hant
+      operationId: brands_list
       tags:
-      - schema
+      - brands
       security:
-      - cookieAuth: []
       - {}
       responses:
         '200':
           content:
-            application/vnd.oai.openapi:
-              schema:
-                type: object
-                additionalProperties: {}
-            application/yaml:
-              schema:
-                type: object
-                additionalProperties: {}
-            application/vnd.oai.openapi+json:
-              schema:
-                type: object
-                additionalProperties: {}
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
+                type: array
+                items:
+                  $ref: '#/components/schemas/PublicBrand'
           description: ''
   /api/v1/categories/:
     get:
-      operationId: v1_categories_list
+      operationId: categories_list
       parameters:
       - name: page
         required: false
@@ -159,7 +30,7 @@ paths:
         schema:
           type: integer
       tags:
-      - v1
+      - categories
       security:
       - {}
       responses:
@@ -171,9 +42,9 @@ paths:
           description: ''
   /api/v1/categories/tree/:
     get:
-      operationId: v1_categories_tree_retrieve
+      operationId: categories_tree_retrieve
       tags:
-      - v1
+      - categories
       security:
       - {}
       responses:
@@ -185,7 +56,7 @@ paths:
           description: ''
   /api/v1/management/brands/:
     get:
-      operationId: v1_management_brands_list
+      operationId: management_brands_list
       parameters:
       - name: page
         required: false
@@ -200,7 +71,7 @@ paths:
         schema:
           type: string
       tags:
-      - v1
+      - management
       security:
       - cookieAuth: []
       responses:
@@ -211,9 +82,9 @@ paths:
                 $ref: '#/components/schemas/PaginatedBrandList'
           description: ''
     post:
-      operationId: v1_management_brands_create
+      operationId: management_brands_create
       tags:
-      - v1
+      - management
       requestBody:
         content:
           application/json:
@@ -237,7 +108,7 @@ paths:
           description: ''
   /api/v1/management/brands/{id}/:
     get:
-      operationId: v1_management_brands_retrieve
+      operationId: management_brands_retrieve
       parameters:
       - in: path
         name: id
@@ -246,7 +117,7 @@ paths:
         description: A unique integer value identifying this brand.
         required: true
       tags:
-      - v1
+      - management
       security:
       - cookieAuth: []
       responses:
@@ -257,7 +128,7 @@ paths:
                 $ref: '#/components/schemas/Brand'
           description: ''
     put:
-      operationId: v1_management_brands_update
+      operationId: management_brands_update
       parameters:
       - in: path
         name: id
@@ -266,7 +137,7 @@ paths:
         description: A unique integer value identifying this brand.
         required: true
       tags:
-      - v1
+      - management
       requestBody:
         content:
           application/json:
@@ -289,7 +160,7 @@ paths:
                 $ref: '#/components/schemas/Brand'
           description: ''
     patch:
-      operationId: v1_management_brands_partial_update
+      operationId: management_brands_partial_update
       parameters:
       - in: path
         name: id
@@ -298,7 +169,7 @@ paths:
         description: A unique integer value identifying this brand.
         required: true
       tags:
-      - v1
+      - management
       requestBody:
         content:
           application/json:
@@ -320,7 +191,7 @@ paths:
                 $ref: '#/components/schemas/Brand'
           description: ''
     delete:
-      operationId: v1_management_brands_destroy
+      operationId: management_brands_destroy
       parameters:
       - in: path
         name: id
@@ -329,7 +200,7 @@ paths:
         description: A unique integer value identifying this brand.
         required: true
       tags:
-      - v1
+      - management
       security:
       - cookieAuth: []
       responses:
@@ -337,7 +208,7 @@ paths:
           description: No response body
   /api/v1/management/categories/:
     get:
-      operationId: v1_management_categories_list
+      operationId: management_categories_list
       parameters:
       - name: page
         required: false
@@ -352,7 +223,7 @@ paths:
         schema:
           type: string
       tags:
-      - v1
+      - management
       security:
       - cookieAuth: []
       responses:
@@ -363,9 +234,9 @@ paths:
                 $ref: '#/components/schemas/PaginatedCategoryList'
           description: ''
     post:
-      operationId: v1_management_categories_create
+      operationId: management_categories_create
       tags:
-      - v1
+      - management
       requestBody:
         content:
           application/json:
@@ -389,7 +260,7 @@ paths:
           description: ''
   /api/v1/management/categories/{id}/:
     get:
-      operationId: v1_management_categories_retrieve
+      operationId: management_categories_retrieve
       parameters:
       - in: path
         name: id
@@ -398,7 +269,7 @@ paths:
         description: A unique integer value identifying this category.
         required: true
       tags:
-      - v1
+      - management
       security:
       - cookieAuth: []
       responses:
@@ -409,7 +280,7 @@ paths:
                 $ref: '#/components/schemas/Category'
           description: ''
     put:
-      operationId: v1_management_categories_update
+      operationId: management_categories_update
       parameters:
       - in: path
         name: id
@@ -418,7 +289,7 @@ paths:
         description: A unique integer value identifying this category.
         required: true
       tags:
-      - v1
+      - management
       requestBody:
         content:
           application/json:
@@ -441,7 +312,7 @@ paths:
                 $ref: '#/components/schemas/Category'
           description: ''
     patch:
-      operationId: v1_management_categories_partial_update
+      operationId: management_categories_partial_update
       parameters:
       - in: path
         name: id
@@ -450,7 +321,7 @@ paths:
         description: A unique integer value identifying this category.
         required: true
       tags:
-      - v1
+      - management
       requestBody:
         content:
           application/json:
@@ -472,7 +343,7 @@ paths:
                 $ref: '#/components/schemas/Category'
           description: ''
     delete:
-      operationId: v1_management_categories_destroy
+      operationId: management_categories_destroy
       parameters:
       - in: path
         name: id
@@ -481,7 +352,7 @@ paths:
         description: A unique integer value identifying this category.
         required: true
       tags:
-      - v1
+      - management
       security:
       - cookieAuth: []
       responses:
@@ -489,9 +360,9 @@ paths:
           description: No response body
   /api/v1/management/categories/move/:
     post:
-      operationId: v1_management_categories_move_create
+      operationId: management_categories_move_create
       tags:
-      - v1
+      - management
       requestBody:
         content:
           application/json:
@@ -521,9 +392,9 @@ paths:
           description: ''
   /api/v1/management/categories/tree/:
     get:
-      operationId: v1_management_categories_tree_retrieve
+      operationId: management_categories_tree_retrieve
       tags:
-      - v1
+      - management
       security:
       - cookieAuth: []
       responses:
@@ -535,9 +406,9 @@ paths:
           description: ''
   /api/v1/management/category-images/:
     post:
-      operationId: v1_management_category_images_create
+      operationId: management_category_images_create
       tags:
-      - v1
+      - management
       requestBody:
         content:
           multipart/form-data:
@@ -555,7 +426,7 @@ paths:
           description: ''
   /api/v1/management/media/:
     get:
-      operationId: v1_management_media_list
+      operationId: management_media_list
       parameters:
       - name: page
         required: false
@@ -564,7 +435,7 @@ paths:
         schema:
           type: integer
       tags:
-      - v1
+      - management
       security:
       - cookieAuth: []
       responses:
@@ -576,7 +447,7 @@ paths:
           description: ''
   /api/v1/management/media/{id}/:
     get:
-      operationId: v1_management_media_retrieve
+      operationId: management_media_retrieve
       parameters:
       - in: path
         name: id
@@ -586,7 +457,7 @@ paths:
         description: A UUID string identifying this media asset.
         required: true
       tags:
-      - v1
+      - management
       security:
       - cookieAuth: []
       responses:
@@ -597,7 +468,7 @@ paths:
                 $ref: '#/components/schemas/MediaAsset'
           description: ''
     delete:
-      operationId: v1_management_media_destroy
+      operationId: management_media_destroy
       parameters:
       - in: path
         name: id
@@ -607,7 +478,7 @@ paths:
         description: A UUID string identifying this media asset.
         required: true
       tags:
-      - v1
+      - management
       security:
       - cookieAuth: []
       responses:
@@ -615,7 +486,7 @@ paths:
           description: No response body
   /api/v1/management/media/{id}/original/:
     get:
-      operationId: v1_management_media_original_retrieve
+      operationId: management_media_original_retrieve
       parameters:
       - in: path
         name: id
@@ -625,7 +496,7 @@ paths:
         description: A UUID string identifying this media asset.
         required: true
       tags:
-      - v1
+      - management
       security:
       - cookieAuth: []
       responses:
@@ -638,9 +509,9 @@ paths:
           description: ''
   /api/v1/management/media/upload/:
     post:
-      operationId: v1_management_media_upload_create
+      operationId: management_media_upload_create
       tags:
-      - v1
+      - management
       requestBody:
         content:
           multipart/form-data:
@@ -658,7 +529,7 @@ paths:
           description: ''
   /api/v1/management/products/:
     get:
-      operationId: v1_management_products_list
+      operationId: management_products_list
       parameters:
       - name: page
         required: false
@@ -673,7 +544,7 @@ paths:
         schema:
           type: string
       tags:
-      - v1
+      - management
       security:
       - cookieAuth: []
       responses:
@@ -684,9 +555,9 @@ paths:
                 $ref: '#/components/schemas/PaginatedProductList'
           description: ''
     post:
-      operationId: v1_management_products_create
+      operationId: management_products_create
       tags:
-      - v1
+      - management
       requestBody:
         content:
           application/json:
@@ -710,7 +581,7 @@ paths:
           description: ''
   /api/v1/management/products/{id}/:
     get:
-      operationId: v1_management_products_retrieve
+      operationId: management_products_retrieve
       parameters:
       - in: path
         name: id
@@ -719,7 +590,7 @@ paths:
         description: A unique integer value identifying this product.
         required: true
       tags:
-      - v1
+      - management
       security:
       - cookieAuth: []
       responses:
@@ -730,7 +601,7 @@ paths:
                 $ref: '#/components/schemas/Product'
           description: ''
     put:
-      operationId: v1_management_products_update
+      operationId: management_products_update
       parameters:
       - in: path
         name: id
@@ -739,7 +610,7 @@ paths:
         description: A unique integer value identifying this product.
         required: true
       tags:
-      - v1
+      - management
       requestBody:
         content:
           application/json:
@@ -762,7 +633,7 @@ paths:
                 $ref: '#/components/schemas/Product'
           description: ''
     patch:
-      operationId: v1_management_products_partial_update
+      operationId: management_products_partial_update
       parameters:
       - in: path
         name: id
@@ -771,7 +642,7 @@ paths:
         description: A unique integer value identifying this product.
         required: true
       tags:
-      - v1
+      - management
       requestBody:
         content:
           application/json:
@@ -793,7 +664,7 @@ paths:
                 $ref: '#/components/schemas/Product'
           description: ''
     delete:
-      operationId: v1_management_products_destroy
+      operationId: management_products_destroy
       parameters:
       - in: path
         name: id
@@ -802,7 +673,7 @@ paths:
         description: A unique integer value identifying this product.
         required: true
       tags:
-      - v1
+      - management
       security:
       - cookieAuth: []
       responses:
@@ -810,9 +681,9 @@ paths:
           description: No response body
   /api/v1/management/session/:
     get:
-      operationId: v1_management_session_retrieve
+      operationId: management_session_retrieve
       tags:
-      - v1
+      - management
       security:
       - cookieAuth: []
       - {}
@@ -824,9 +695,9 @@ paths:
                 $ref: '#/components/schemas/ManagementSession'
           description: ''
     post:
-      operationId: v1_management_session_create
+      operationId: management_session_create
       tags:
-      - v1
+      - management
       requestBody:
         content:
           application/json:
@@ -868,9 +739,9 @@ paths:
                 $ref: '#/components/schemas/ManagementError'
           description: ''
     delete:
-      operationId: v1_management_session_destroy
+      operationId: management_session_destroy
       tags:
-      - v1
+      - management
       security:
       - cookieAuth: []
       - {}
@@ -880,6 +751,82 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ManagementSession'
+          description: ''
+  /api/v1/products/:
+    get:
+      operationId: products_list
+      parameters:
+      - in: query
+        name: brand
+        schema:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+          minLength: 1
+      - in: query
+        name: category
+        schema:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+          minLength: 1
+      - in: query
+        name: ordering
+        schema:
+          enum:
+          - name
+          - -name
+          - price
+          - -price
+          type: string
+          default: name
+          minLength: 1
+        description: |-
+          * `name` - name
+          * `-name` - -name
+          * `price` - price
+          * `-price` - -price
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: search
+        schema:
+          type: string
+          maxLength: 120
+      tags:
+      - products
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCatalogProductList'
+          description: ''
+  /api/v1/products/{slug}/:
+    get:
+      operationId: products_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogProduct'
           description: ''
 components:
   schemas:
@@ -900,9 +847,95 @@ components:
           type: boolean
         logo_url:
           type: string
+        show_on_homepage:
+          type: boolean
+        display_order:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
       required:
       - id
       - name
+      - slug
+    CatalogBrand:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        slug:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+      required:
+      - id
+      - name
+      - slug
+    CatalogCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        slug:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+      required:
+      - id
+      - name
+      - slug
+    CatalogProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 220
+        slug:
+          type: string
+          maxLength: 240
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        compare_at_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          nullable: true
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        image_url:
+          type: string
+          readOnly: true
+        brand:
+          allOf:
+          - $ref: '#/components/schemas/CatalogBrand'
+          readOnly: true
+        category:
+          allOf:
+          - $ref: '#/components/schemas/CatalogCategory'
+          readOnly: true
+      required:
+      - brand
+      - category
+      - id
+      - image_url
+      - name
+      - price
       - slug
     Category:
       type: object
@@ -1177,6 +1210,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Brand'
+    PaginatedCatalogProductList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogProduct'
     PaginatedCategoryList:
       type: object
       required:
@@ -1286,6 +1342,13 @@ components:
           type: boolean
         logo_url:
           type: string
+        show_on_homepage:
+          type: boolean
+        display_order:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
     PatchedCategory:
       type: object
       properties:
@@ -1430,6 +1493,31 @@ components:
       - sku
       - slug
       - updated_at
+    PublicBrand:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        logo_url:
+          type: string
+          readOnly: true
+        display_order:
+          type: integer
+          readOnly: true
+      required:
+      - display_order
+      - id
+      - logo_url
+      - name
+      - slug
     PublicCategory:
       type: object
       properties:

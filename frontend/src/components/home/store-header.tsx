@@ -9,6 +9,7 @@ import { useLiveCategories } from "@/lib/live-categories";
 export function StoreHeader({ categories: initialCategories }: { categories: HomepageCategory[] }) {
   const { categories } = useLiveCategories(initialCategories);
   const navigation = [
+    ["Shop Products", "/products"],
     ["All Categories", "#categories"],
     ...categories.filter((item) => !item.parent).map((item) => [item.name, item.destination]),
     ["Top Brands", "#brands"],

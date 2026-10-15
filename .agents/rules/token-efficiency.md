@@ -2,6 +2,8 @@
 
 Scope: Next.js storefront/admin and Django API only. Native mobile development has been removed. Do not recreate Flutter, Dart, Android/iOS or Maestro scaffolding unless explicitly requested. Responsive mobile web remains supported.
 
+Required target database: PostgreSQL. The current installation uses MySQL; preserve its data and require a verified export/restore migration before switching. Check `docs/PROJECT_STATUS.md` for verified milestones and remaining blockers; do not repeat the initial audit.
+
 - Complete the current request only. Do not restart a repository audit, implement the entire roadmap, or delegate unless requested for this task.
 - Inspect Git status and relevant code before editing. Preserve unrelated work. Repo: `sky-platform/` when opened from its parent.
 - Source: `frontend/src`, `backend/{apps,config,common,api}`; tooling: `scripts`, `infrastructure`, `.github`.
