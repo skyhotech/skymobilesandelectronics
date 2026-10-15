@@ -44,6 +44,10 @@ Start Redis before using endpoints that depend on caching/throttling.
 
 ## Login timeouts / stopped Docker Engine
 
+Development supports both `http://localhost:3000` and `http://127.0.0.1:3000`.
+Use one consistently within a session: browser cookies are separate for the two
+hostnames. CSRF tokens remain mandatory; other origins are not automatically trusted.
+
 If session GET succeeds but login POST times out, check Docker Desktop and run
 `scripts/start-redis.ps1`, then `backend/.venv/Scripts/python.exe scripts/check_redis.py`.
 Session bootstrap does not use the login limiter; a successful GET does not prove
