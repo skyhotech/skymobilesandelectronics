@@ -214,10 +214,43 @@ class ProductViewSet(ManagementViewSet):
     search_fields = ("name", "sku")
 
 
+class BrandMoveSerializer(serializers.Serializer):
+    id = serializers.IntegerField(min_value=1)
+    before = serializers.IntegerField(min_value=1, allow_null=True)
+
+
 class BrandViewSet(ManagementViewSet):
-    queryset = Brand.objects.all()
+    queryset = Brand.objects.order_by("display_order", "name", "id")
     serializer_class = BrandSerializer
     search_fields = ("name",)
+
+    @extend_schema(
+        request=BrandMoveSerializer,
+        responses={200: BrandSerializer(many=True), 400: ManagementErrorSerializer},
+    )
+    @action(detail=False, methods=["post"])
+    @transaction.atomic
+    def move(self, request):
+        payload = BrandMoveSerializer(data=request.data)
+        payload.is_valid(raise_exception=True)
+        values = payload.validated_data
+        brands = list(Brand.objects.select_for_update().order_by("display_order", "name", "id"))
+        moving = next((brand for brand in brands if brand.pk == values["id"]), None)
+        if moving is None:
+            raise serializers.ValidationError({"id": "Brand no longer exists."})
+        if values["before"] == moving.pk:
+            raise serializers.ValidationError({"before": "Choose another brand."})
+        brands.remove(moving)
+        index = len(brands)
+        if values["before"] is not None:
+            index = next((i for i, brand in enumerate(brands) if brand.pk == values["before"]), -1)
+            if index < 0:
+                raise serializers.ValidationError({"before": "Brand no longer exists."})
+        brands.insert(index, moving)
+        for order, brand in enumerate(brands):
+            brand.display_order = order
+        Brand.objects.bulk_update(brands, ["display_order"])
+        return Response(self.get_serializer(brands, many=True).data)
 
 
 class CategoryMoveSerializer(serializers.Serializer):

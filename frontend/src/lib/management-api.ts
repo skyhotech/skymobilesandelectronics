@@ -8,6 +8,7 @@ export type Reference = {
   parent_name?: string;
   show_on_homepage?: boolean;
   display_order?: number;
+  logo_url?: string;
 };
 export type Product = Reference & {
   sku: string;

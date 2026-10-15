@@ -1,5 +1,21 @@
 # Project status - 15 October 2026
 
+## Brand thumbnails and drag ordering
+
+Admin brand rows now show shared media thumbnails and floating 3D drag previews.
+Drop before another row to persist global order; keyboard Move up/Move to end,
+Escape/capture-loss cancellation, reduced motion, save/error states and filtered
+search protection are included. New owner-only `POST /api/v1/management/brands/move/`
+accepts `{id, before}` (null means end), validates IDs and locks/reorders brands in
+one transaction. OpenAPI updated; no schema migration.
+
+Verification: 89 backend tests passed. Live browser verified logo loading,
+floating preview/cancellation, saving/reload persistence and live storefront order.
+Test-created brands were removed and pre-test display orders restored. Touch
+devices, production and Playwright MCP remain NOT TESTED.
+Frontend: 28 unit tests, typecheck, targeted lint and production build passed.
+Backend targeted lint passed, excluding four pre-existing category E501 lines.
+
 ## Live homepage brands
 
 "Authorized Retail Partner / Shop Your Favourite Brands" now uses a shared,

@@ -206,6 +206,51 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/v1/management/brands/move/:
+    post:
+      operationId: management_brands_move_create
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandMove'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BrandMove'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BrandMove'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBrandList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementError'
+          description: ''
   /api/v1/management/categories/:
     get:
       operationId: management_categories_list
@@ -864,6 +909,19 @@ components:
       - id
       - name
       - slug
+    BrandMove:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        before:
+          type: integer
+          minimum: 1
+          nullable: true
+      required:
+      - before
+      - id
     CatalogBrand:
       type: object
       properties:

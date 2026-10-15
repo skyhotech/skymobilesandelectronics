@@ -2,6 +2,13 @@
 
 ## Live homepage brands
 
+The Brands management table shows logo thumbnails, with a fallback for missing
+images. Drag the dotted handle onto another row to place the brand before it;
+the order saves automatically. Clear search before reordering. Escape or a drop
+outside a row cancels. Keyboard users can use Move up or Move to end. Changes
+apply to global brand order, including homepage cards; thumbnails are not editable
+by dragging. Use the existing Edit form to replace a logo.
+
 In Brands, edit the name/logo/display order and enable Active + Show on homepage.
 The "Authorized Retail Partner / Shop Your Favourite Brands" section in an
 already-open storefront updates within about five seconds, without refreshing.

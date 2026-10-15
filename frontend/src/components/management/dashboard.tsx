@@ -20,6 +20,7 @@ import styles from "./management.module.css";
 import { CategoryForm } from "./category-form";
 import { CategoryCards, categoryUrl } from "./category-cards";
 import { MediaUploadField } from "./media-upload-field";
+import { BrandRows } from "./brand-rows";
 
 type Resource = "products" | "brands" | "categories";
 type Entry = Reference | Product;
@@ -121,6 +122,14 @@ export function ManagementDashboard({
       if (page > 1 && entries.data?.results.length === 1) setPage(page - 1);
       cache.invalidateQueries({ queryKey: ["management", resource] });
       cache.invalidateQueries({ queryKey: ["management", "references"] });
+    },
+  });
+  const moveBrand = useMutation({
+    mutationFn: ({ id, before }: { id: number; before: number | null }) => managementApi("brands/move/", "POST", { id, before }),
+    onSuccess: async () => {
+      setNotice("Brand order saved.");
+      await cache.invalidateQueries({ queryKey: ["management", "brands"] });
+      await cache.invalidateQueries({ queryKey: ["public", "brands"] });
     },
   });
   useEffect(() => {
@@ -281,6 +290,11 @@ export function ManagementDashboard({
                 </div>
               ) : (
                 <div className={styles.tableWrap}>
+                  {resource === "brands" && <>
+                    <p>Drag a handle onto a brand to place it before that row. Clear search to reorder. Use ↑ or ⇣ for keyboard ordering.</p>
+                    {moveBrand.isPending && <p role="status">Saving brand order…</p>}
+                    {moveBrand.error && <p role="alert">{moveBrand.error.message}</p>}
+                  </>}
                   <table className={styles.table}>
                     <thead>
                       <tr>
@@ -302,7 +316,7 @@ export function ManagementDashboard({
                       </tr>
                     </thead>
                     <tbody>
-                      {entries.data.results.map((entry) => (
+                      {resource === "brands" ? <BrandRows brands={entries.data.results} disabled={!!search.trim()} saving={moveBrand.isPending} onMove={(id, before) => moveBrand.mutate({ id, before })} onEdit={setEditing} onDelete={entry => { remove.reset(); setDeleting(entry); }} /> : entries.data.results.map((entry) => (
                         <tr key={entry.id}>
                           <td>
                             <strong>{entry.name}</strong>
@@ -317,18 +331,6 @@ export function ManagementDashboard({
                                   currency: entry.currency,
                                 }).format(Number(entry.price))}
                               </td>
-                            </>
-                          )}
-                          {resource === "brands" && (
-                            <>
-                              <td>
-                                <span
-                                  className={`${styles.badge} ${entry.show_on_homepage ? "" : styles.inactive}`}
-                                >
-                                  {entry.show_on_homepage ? "Shown" : "Hidden"}
-                                </span>
-                              </td>
-                              <td>{String(entry.display_order ?? 0)}</td>
                             </>
                           )}
                           <td>
