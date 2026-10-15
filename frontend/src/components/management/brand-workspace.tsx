@@ -36,7 +36,7 @@ export function BrandWorkspace({ onAdd, onEdit, onDelete }: {
     <div className={styles.body}>
       <aside className={styles.treePanel}><nav aria-label="Brand directory"><div className={styles.treeHeading}><span>Brand directory</span></div>
         <div className={styles.treeRow} data-selected="true"><button className={styles.treeLink} onClick={() => { setQuery(""); setFilter("all"); }}><span className={styles.treeName}>All brands</span><span className={styles.treeCount}>{nodes.length}</span></button></div>
-        <div className={styles.treeScroll}>{nodes.map(brand => <div className={styles.treeRow} key={brand.id}><button className={styles.treeLink} onClick={() => onEdit(brand)}><span className={styles.treeName}>{brand.name}</span></button></div>)}</div>
+        <div className={`${styles.treeScroll} ${styles.brandDirectoryScroll}`} tabIndex={0} role="region" aria-label="Scrollable brand directory">{nodes.map(brand => <div className={styles.treeRow} key={brand.id}><button className={styles.treeLink} onClick={() => onEdit(brand)}><span className={styles.treeName}>{brand.name}</span></button></div>)}</div>
       </nav></aside>
       <div className={styles.content}>
         <div className={styles.toolbar}>
