@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -18,6 +18,54 @@ const schema = z.object({
 });
 
 export function ManagementLogin() {
+  const sceneRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const scene = sceneRef.current;
+    if (!scene) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const pointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+    let frame = 0;
+    const reset = () => {
+      cancelAnimationFrame(frame);
+      for (const name of ["--login-rx", "--login-ry", "--login-form-rx", "--login-form-ry"]) scene.style.setProperty(name, "0deg");
+      scene.style.setProperty("--login-x", "0px");
+      scene.style.setProperty("--login-y", "0px");
+    };
+    const configure = () => {
+      scene.dataset.loginMotion = !reduced.matches && pointer.matches ? "on" : "off";
+      reset();
+    };
+    const move = (event: PointerEvent) => {
+      if (scene.dataset.loginMotion !== "on" || event.pointerType !== "mouse" || scene.querySelector("input:focus, button:focus, a:focus")) return;
+      cancelAnimationFrame(frame);
+      const x = Math.max(-1, Math.min(1, event.clientX / window.innerWidth * 2 - 1));
+      const y = Math.max(-1, Math.min(1, event.clientY / window.innerHeight * 2 - 1));
+      frame = requestAnimationFrame(() => {
+        scene.style.setProperty("--login-rx", `${-y * 3}deg`);
+        scene.style.setProperty("--login-ry", `${x * 4}deg`);
+        scene.style.setProperty("--login-form-rx", `${-y * 1.2}deg`);
+        scene.style.setProperty("--login-form-ry", `${x * 1.5}deg`);
+        scene.style.setProperty("--login-x", `${x * 10}px`);
+        scene.style.setProperty("--login-y", `${y * 8}px`);
+      });
+    };
+    configure();
+    scene.addEventListener("pointermove", move, { passive: true });
+    scene.addEventListener("pointerleave", reset);
+    scene.addEventListener("focusin", reset);
+    window.addEventListener("blur", reset);
+    reduced.addEventListener("change", configure);
+    pointer.addEventListener("change", configure);
+    return () => {
+      cancelAnimationFrame(frame);
+      scene.removeEventListener("pointermove", move);
+      scene.removeEventListener("pointerleave", reset);
+      scene.removeEventListener("focusin", reset);
+      window.removeEventListener("blur", reset);
+      reduced.removeEventListener("change", configure);
+      pointer.removeEventListener("change", configure);
+    };
+  }, []);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const cache = useQueryClient();
@@ -41,7 +89,7 @@ export function ManagementLogin() {
       router.replace(safeManagementReturn(new URLSearchParams(window.location.search).get("next")));
   }, [session.data, router]);
   return (
-    <main className={styles.authPage}>
+    <main ref={sceneRef} className={styles.authPage}>
       <aside className={styles.authBrand} aria-label="SKY store management">
         <Link href="/" className={styles.authBrandLink}>
           <Image

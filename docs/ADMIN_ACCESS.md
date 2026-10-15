@@ -80,6 +80,11 @@ Frontend requests /management/api/*; Next proxies to Django /api/v1/management/*
 
 ## Login interface
 
+The existing login layout also has subtle pointer-driven 3D depth, logo parallax
+and decorative lock/ring animation. Tilt resets when controls receive focus, and
+coarse pointers/reduced-motion settings disable the effects. No sign-in fields,
+branding, credential handling or redirect rules were changed.
+
 The frontend owner login uses a responsive SKY-branded split layout on desktop and compact branded header on mobile. Passwords start masked. The eye button toggles visibility without submitting the form, preserves the entered value, supports keyboard activation and exposes Show password / Hide password labels with pressed state. Existing Django session/CSRF authentication remains unchanged. The reusable admin-login browser test checks visibility behavior and viewport widths1440/1024/768/390/320px; screenshots are stored locally under .run.
 
 ## Dashboard layout

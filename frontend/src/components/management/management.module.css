@@ -522,6 +522,36 @@
 .authFormCard {
   width: min(100%, 390px);
 }
+.authPage { overflow-x: clip; }
+.authBrandContent, .authFormCard, .authBrandLink img {
+  transition: transform 350ms cubic-bezier(.2, .75, .25, 1), filter 350ms ease;
+}
+.authPage[data-login-motion="on"] .authBrandContent {
+  transform: perspective(1100px) rotateX(var(--login-rx, 0deg)) rotateY(var(--login-ry, 0deg));
+}
+.authPage[data-login-motion="on"] .authFormCard {
+  transform: perspective(1400px) rotateX(var(--login-form-rx, 0deg)) rotateY(var(--login-form-ry, 0deg));
+}
+.authPage[data-login-motion="on"] .authBrandLink img {
+  transform: perspective(900px) rotateY(var(--login-ry, 0deg)) translateY(var(--login-y, 0px));
+  filter: drop-shadow(0 10px 16px #0003);
+}
+.authPage[data-login-motion="on"] .authBrand::before,
+.authPage[data-login-motion="on"] .authBrand::after {
+  transform: translate3d(var(--login-x, 0px), var(--login-y, 0px), 0);
+  transition: transform 800ms ease-out;
+  animation: authRingDepth 9s ease-in-out infinite alternate;
+}
+.authPage[data-login-motion="on"] .authBrand::after { animation-delay: -4s; }
+.authPage[data-login-motion="on"] .authLock svg { animation: authLockFloat 6s ease-in-out infinite; }
+@keyframes authRingDepth { from { opacity: .45; } to { opacity: 1; } }
+@keyframes authLockFloat { 0%, 100% { transform: translateY(0) rotateY(0); } 50% { transform: perspective(400px) translateY(-3px) rotateY(12deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .authPage *, .authPage *::before, .authPage *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
 .authLock {
   width: 48px;
   height: 48px;
