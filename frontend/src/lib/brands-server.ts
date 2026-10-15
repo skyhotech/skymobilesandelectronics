@@ -1,17 +1,5 @@
 import "server-only";
-import { z } from "zod";
-import { resolveMediaUrl } from "./media";
-
-export const homepageBrandSchema = z.object({
-  id: z.number().int(),
-  name: z.string(),
-  slug: z.string(),
-  logo_url: z
-    .string()
-    .refine((value) => Boolean(resolveMediaUrl(value)), "Invalid media reference"),
-  display_order: z.number().int().nonnegative(),
-});
-export type HomepageBrand = z.infer<typeof homepageBrandSchema>;
+import { homepageBrandsSchema, type HomepageBrand } from "./brands";
 
 /** Brands managed in /management/admin/brands (active + "Show on homepage" + has logo). */
 export async function loadHomepageBrands(): Promise<HomepageBrand[]> {
@@ -26,7 +14,7 @@ export async function loadHomepageBrands(): Promise<HomepageBrand[]> {
       signal: AbortSignal.timeout(5000),
     });
     if (!response.ok) throw new Error(`Brands API returned ${response.status}`);
-    return z.array(homepageBrandSchema).parse(await response.json());
+    return homepageBrandsSchema.parse(await response.json());
   } catch (error) {
     console.error(
       "Homepage brands unavailable:",

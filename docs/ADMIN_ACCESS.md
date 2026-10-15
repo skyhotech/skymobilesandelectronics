@@ -1,5 +1,15 @@
 # SKY frontend management
 
+## Live homepage brands
+
+In Brands, edit the name/logo/display order and enable Active + Show on homepage.
+The "Authorized Retail Partner / Shop Your Favourite Brands" section in an
+already-open storefront updates within about five seconds, without refreshing.
+Hiding/deleting a brand removes its card; publishing adds it. Checks pause in
+background tabs and resume on focus. Unchanged feeds return HTTP 304 using ETags.
+If updates fail, existing cards stay visible with a retry notice. No manual
+storefront refresh or production WebSocket setup is required for this feature.
+
 Open http://localhost:3000/management/admin/ (login: /management/admin/login).
 This is a custom Next.js dashboard connected to Django REST APIs, not a Django admin redirect.
 Start both frontend and backend. The /admin shortcut opens this dashboard.

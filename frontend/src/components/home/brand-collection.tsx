@@ -2,11 +2,13 @@
 
 import { useEffect, useRef } from "react";
 import { MediaImage } from "@/components/media/media-image";
-import type { HomepageBrand } from "@/lib/brands-server";
+import type { HomepageBrand } from "@/lib/brands";
+import { useLiveBrands } from "@/lib/live-brands";
 
 // Adapted from the supplied Stitch homepage reference. Brands are managed in
 // /management/admin/brands (active + "Show on homepage", ordered by display order).
-export function BrandCollection({ brands }: { brands: HomepageBrand[] }) {
+export function BrandCollection({ brands: initialBrands }: { brands: HomepageBrand[] }) {
+  const { brands, error } = useLiveBrands(initialBrands);
   const section = useRef<HTMLElement>(null);
   useEffect(() => {
     const element = section.current;
@@ -23,7 +25,7 @@ export function BrandCollection({ brands }: { brands: HomepageBrand[] }) {
     observer.observe(element);
     return () => observer.disconnect();
   }, [brands]);
-  if (!brands.length) return null;
+  if (!brands.length && !error) return null;
   return (
     <section ref={section} className="w-full bg-surface-subtle py-12" id="brands">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -48,6 +50,7 @@ export function BrandCollection({ brands }: { brands: HomepageBrand[] }) {
             </span>
           </div>
         </div>
+        {error && <p role="status">Brand updates are temporarily unavailable. Retrying automatically.</p>}
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 sm:gap-4">
           {brands.map((brand) => (
             <div

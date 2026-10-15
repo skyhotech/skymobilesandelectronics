@@ -23,6 +23,7 @@ const nextConfig: NextConfig = {
       process.env.API_INTERNAL_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api/v1",
     ).origin;
     return [
+      { source: "/catalog/brands/:path*", destination: `${backend}/api/v1/brands/:path*/` },
       { source: "/catalog/categories/:path*", destination: `${backend}/api/v1/categories/:path*/` },
       { source: "/management/api/:path*", destination: `${backend}/api/v1/management/:path*/` },
       { source: "/media/:path*", destination: `${backend}/media/:path*` },

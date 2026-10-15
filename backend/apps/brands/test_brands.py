@@ -7,6 +7,41 @@ from apps.brands.models import Brand
 
 
 @pytest.mark.django_db
+def test_brand_validator_changes_for_edits_visibility_and_deletion():
+    client = Client()
+    brand = Brand.objects.create(
+        name="Live", slug="live", logo="brands/a.webp", show_on_homepage=True
+    )
+    response = client.get("/api/v1/brands/")
+    etag = response["ETag"]
+    unchanged = client.get("/api/v1/brands/", HTTP_IF_NONE_MATCH=etag)
+    assert unchanged.status_code == 304
+    assert unchanged.content == b""
+    assert unchanged["ETag"] == etag
+    assert client.get("/api/v1/brands/", HTTP_IF_NONE_MATCH=f'"other", W/{etag}').status_code == 304
+    brand.name = "Renamed"
+    brand.logo = "brands/b.webp"
+    brand.display_order = 4
+    brand.save()
+    changed = client.get("/api/v1/brands/", HTTP_IF_NONE_MATCH=etag)
+    assert changed.status_code == 200
+    assert changed["ETag"] != etag
+    assert changed.json()[0]["name"] == "Renamed"
+    brand.show_on_homepage = False
+    brand.save()
+    hidden = client.get("/api/v1/brands/", HTTP_IF_NONE_MATCH=changed["ETag"])
+    assert hidden.status_code == 200
+    assert hidden.json() == []
+    brand.show_on_homepage = True
+    brand.save()
+    published = client.get("/api/v1/brands/")
+    brand.delete()
+    deleted = client.get("/api/v1/brands/", HTTP_IF_NONE_MATCH=published["ETag"])
+    assert deleted.status_code == 200
+    assert deleted.json() == []
+
+
+@pytest.mark.django_db
 def test_public_brand_feed_lists_only_published_brands_in_order():
     Brand.objects.create(
         name="Second", slug="second", logo="brands/b.webp", show_on_homepage=True, display_order=2

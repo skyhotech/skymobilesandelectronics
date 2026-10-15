@@ -1,5 +1,22 @@
 # Project status - 15 October 2026
 
+## Live homepage brands
+
+"Authorized Retail Partner / Shop Your Favourite Brands" now uses a shared,
+Zod-validated TanStack Query feed. Foreground storefronts check every five seconds
+and on focus; admin name/logo/order/visibility changes and deletion appear without
+navigation. ETag conditional reads return 304 for unchanged public data. Existing
+cards survive errors with an automatic retry notice. The public JSON array and
+owner-only write permissions are unchanged; no database migration is needed.
+
+Verification: 82 backend tests and 28 frontend unit tests passed. Live Playwright
+admin-to-storefront creation/edit/hide/republish/delete, 304, temporary-error
+retention/recovery and absence of navigation all passed. Its isolated brand was
+removed afterward. Playwright MCP and production remain NOT TESTED.
+Typecheck, production build and targeted frontend/backend lint passed. The full
+frontend lint scan stalled and was stopped; changed frontend files were linted
+successfully instead.
+
 ## Development origins and log duplication
 
 Development settings now explicitly trust `http://localhost:3000` and
