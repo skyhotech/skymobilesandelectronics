@@ -1,5 +1,20 @@
 # Project status - 15 October 2026
 
+## Global search
+
+Added owner-only `/api/v1/management/search/?q=...`, sticky top-bar suggestions,
+keyboard navigation and refresh-safe brand product links. Shared bounded token
+search explicitly lowercases database fields and queries, matching across related
+catalog data and common synonyms. Scoped admin filters use the same matching.
+Homepage search now opens the live catalog instead of filtering sample cards.
+
+Verified: backend full suite 116 passed, then all 12 search tests passed including
+the added scoped-filter regression; frontend 28 unit tests, typecheck, lint and
+production build passed. Browser checks passed for global record/page navigation,
+keyboard selection, refresh, mixed-case live catalog search, mobile homepage search,
+empty results and sticky navbar at 390/768/1024/1440px. Isolated records were deleted.
+Playwright MCP unavailable; installed Playwright Test used. Production NOT TESTED.
+
 ## Dashboard and pinned Brands workspace
 
 Admin root now opens Dashboard, the first navigation item. New owner-only read API

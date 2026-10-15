@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 export function SearchCategoryMenu({
   entries,
 }: {
-  entries: { name: string; destination: string }[];
+  entries: { name: string; destination: string; slug?: string }[];
 }) {
   const categories = useMemo(
     () => ["All Categories", ...entries.map((item) => item.name)],
@@ -46,6 +46,7 @@ export function SearchCategoryMenu({
         {categories.map((category) => (
           <option
             key={category}
+            data-slug={entries.find((item) => item.name === category)?.slug}
             data-destination={entries.find((item) => item.name === category)?.destination}
           >
             {category}

@@ -1,5 +1,19 @@
 # SKY frontend management
 
+## Global admin and storefront search
+
+The sticky top bar searches Dashboard, Brands, Categories and catalog records.
+Type at least two characters; select a result or use arrow keys and Enter. Escape
+closes results. Category results open their folder; brand/product results open a
+brand product panel, with product names prefilled. These links survive refresh.
+
+Search ignores letter case and combines words across names, SKU, descriptions,
+brands and categories. Common terms such as phones/mobiles, earbuds/earphones and
+laptops/notebooks are matched using deterministic synonyms; no AI service is called.
+Homepage search opens the live product catalog and respects the category selection.
+Admin search remains owner-only, includes drafts and returns at most eight results
+per record type; public search only returns published products.
+
 ## Dashboard and pinned Brands controls
 
 Dashboard is the first sidebar item and the default admin screen. It shows real

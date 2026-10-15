@@ -1,0 +1,13 @@
+.search { position: relative; flex: 1 1 240px; max-width: 460px; min-width: 0; }
+.field { display: flex; align-items: center; gap: 10px; border: 1px solid #ffffff40; background: #ffffff12; color: #e7efff; border-radius: 10px; padding: 10px 12px; }
+.field:focus-within { background: #fff; color: #183764; outline: 2px solid #a9cfff; }
+.field input { width: 100%; min-width: 0; outline: none; border: 0; background: transparent; color: inherit; font: inherit; font-size: 13px; }
+.field input::placeholder { color: inherit; opacity: .8; }
+.field svg { flex: none; }
+.results { position: absolute; top: calc(100% + 8px); left: 0; width: 100%; min-width: 240px; max-height: min(460px, 60dvh); overflow: auto; padding: 8px; border: 1px solid #dbe5f4; border-radius: 12px; background: white; color: #18304e; box-shadow: 0 18px 45px #11264b30; }
+.results p { padding: 8px 10px; font-size: 13px; line-height: 1.5; }
+.result { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 11px 10px; border-radius: 7px; color: #18304e; text-decoration: none; overflow-wrap: anywhere; }
+.result strong { font-size: 13px; }
+.result small { font-size: 11px; color: #5a7394; }
+.result[aria-selected="true"], .result:focus-visible { background: #edf4ff; outline: 1px solid #b9d3ff; }
+@media (max-width: 640px) { .search { max-width: none; flex-basis: 100%; order: 3; } .results { min-width: 0; } }

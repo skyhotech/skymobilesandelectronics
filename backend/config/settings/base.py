@@ -78,7 +78,17 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 24,
 }
-SPECTACULAR_SETTINGS = {"TITLE": "SKY Platform API", "VERSION": "1.0.0"}
+SPECTACULAR_SETTINGS = {
+    "TITLE": "SKY Platform API",
+    "VERSION": "1.0.0",
+    "ENUM_NAME_OVERRIDES": {
+        "KindEnum": [
+            ("products", "Product"), ("brands", "Brand"), ("categories", "Category"),
+            ("banners", "Banner"), ("other", "Other"),
+        ],
+        "ManagementSearchResultKindEnum": ["brand", "category", "product"],
+    },
+}
 LANGUAGE_CODE = "en-in"
 TIME_ZONE = "Asia/Kolkata"
 USE_I18N = True

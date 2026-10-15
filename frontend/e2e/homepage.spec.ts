@@ -97,10 +97,9 @@ test("mobile layout fits and keyboard search finds products", async ({ page }) =
   expect(columns).toHaveLength(2);
   await page.getByRole("searchbox", { name: "Search products" }).fill("Fold");
   await page.getByRole("searchbox", { name: "Search products" }).press("Enter");
-  await expect(page.locator("#smartphones [data-product]:visible")).toHaveCount(1);
-  await expect(page.getByRole("status")).toContainText("matching products");
-  await page.getByRole("searchbox", { name: "Search products" }).fill("");
-  await page.getByRole("searchbox", { name: "Search products" }).press("Enter");
+  await expect(page).toHaveURL(/\/products\?search=Fold$/);
+  await expect(page.getByRole("heading", { name: "Explore SKY products" })).toBeVisible();
+  await page.goto("/", { waitUntil: "networkidle" });
   await page.locator("#hero").scrollIntoViewIfNeeded();
   await page.evaluate(async () => {
     await Promise.all(

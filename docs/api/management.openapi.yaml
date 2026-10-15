@@ -781,6 +781,27 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/v1/management/search/:
+    get:
+      operationId: management_search_retrieve
+      parameters:
+      - in: query
+        name: q
+        schema:
+          type: string
+          default: ''
+          maxLength: 120
+      tags:
+      - management
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementSearchResponse'
+          description: ''
   /api/v1/management/session/:
     get:
       operationId: management_session_retrieve
@@ -1259,6 +1280,44 @@ components:
       - brands
       - categories
       - products
+    ManagementSearchResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManagementSearchResult'
+      required:
+      - results
+    ManagementSearchResult:
+      type: object
+      properties:
+        kind:
+          $ref: '#/components/schemas/ManagementSearchResultKindEnum'
+        id:
+          type: integer
+          minimum: 1
+        name:
+          type: string
+        brand_id:
+          type: integer
+          minimum: 1
+          nullable: true
+      required:
+      - brand_id
+      - id
+      - kind
+      - name
+    ManagementSearchResultKindEnum:
+      enum:
+      - brand
+      - category
+      - product
+      type: string
+      description: |-
+        * `brand` - brand
+        * `category` - category
+        * `product` - product
     ManagementSession:
       type: object
       properties:

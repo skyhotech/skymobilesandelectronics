@@ -1,5 +1,12 @@
 # Repository audit - 15 October 2026
 
+## Search follow-up
+
+Homepage search previously filtered static sample cards; admin lacked global search.
+Public and scoped management matching depended on database collation. Replaced
+these paths with live catalog navigation, owner-only global suggestions and shared
+explicitly case-insensitive token/synonym matching. No schema/data migration needed.
+
 Scope: Next.js storefront/admin, Django API and supporting infrastructure. Native app is outside scope.
 
 | Area | Actual state | Gap / risk |

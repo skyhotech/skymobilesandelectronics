@@ -1,12 +1,12 @@
 """Read-only customer catalog backed by published business records."""
 
-from django.db.models import Q
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics, permissions, serializers
 
 from apps.brands.models import Brand
 from apps.categories.models import Category
 from apps.media_library.api import MediaReferenceField
+from common.search import search_queryset
 
 from .models import Product
 
@@ -67,8 +67,9 @@ class ProductList(CatalogMixin, generics.ListAPIView):
         values = filters.validated_data
         queryset = super().get_queryset()
         if values.get("search"):
-            term = values["search"]
-            queryset = queryset.filter(Q(name__icontains=term) | Q(description__icontains=term))
+            queryset = search_queryset(queryset, values["search"], (
+                "name", "description", "sku", "brand__name", "category__name",
+            ))
         if values.get("category"):
             queryset = queryset.filter(category__slug=values["category"])
         if values.get("brand"):

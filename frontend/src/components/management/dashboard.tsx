@@ -23,6 +23,7 @@ import { CategoryCards, categoryUrl } from "./category-cards";
 import { MediaUploadField } from "./media-upload-field";
 import { BrandWorkspace } from "./brand-workspace";
 import { ManagementOverview } from "./overview";
+import { AdminSearch } from "./admin-search";
 
 type Resource = "products" | "brands" | "categories" | "dashboard";
 type Entry = Reference | Product;
@@ -59,18 +60,29 @@ type Fields = z.infer<typeof productSchema>;
 export function ManagementDashboard({
   section = "dashboard",
   parentId = null,
+  initialBrandId = null,
+  initialSearch = "",
 }: {
   section?: Resource;
   parentId?: number | null;
+  initialBrandId?: number | null;
+  initialSearch?: string;
 }) {
   const router = useRouter();
   const cache = useQueryClient();
   const headerRef = useRef<HTMLElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
-  const [selectedBrand, setSelectedBrand] = useState<Reference | null>(null);
+  const [localBrand, setSelectedBrand] = useState<Reference | null>(null);
+  const scopedBrand = useQuery({
+    queryKey: ["management", "brand-scope", initialBrandId],
+    queryFn: () => managementApi<Reference>(`brands/${initialBrandId}/`),
+    enabled: section === "brands" && initialBrandId !== null,
+    retry: false,
+  });
+  const selectedBrand = localBrand ?? (initialBrandId ? scopedBrand.data ?? null : null);
   const resource = section === "brands" && selectedBrand ? "products" : section;
   const brandScope = resource === "products" && selectedBrand ? `brand=${selectedBrand.id}` : "";
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialSearch);
   const [page, setPage] = useState(1);
   const [editing, setEditing] = useState<Entry | "new" | null>(null);
   const [deleting, setDeleting] = useState<Entry | null>(null);
@@ -184,6 +196,7 @@ export function ManagementDashboard({
           <span>Catalog & store operations</span>
           </div>
         </Link>
+        <AdminSearch />
         <div className={styles.headerActions}>
           <span>{session.data.user.username}</span>
           <Link href="/">View website ↗</Link>
@@ -238,7 +251,7 @@ export function ManagementDashboard({
                   Manage products for this brand.
                 </p>
               </div>
-              {selectedBrand && <button className={styles.secondary} onClick={() => { setSelectedBrand(null); setSearch(""); setPage(1); setNotice(""); }}>Back to brands</button>}
+              {selectedBrand && <button className={styles.secondary} onClick={() => { setSelectedBrand(null); setSearch(""); setPage(1); setNotice(""); if (initialBrandId) router.push("/management/admin/brands"); }}>Back to brands</button>}
             </div>
           )}
 
@@ -273,7 +286,8 @@ export function ManagementDashboard({
               </button>
             </div>
           )}
-          {resource === "brands" && <BrandWorkspace onAdd={() => setEditing("new")} onEdit={setEditing} onDelete={entry => { remove.reset(); setDeleting(entry); }} onProducts={brand => { setSelectedBrand(brand); setSearch(""); setPage(1); setNotice(""); }} />}
+          {resource === "brands" && initialBrandId && (scopedBrand.error ? <p role="alert">Unable to load this brand. <Link href="/management/admin/brands">Back to brands</Link></p> : <p role="status">Loading brand products...</p>)}
+          {resource === "brands" && !initialBrandId && <BrandWorkspace onAdd={() => setEditing("new")} onEdit={setEditing} onDelete={entry => { remove.reset(); setDeleting(entry); }} onProducts={brand => { setSelectedBrand(brand); setSearch(""); setPage(1); setNotice(""); }} />}
           {resource === "categories" && (
             <CategoryCards
               parentId={categoryParent}

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode, type MouseEvent } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 type Product = { title: string; price: string; description: string; image: string };
 type Panel = { title: string; message?: string; product?: Product; saved?: Product[] };
@@ -34,6 +35,7 @@ function readProduct(element: Element): Product | undefined {
 }
 
 export function HomepageInteractions({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const root = useRef<HTMLDivElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const [panel, setPanel] = useState<Panel | null>(null);
@@ -87,37 +89,12 @@ export function HomepageInteractions({ children }: { children: ReactNode }) {
 
   function searchProducts() {
     const host = root.current;
-    const query =
-      host?.querySelector<HTMLInputElement>("#product-search")?.value.trim().toLowerCase() || "";
-    const allowed = host
-      ?.querySelector<HTMLSelectElement>("#search-category")
-      ?.selectedOptions[0]?.dataset.destination?.replace(/^#/, "");
-    const sections = ["smartphones", "laptops", "gadgets", "entertainment"];
-    let found = 0;
-    let first: HTMLElement | null = null;
-    for (const id of sections) {
-      const section = host?.querySelector<HTMLElement>(`#${id}`);
-      section?.querySelectorAll<HTMLElement>("[data-product]").forEach((card) => {
-        const matches =
-          (!allowed || id === allowed) &&
-          (!query || card.textContent?.toLowerCase().includes(query));
-        card.hidden = !matches;
-        if (matches) {
-          found++;
-          first ??= section || null;
-        }
-      });
-    }
-    setAnnouncement(`${found} matching products${query ? ` for “${query}”` : ""}.`);
-    if (found) {
-      (first as HTMLElement | null)?.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else {
-      setPanel({
-        title: "No matching products",
-        message:
-          "Try another product name or category. Our store team can also help you find what you need.",
-      });
-    }
+    const query = host?.querySelector<HTMLInputElement>("#product-search")?.value.trim().slice(0, 120) || "";
+    const category = host?.querySelector<HTMLSelectElement>("#search-category")?.selectedOptions[0]?.dataset.slug;
+    const params = new URLSearchParams();
+    if (query) params.set("search", query);
+    if (category) params.set("category", category);
+    router.push(`/products${params.size ? `?${params}` : ""}`);
   }
 
   function handleClick(event: MouseEvent<HTMLDivElement>) {

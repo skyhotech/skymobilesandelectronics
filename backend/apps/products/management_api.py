@@ -28,8 +28,18 @@ from apps.categories.api import CategorySerializer, ManagementCategoryTreeSerial
 from apps.categories.hierarchy import published_categories
 from apps.categories.models import Category, CategoryTreeState
 from apps.media_library.api import MediaReferenceField
+from common.search import search_queryset
 
 from .models import Product
+
+
+class CatalogSearchFilter(filters.SearchFilter):
+    def filter_queryset(self, request, queryset, view):
+        query = request.query_params.get(self.search_param, "").strip()
+        if len(query) > 120:
+            raise serializers.ValidationError({"search": "Use at most 120 characters."})
+        fields = self.get_search_fields(view, request)
+        return search_queryset(queryset, query, fields) if query and fields else queryset
 
 
 def is_owner(user):
@@ -234,7 +244,7 @@ class BrandSerializer(serializers.ModelSerializer):
 class ManagementViewSet(viewsets.ModelViewSet):
     authentication_classes = [SessionAuthentication]
     permission_classes = [OwnerPermission]
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [CatalogSearchFilter]
 
     def destroy(self, request, *args, **kwargs):
         try:
@@ -256,7 +266,7 @@ class ManagementViewSet(viewsets.ModelViewSet):
 class ProductViewSet(ManagementViewSet):
     queryset = Product.objects.select_related("brand", "category").all()
     serializer_class = ProductSerializer
-    search_fields = ("name", "sku")
+    search_fields = ("name", "sku", "description", "brand__name", "category__name")
 
     def scoped_brand_id(self):
         if "brand" in self.request.query_params:
