@@ -22,7 +22,7 @@ There are 17 physical tables, including Django many-to-many tables. All use Inno
 
 Product money is DECIMAL(12,2), currency constrained to INR. Selling price must be positive; optional comparison price must be at least the selling price. Quantity/reserved stock use unsigned integers, with reserved <= quantity. Eleven CHECK constraints are present after the homepage category migration. Unique constraints prevent duplicate SKUs, slugs and branch stock records.
 
-Timestamps remain Django UTC-aware values, represented by MySQL datetime columns. API contract and frontend/Dart identifiers are unchanged. Default transaction isolation is read committed; future stock reservation/checkout must explicitly use atomic transactions and appropriate row locks.
+Timestamps remain Django UTC-aware values, represented by MySQL datetime columns. API contract and frontend identifiers are unchanged. Default transaction isolation is read committed; future stock reservation/checkout must explicitly use atomic transactions and appropriate row locks.
 
 ## Scope limits
 
@@ -31,7 +31,7 @@ Product variants, carts, orders, payments, stock movement ledger, reservations a
 
 ## Homepage category fields
 
-categories_category now owns the storage-backed image FileField, badge, description, optional starting_price DECIMAL(12,2), destination (an existing homepage section), display_order and show_on_homepage. A positive-price CHECK and required-image CHECK protect the new presentation fields. Public DRF reads require is_active and show_on_homepage. Existing ten homepage cards were seeded without overwriting existing category records. Product-category protection remains unchanged. Browser and Flutter consume this table through the same DRF API; neither accesses MySQL directly.
+categories_category now owns the storage-backed image FileField, badge, description, optional starting_price DECIMAL(12,2), destination (an existing homepage section), display_order and show_on_homepage. A positive-price CHECK and required-image CHECK protect the new presentation fields. Public DRF reads require is_active and show_on_homepage. Existing ten homepage cards were seeded without overwriting existing category records. Product-category protection remains unchanged. The website consumes this table through DRF and never accesses MySQL directly.
 
 
 ## Universal media

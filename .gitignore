@@ -9,10 +9,7 @@
 **/node_modules/
 **/.next/
 **/coverage/
-**/.dart_tool/
 **/build/
-**/local.properties
-**/.flutter-plugins-dependencies
 **/*.sqlite3
 backend/media/
 data/media/
@@ -20,7 +17,3 @@ data/private-media/
 backend/staticfiles/
 .run/
 *.log
-**/key.properties
-**/*.jks
-**/Pods/
-**/.symlinks/

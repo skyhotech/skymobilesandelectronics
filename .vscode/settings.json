@@ -14,14 +14,12 @@
                            "**/.next":  true,
                            "**/.venv":  true,
                            "**/build":  true,
-                           "**/.dart_tool":  true,
                            "**/__pycache__":  true,
                            "**/.pytest_cache":  true,
                            "**/.ruff_cache":  true,
                            "**/docs/archive":  true,
                            "**/docs/design-reference":  true,
                            "**/package-lock.json":  true,
-                           "**/pubspec.lock":  true,
                            "**/tsconfig.tsbuildinfo":  true
                        },
     "files.watcherExclude":  {
@@ -31,14 +29,12 @@
                                  "**/.next":  true,
                                  "**/.venv":  true,
                                  "**/build":  true,
-                                 "**/.dart_tool":  true,
                                  "**/__pycache__":  true,
                                  "**/.pytest_cache":  true,
                                  "**/.ruff_cache":  true,
                                  "**/docs/archive":  true,
                                  "**/docs/design-reference":  true,
                                  "**/package-lock.json":  true,
-                                 "**/pubspec.lock":  true,
                                  "**/tsconfig.tsbuildinfo":  true
                              },
     "search.useIgnoreFiles":  true

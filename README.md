@@ -1,6 +1,6 @@
 # SKY Mobile & Electronics
 
-Local monorepo initialization for the Next.js website/admin, Django API, and Flutter customer app.
+Local monorepo initialization for the Next.js website/admin and Django API. Native mobile development has been removed; responsive mobile web remains supported.
 This is the development foundation; catalog, authentication, checkout, real-time events, and the
 image-processing workflow still need implementation. Reserved feature directories contain `.gitkeep`
 files rather than fake APIs or nonfunctional screens.
@@ -10,21 +10,12 @@ files rather than fake APIs or nonfunctional screens.
 - `frontend/`: Next.js App Router, TypeScript, Tailwind, TanStack Query, React Hook Form, Zod.
 - `backend/.venv/`: Python 3.13, Django 5.2 LTS, DRF, Channels, mysqlclient driver, Redis,
   Celery, Pillow, OpenAPI tooling, pytest, and Ruff. No global application pip packages were installed.
-- `mobile_app/`: Flutter Android/iOS project, Riverpod, Dio, go_router, secure storage,
-  image caching, WebSocket client, and Flutter test packages.
-- `.tools/`: ignored; contains only `local-paths.json`. The local Node/npm, Git, Flutter SDK,
-  PostgreSQL binaries, Pub cache and bootstrap tooling live **outside the project** in
-  `E:\sky-platform-tools` (no spaces in path for Flutter native-asset hooks, and kept out of the
-  AI/editor workspace). Python 3.13 was downloaded through uv's managed Python installation.
-  `scripts/env.ps1` reads `.tools/local-paths.json` (`tools_alias`) and uses that folder and its
-  Pub cache. Recreate a no-spaces SDK path on a fresh Windows checkout if needed.
-- `.run/`: ignored runtime logs only. Old screenshots, DB dumps and the stopped PostgreSQL
-  cluster were archived to `E:\sky-platform-archive\run-2026-10-14`.
+- `.tools/`: ignored tool-path configuration; shared external SDK installations are not managed by the project.
+- `.run/`: ignored runtime logs and diagnostics.
 - `compose.dev.yml`: persistent development MySQL/Redis, bound to loopback only.
 - `scripts/`: rerunnable setup, checks, foreground startup, and service shutdown for Windows/Linux.
 
-Lockfiles: `frontend/package-lock.json`, `backend/requirements/{base,development}.txt` (with hashes),
-and `mobile_app/pubspec.lock`. Dependency input files are in `backend/requirements/*.in`.
+Lockfiles: `frontend/package-lock.json` and `backend/requirements/{base,development}.txt` (with hashes). Dependency input files are in `backend/requirements/*.in`.
 
 ## Windows
 
@@ -60,13 +51,9 @@ npm.cmd run dev
 
 Backend: from `backend/`, `.\.venv\Scripts\python.exe -m uvicorn config.asgi:application --reload`.
 Admin creation (after migrations): `.\.venv\Scripts\python.exe manage.py createsuperuser`.
-Flutter: from `mobile_app/`, `flutter devices`, then `flutter run -d <device-id>`.
-For an Android emulator the API defaults to `http://10.0.2.2:8000/api/v1/`; override with
-`--dart-define=API_BASE_URL=https://your-api-host/api/v1/` for a physical device or deployment.
-
 ## Linux/macOS and fresh checkouts
 
-Install Python 3.13, Node.js 22/24 LTS, Git, Flutter stable (Dart 3.13.5 or compatible),
+Install Python 3.13, Node.js 22/24 LTS, Git,
 and Docker with Compose. Local Windows `.tools` binaries are not portable.
 
 ```bash
@@ -79,9 +66,8 @@ bash scripts/stop.sh
 ```
 
 Official downloads: [Python](https://www.python.org/downloads/), [Node/npm](https://nodejs.org/en/download),
-[Git](https://git-scm.com/downloads), [Flutter](https://docs.flutter.dev/install),
+[Git](https://git-scm.com/downloads),
 [Docker](https://docs.docker.com/get-docker/).
-Android builds require the Android SDK/JDK. iOS builds require macOS and Xcode.
 The scripts do not install or replace global toolchains automatically.
 
 ## Configuration and current limits

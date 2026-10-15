@@ -13,7 +13,6 @@
 **/.next/
 **/.venv/
 **/build/
-**/.dart_tool/
 **/__pycache__/
 **/.pytest_cache/
 **/.ruff_cache/
@@ -35,7 +34,6 @@
 
 # Generated / lock / noisy files
 **/package-lock.json
-**/pubspec.lock
 **/tsconfig.tsbuildinfo
 **/next-env.d.ts
 *.log

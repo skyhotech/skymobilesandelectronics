@@ -19,13 +19,11 @@ image association or deleting a category does not erase shared media files.
 
 Enable **Active** and **Show on homepage** to publish a category; publishing
 requires an image. A subcategory appears only while every ancestor is also active
-and published. Website cards and Flutter cards display the parent name. The
+and published. Website cards display the parent name. The
 website header lists published main categories, and its search category picker
 includes published main categories and subcategories. These lists come from DRF,
-with no fixed category-name or artwork arrays. Open storefronts and the mobile
-home screen automatically check for changes every five seconds. No manual refresh
-is required. The website pauses checks in background tabs, and Flutter pauses
-checks while the application is backgrounded. Both use ETag conditional requests
+with no fixed category-name or artwork arrays. Open storefronts automatically check for changes every five seconds. No manual refresh
+is required. The website pauses checks in background tabs and uses ETag conditional requests
 to avoid downloading unchanged trees. Website clients share one TanStack Query
 cache for the header, search menu and category cards. Stale website data remains visible
 when live checks fail, with a retry notice on the website.
@@ -82,5 +80,5 @@ and can be repurposed or deleted there. Reversing this migration does not republ
 demo data automatically; explicitly activate and publish desired categories.
 
 Verification includes Django parent/child CRUD and deletion rules, browser file
-uploads and storefront image decoding, and Flutter shared-feed/widget tests.
-Native mobile device/Maestro and VPS persistence checks have not run here.
+uploads and storefront image decoding.
+VPS persistence checks have not run here.

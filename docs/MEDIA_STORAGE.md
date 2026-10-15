@@ -66,13 +66,12 @@ The extension must match decoded PNG/JPEG/WebP content. Defaults: 5 MiB upload, 
 
 This bounded small-image workflow is synchronous. Large images are rejected; bulk/heavy processing remains deferred to the existing Celery infrastructure. Replacement/deletion does not automatically unlink shared files. Retained originals, archived assets and failed uploads remain counted against quota. No unapproved retention cleanup is enabled.
 
-## Next.js and Flutter
+## Next.js
 
 Next.js uses lib/media.ts and MediaImage. Relative filenames and /media URLs resolve against NEXT_PUBLIC_MEDIA_ORIGIN, or the configured public API origin. With both absent they remain same-origin and use the /media proxy. The resolver rejects traversal, file URLs and unapproved absolute origins. MediaImage supports responsive sizes and placeholders. Next does not recompress already optimized uploads; remotePatterns allow only configured media origins.
 
 NEXT_PUBLIC settings are build-time configuration: rebuild for the deployment environment, or use same-origin delivery. API_INTERNAL_BASE_URL handles Docker server-to-server API access separately from public browser URLs. No component changes are needed.
 
-Flutter uses core/api/media_url.dart and shared/widgets/media_image.dart. Set API_BASE_URL through dart-define: Android emulator uses the host bridge, physical devices use a reachable host address, production uses HTTPS. Optional MEDIA_ORIGIN configures a separate public image origin. Widgets do not embed environment-specific IPs. cached_network_image supplies caching and placeholder/error UI. Native device cache-hit behavior and Maestro E2E are not verified here.
 
 ## Approved Ubuntu provisioning
 
@@ -109,7 +108,7 @@ The VPS's 75 GB also holds Ubuntu, MySQL, Docker, logs and application files. Fo
 
 ## Verification
 
-Backend: run python -m pytest from backend using its virtual environment. Frontend: run npm test, typecheck, lint, build and Playwright. Flutter: run analyze and tests; provide LIVE_API_BASE_URL to include the actual DRF provider test.
+Backend: run python -m pytest from backend using its virtual environment. Frontend: run npm test, typecheck, lint, build and Playwright.
 
 Local smoke test:
 

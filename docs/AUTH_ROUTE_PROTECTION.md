@@ -24,4 +24,4 @@ authentication is not implemented by this management-session guard.
 Verification: 44 backend tests, 20 frontend unit tests, type checking, lint and
 production build passed. Installed Playwright verified anonymous/forged-session
 denial, public route access and real owner product CRUD. Playwright MCP is not
-available. No Flutter authorization contract was changed.
+available. The authorization contract remains enforced by Django.

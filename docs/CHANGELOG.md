@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-15 - Native mobile application removed
+
+Removed native app sources, Flutter setup/check commands, IDE launches and the mobile-only guide. Active scope is Next.js website/admin and Django backend. Responsive mobile web remains supported. Earlier entries describe historical work, including the retired native app. External SDK installations are left untouched.
+
 ## 2026-10-14 ? Local commerce management foundation
 
 Added the same-origin `/management/admin/login` entry point, compatibility redirects, products/brands/categories/branches/stock administration, database constraints, migrations and authentication/CRUD/permission/browser tests. No sample inventory created. Orders, payments, checkout and customer app synchronization remain incomplete. See ADMIN_ACCESS.md and PROJECT_AUDIT.md for verified scope.

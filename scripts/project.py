@@ -16,7 +16,6 @@ from urllib.parse import quote
 ROOT = Path(__file__).resolve().parents[1]
 BACKEND = ROOT / "backend"
 FRONTEND = ROOT / "frontend"
-MOBILE = ROOT / "mobile_app"
 WINDOWS = os.name == "nt"
 PYTHON = BACKEND / ".venv" / ("Scripts/python.exe" if WINDOWS else "bin/python")
 
@@ -82,7 +81,7 @@ def verify_tools():
         raise RuntimeError(
             "Run setup using Python 3.13; other versions are not validated."
         )
-    for tool in ("node", "npm", "git", "flutter"):
+    for tool in ("node", "npm", "git"):
         run([executable(tool), "--version"])
     version = subprocess.check_output([executable("node"), "--version"], text=True)
     if int(version.strip().lstrip("v").split(".")[0]) not in (22, 24):
@@ -124,7 +123,6 @@ def setup(skip_services):
         BACKEND,
     )
     run([executable("npm"), "ci"], FRONTEND)
-    run([executable("flutter"), "pub", "get", "--enforce-lockfile"], MOBILE)
     run([PYTHON, "manage.py", "check"], BACKEND)
     if not skip_services:
         services()
@@ -133,7 +131,6 @@ def setup(skip_services):
         run([PYTHON, "manage.py", "index_media"], BACKEND)
     run([executable("npm"), "run", "typecheck"], FRONTEND)
     run([executable("npm"), "run", "lint"], FRONTEND)
-    run([executable("flutter"), "analyze"], MOBILE)
     if skip_services:
         print(
             "Dependencies configured. MySQL/Redis startup and migrations were skipped."
@@ -156,19 +153,6 @@ def check():
     run([executable("npm"), "run", "typecheck"], FRONTEND)
     run([executable("npm"), "run", "lint"], FRONTEND)
     run([executable("npm"), "run", "build"], FRONTEND)
-    run(
-        [
-            executable("dart"),
-            "format",
-            "--output=none",
-            "--set-exit-if-changed",
-            "lib",
-            "test",
-        ],
-        MOBILE,
-    )
-    run([executable("flutter"), "analyze"], MOBILE)
-    run([executable("flutter"), "test"], MOBILE)
 
 
 def dev():

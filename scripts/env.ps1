@@ -6,12 +6,11 @@ if (Test-Path -LiteralPath $localPaths) {
     $configuration = Get-Content -LiteralPath $localPaths -Raw | ConvertFrom-Json
     if (Test-Path -LiteralPath $configuration.tools_alias) {
         $tools = $configuration.tools_alias
-        $env:PUB_CACHE = Join-Path $tools 'pub-cache'
     }
 }
 $node = Get-ChildItem -LiteralPath $tools -Directory -Filter 'node-*-win-x64' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | Select-Object -First 1
 if ($node) { $env:PATH = $node.FullName + ';' + $env:PATH }
-foreach ($relative in @('git\cmd', 'flutter\bin')) {
+foreach ($relative in @('git\cmd')) {
     $directory = Join-Path $tools $relative
     if (Test-Path -LiteralPath $directory) { $env:PATH = $directory + ';' + $env:PATH }
 }

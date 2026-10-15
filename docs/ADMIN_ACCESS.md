@@ -1,4 +1,4 @@
-﻿# SKY frontend management
+# SKY frontend management
 
 Open http://localhost:3000/management/admin/ (login: /management/admin/login).
 This is a custom Next.js dashboard connected to Django REST APIs, not a Django admin redirect.
@@ -18,7 +18,7 @@ The management API requires an active staff superuser, independently of frontend
 
 The custom management dashboard is the employee interface. Frontend /backend/django/admin/ redirects to /management/admin/ and no native Django admin links appear in the dashboard. Native Django admin remains an internal backend recovery tool only.
 
-Category image uploads and homepage category editing are implemented. Published categories update automatically within five seconds in open website/app screens. Orders, payments, other homepage sections and reports remain pending. Product/brand CRUD is stored in MySQL but their homepage collections are still static. Owner MFA and production hardening remain outstanding. Login throttling uses the configured Redis cache in development.
+Category image uploads and homepage category editing are implemented. Published categories update automatically within five seconds in open website screens. Orders, payments, other homepage sections and reports remain pending. Product/brand CRUD is stored in MySQL but their homepage collections are still static. Owner MFA and production hardening remain outstanding. Login throttling uses the configured Redis cache in development.
 
 ## Verification
 
@@ -42,15 +42,15 @@ At widths768px and above, management navigation occupies25% and main content75% 
 2. Add or edit a category: name, slug, image, badge, card subtitle, optional starting price, destination section and display order.
 3. Choose existing artwork or upload a PNG/JPEG/WebP (5MB/16MP maximum).
 4. Enable Show on homepage and Active to display the card. Lower display order appears first.
-5. Save category, then reload the website or refresh the mobile categories feed. Changes persist in MySQL through DRF.
+5. Save category, then check the website category feed. Changes persist in MySQL through DRF.
 6. Uncheck Show on homepage to hide without deleting. Categories referenced by products are protected from deletion.
 
-The website/app read /api/v1/categories/. Writes use /api/v1/management/categories/ and owner image uploads use /api/v1/management/category-images/. Starting price is owner-managed promotional copy, separate from product pricing. Development media routes are included; production must serve uploaded variants and bundled category artwork through a configured static server.
+The website reads /api/v1/categories/. Writes use /api/v1/management/categories/ and owner image uploads use /api/v1/management/category-images/. Starting price is owner-managed promotional copy, separate from product pricing. Development media routes are included; production must serve uploaded variants and bundled category artwork through a configured static server.
 
 
 ## Universal image storage
 
-Category, product and brand image upload fields now use the shared media service. Files are stored under persistent public/private roots and MySQL stores only relative FileField names. Images resolve through shared website/mobile helpers. Replacing an attachment or deleting its record does not delete shared files. Originals are available only to the owner through the protected media original-download endpoint. See MEDIA_STORAGE.md for environment configuration and production acceptance checks.
+Category, product and brand image upload fields now use the shared media service. Files are stored under persistent public/private roots and MySQL stores only relative FileField names. Images resolve through shared website helpers. Replacing an attachment or deleting its record does not delete shared files. Originals are available only to the owner through the protected media original-download endpoint. See MEDIA_STORAGE.md for environment configuration and production acceptance checks.
 # Category hierarchy and uploads
 
 Categories now support a parent selector for subcategories and direct file-picker

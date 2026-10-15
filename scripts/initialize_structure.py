@@ -24,11 +24,6 @@ paths = [
     "infrastructure/backups",
     "scripts/verify-environment",
     ".github/workflows",
-    "mobile_app/integration_test",
-    "mobile_app/lib/app/router",
-    "mobile_app/lib/app/theme",
-    "mobile_app/lib/shared/widgets",
-    "mobile_app/lib/shared/models",
 ]
 groups = {
     "frontend/src/app/(store)": "mobiles laptops gadgets categories brands products search offers cart checkout",
@@ -39,9 +34,6 @@ groups = {
     "frontend/src/lib": "api auth realtime validation utils",
     "backend/apps": "accounts authentication products categories brands inventory branches cart orders payments coupons promotions homepage wishlist reviews media_library notifications realtime audit_logs",
     "backend/common": "exceptions middleware pagination permissions responses validators utilities",
-    "mobile_app/assets": "images icons fonts",
-    "mobile_app/lib/core": "api auth cache errors network realtime security storage",
-    "mobile_app/lib/features": "onboarding authentication home products categories brands search cart checkout orders wishlist profile",
     "docs": "architecture api security operations deployment",
 }
 for parent, names in groups.items():
