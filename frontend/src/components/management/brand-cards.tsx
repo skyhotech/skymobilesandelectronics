@@ -7,10 +7,11 @@ import type { Reference } from "@/lib/management-api";
 import styles from "./category-manager.module.css";
 import { Icon } from "./category-cards";
 
-export function BrandCards({ brands, disabled, saving, view, onMove, onEdit, onDelete, onAdd }: {
+export function BrandCards({ brands, disabled, saving, view, onMove, onEdit, onDelete, onAdd, onProducts }: {
   brands: Reference[]; disabled: boolean; saving: boolean; view: "grid" | "list"; onAdd: () => void;
   onMove: (id: number, before: number | null) => void;
   onEdit: (brand: Reference) => void; onDelete: (brand: Reference) => void;
+  onProducts: (brand: Reference) => void;
 }) {
   const active = useRef<{ brand: Reference; pointer: number; x: number; y: number; moved: boolean } | null>(null);
   const [floating, setFloating] = useState<{ brand: Reference; x: number; y: number } | null>(null);
@@ -69,6 +70,7 @@ export function BrandCards({ brands, disabled, saving, view, onMove, onEdit, onD
         <div className={styles.cardMeta}><span className={styles.metaChip}>{brand.show_on_homepage ? "On homepage" : "Hidden from homepage"}</span><span className={styles.metaChip}>Order {brand.display_order ?? 0}</span></div>
       </div>
       <div className={styles.cardActions}>
+        <button className={styles.actionButton} onClick={() => onProducts(brand)}>Products</button>
         <button className={styles.actionButton} onClick={() => onEdit(brand)}>Edit</button>
         <button className={`${styles.actionButton} ${styles.actionDanger}`} onClick={() => onDelete(brand)}>Delete</button>
         <span className={styles.orderButtons}>

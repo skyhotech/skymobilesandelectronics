@@ -9,7 +9,7 @@ test("frontend owner product CRUD", async ({ page }) => {
   await page.getByLabel("Username", { exact: true }).fill(process.env.SKY_ADMIN_USERNAME!);
   await page.getByLabel("Password", { exact: true }).fill(process.env.SKY_ADMIN_PASSWORD!);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Manage your catalog" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Brands", exact: true })).toBeVisible();
   // A full server request must accept the real Django session as well.
   expect((await page.request.get("/management/admin", { maxRedirects: 0 })).status()).toBe(200);
   const sidebar = page.getByRole("complementary", { name: "Management sidebar" });
@@ -26,6 +26,7 @@ test("frontend owner product CRUD", async ({ page }) => {
       ["Categories", "category"],
     ]) {
       await page.getByRole("link", { name: section, exact: true }).click();
+      await expect(page).toHaveURL(new RegExp(`/management/admin/${section.toLowerCase()}$`));
       await page.getByRole("button", { name: `Add ${singular}`, exact: true }).click();
       const dialog = page.getByRole("dialog");
       await dialog.getByLabel("Name", { exact: true }).fill(`${tag}-${singular}`);
@@ -42,7 +43,11 @@ test("frontend owner product CRUD", async ({ page }) => {
       await dialog.getByRole("button", { name: `Save ${singular}`, exact: true }).click();
       await expect(dialog).toBeHidden();
     }
-    await page.getByRole("link", { name: "Products", exact: true }).click();
+    await expect(page.getByRole("link", { name: "Products", exact: true })).toHaveCount(0);
+    await page.getByRole("link", { name: "Brands", exact: true }).click();
+    await page.getByRole("article", { name: `${tag}-brand`, exact: true }).getByRole("button", { name: "Products", exact: true }).click();
+    await expect(page).toHaveURL(/management\/admin\/brands$/);
+    await expect(page.getByRole("heading", { name: `${tag}-brand products`, exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Add product", exact: true }).click();
     const dialog = page.getByRole("dialog");
     await dialog.getByLabel("Name", { exact: true }).fill(`${tag}-product`);
@@ -55,13 +60,27 @@ test("frontend owner product CRUD", async ({ page }) => {
       "src",
       /\/media\/products\/optimized\//,
     );
-    await dialog.getByLabel("Brand", { exact: true }).selectOption({ label: `${tag}-brand` });
+    await expect(dialog.getByLabel("Brand", { exact: true }).locator("option")).toHaveCount(1);
+    await expect(dialog.getByLabel("Brand", { exact: true }).locator("option:checked")).toHaveText(`${tag}-brand`);
+    const brandId = Number(await dialog.getByLabel("Brand", { exact: true }).inputValue());
     await dialog.getByLabel("Category", { exact: true }).selectOption({ label: `${tag}-category` });
+    const categoryId = Number(await dialog.getByLabel("Category", { exact: true }).inputValue());
     await dialog.getByLabel("Price", { exact: true }).fill("12999.00");
     await dialog.getByRole("button", { name: "Save product", exact: true }).click();
     await expect(dialog).toBeHidden();
     const row = page.getByRole("row").filter({ hasText: `${tag}-product` });
     await expect(row).toContainText("12,999");
+    const csrf = (await (await page.request.get("/management/api/session/")).json()).csrfToken;
+    const otherBrand = await page.request.post("/management/api/brands/", { headers: { "X-CSRFToken": csrf }, data: { name: `${tag}-other-brand`, slug: `${tag}-other-brand`, is_active: true, show_on_homepage: false } });
+    expect(otherBrand.status()).toBe(201);
+    const otherProduct = await page.request.post("/management/api/products/", { headers: { "X-CSRFToken": csrf }, data: { name: `${tag}-foreign-product`, slug: `${tag}-foreign-product`, sku: `${tag}-other`, brand: (await otherBrand.json()).id, category: categoryId, price: "5000.00", currency: "INR" } });
+    expect(otherProduct.status()).toBe(201);
+    const scopedSearch = page.waitForResponse(response => response.url().includes("/management/api/products/?search=") && new URL(response.url()).searchParams.get("search") === tag);
+    await page.getByRole("textbox", { name: "Search products", exact: true }).fill(tag);
+    const scopedResponse = await scopedSearch;
+    expect(new URL(scopedResponse.url()).searchParams.get("brand")).toBe(String(brandId));
+    await expect(row).toBeVisible();
+    await expect(page.getByRole("row").filter({ hasText: `${tag}-foreign-product` })).toHaveCount(0);
     await row.getByRole("button", { name: "Edit", exact: true }).click();
     await dialog.getByLabel("Price", { exact: true }).fill("11999.00");
     await dialog.getByRole("button", { name: "Save product", exact: true }).click();
@@ -76,6 +95,11 @@ test("frontend owner product CRUD", async ({ page }) => {
     await row.getByRole("button", { name: "Delete", exact: true }).click();
     await dialog.getByRole("button", { name: "Confirm delete", exact: true }).click();
     await expect(row).toBeHidden();
+    await page.getByRole("button", { name: "Back to brands", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "Brands", exact: true })).toBeVisible();
+    const oldProducts = await page.request.get("/management/admin/products", { maxRedirects: 0 });
+    expect(oldProducts.status()).toBe(307);
+    expect(oldProducts.headers().location).toContain("/management/admin/brands");
   } finally {
     const session = await (await page.request.get("/management/api/session/")).json();
     for (const resource of ["products", "brands", "categories"]) {

@@ -55,7 +55,7 @@ const productSchema = referenceSchema.extend({
 type Fields = z.infer<typeof productSchema>;
 
 export function ManagementDashboard({
-  section = "products",
+  section = "brands",
   parentId = null,
 }: {
   section?: Resource;
@@ -64,7 +64,9 @@ export function ManagementDashboard({
   const router = useRouter();
   const cache = useQueryClient();
   const headerRef = useRef<HTMLElement>(null);
-  const resource = section;
+  const [selectedBrand, setSelectedBrand] = useState<Reference | null>(null);
+  const resource = section === "brands" && selectedBrand ? "products" : section;
+  const brandScope = resource === "products" && selectedBrand ? `brand=${selectedBrand.id}` : "";
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [editing, setEditing] = useState<Entry | "new" | null>(null);
@@ -103,9 +105,9 @@ export function ManagementDashboard({
     retry: false,
   });
   const entries = useQuery({
-    queryKey: ["management", resource, search, page],
+    queryKey: ["management", resource, search, page, selectedBrand?.id],
     queryFn: () =>
-      managementApi<Page<Entry>>(`${resource}/?search=${encodeURIComponent(search)}&page=${page}`),
+      managementApi<Page<Entry>>(`${resource}/?search=${encodeURIComponent(search)}&page=${page}&${brandScope}`),
     enabled: Boolean(session.data?.user) && resource === "products",
     retry: false,
   });
@@ -117,7 +119,7 @@ export function ManagementDashboard({
     },
   });
   const remove = useMutation({
-    mutationFn: (entry: Entry) => managementApi(`${resource}/${entry.id}/`, "DELETE"),
+    mutationFn: (entry: Entry) => managementApi(`${resource}/${entry.id}/?${brandScope}`, "DELETE"),
     onSuccess: () => {
       setDeleting(null);
       setNotice("Deleted successfully.");
@@ -195,12 +197,13 @@ export function ManagementDashboard({
           </div>
           <p className={styles.sidebarSection}>CATALOG</p>
           <nav className={styles.sidebarNav} aria-label="Management sections">
-            {(["products", "brands", "categories"] as Resource[]).map((item) => (
+            {(["brands", "categories"] as Resource[]).map((item) => (
               <Link
                 key={item}
                 href={`/management/admin/${item}`}
-                className={`${styles.sidebarLink} ${resource === item ? styles.activeTab : ""}`}
-                aria-current={resource === item ? "page" : undefined}
+                onClick={() => { setSelectedBrand(null); setSearch(""); setPage(1); setNotice(""); }}
+                className={`${styles.sidebarLink} ${section === item ? styles.activeTab : ""}`}
+                aria-current={section === item ? "page" : undefined}
               >
                 <span className={styles.sidebarIcon} aria-hidden="true">
                   {item === "products" ? "P" : item === "brands" ? "B" : "C"}
@@ -221,11 +224,12 @@ export function ManagementDashboard({
             <div className={styles.intro}>
               <div>
                 <p className={styles.eyebrow}>YOUR STORE WORKSPACE</p>
-                <h1>Manage your catalog</h1>
+                <h1>{selectedBrand ? `${selectedBrand.name} products` : "Manage your catalog"}</h1>
                 <p className={styles.muted}>
-                  Create products, organize brands and keep your catalog up to date.
+                  Manage products for this brand.
                 </p>
               </div>
+              {selectedBrand && <button className={styles.secondary} onClick={() => { setSelectedBrand(null); setSearch(""); setPage(1); setNotice(""); }}>Back to brands</button>}
             </div>
           )}
 
@@ -260,7 +264,7 @@ export function ManagementDashboard({
               </button>
             </div>
           )}
-          {resource === "brands" && <BrandWorkspace onAdd={() => setEditing("new")} onEdit={setEditing} onDelete={entry => { remove.reset(); setDeleting(entry); }} />}
+          {resource === "brands" && <BrandWorkspace onAdd={() => setEditing("new")} onEdit={setEditing} onDelete={entry => { remove.reset(); setDeleting(entry); }} onProducts={brand => { setSelectedBrand(brand); setSearch(""); setPage(1); setNotice(""); }} />}
           {resource === "categories" && (
             <CategoryCards
               parentId={categoryParent}
@@ -413,6 +417,7 @@ export function ManagementDashboard({
           {editing && resource !== "categories" && (
             <Editor
               resource={resource}
+              fixedBrand={resource === "products" ? selectedBrand : null}
               entry={editing}
               onClose={() => setEditing(null)}
               onSaved={() => {
@@ -468,11 +473,13 @@ function Editor({
   entry,
   onClose,
   onSaved,
+  fixedBrand = null,
 }: {
   resource: Resource;
   entry: Entry | "new";
   onClose: () => void;
   onSaved: () => void;
+  fixedBrand?: Reference | null;
 }) {
   const product = entry !== "new" && "sku" in entry ? entry : null;
   const [mediaPending, setMediaPending] = useState(false);
@@ -503,7 +510,7 @@ function Editor({
             "",
       sku: product?.sku || "",
       description: product?.description || "",
-      brand: product ? String(product.brand) : "",
+      brand: fixedBrand ? String(fixedBrand.id) : product ? String(product.brand) : "",
       category: product ? String(product.category) : "",
       price: product?.price || "",
       compare_at_price: product?.compare_at_price || "",
@@ -525,7 +532,7 @@ function Editor({
         resource === "products"
           ? {
               ...rest,
-              brand: Number(values.brand),
+              brand: fixedBrand?.id ?? Number(values.brand),
               category: Number(values.category),
               compare_at_price: values.compare_at_price || null,
               currency: "INR",
@@ -539,7 +546,7 @@ function Editor({
               display_order: Number(display_order || 0),
             };
       return managementApi(
-        `${resource}/${entry === "new" ? "" : `${entry.id}/`}`,
+        `${resource}/${entry === "new" ? "" : `${entry.id}/`}${fixedBrand ? `?brand=${fixedBrand.id}` : ""}`,
         entry === "new" ? "POST" : "PATCH",
         data,
       );
@@ -608,9 +615,9 @@ function Editor({
             <div className={styles.formGrid}>
               <label>
                 Brand
-                <select aria-label="Brand" {...form.register("brand")}>
-                  <option value="">Select brand</option>
-                  {references.data?.brands.map((brand) => (
+                <select aria-label="Brand" aria-readonly={Boolean(fixedBrand)} {...form.register("brand")}>
+                  {!fixedBrand && <option value="">Select brand</option>}
+                  {(fixedBrand ? [fixedBrand] : references.data?.brands)?.map((brand) => (
                     <option key={brand.id} value={brand.id}>
                       {brand.name}
                     </option>

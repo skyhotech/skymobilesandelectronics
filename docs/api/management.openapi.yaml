@@ -576,6 +576,13 @@ paths:
     get:
       operationId: management_products_list
       parameters:
+      - in: query
+        name: brand
+        schema:
+          type: integer
+          minimum: 1
+        description: Limit reads and writes to this brand. Supplied product brands
+          must match.
       - name: page
         required: false
         in: query
@@ -601,6 +608,14 @@ paths:
           description: ''
     post:
       operationId: management_products_create
+      parameters:
+      - in: query
+        name: brand
+        schema:
+          type: integer
+          minimum: 1
+        description: Limit reads and writes to this brand. Supplied product brands
+          must match.
       tags:
       - management
       requestBody:
@@ -628,6 +643,13 @@ paths:
     get:
       operationId: management_products_retrieve
       parameters:
+      - in: query
+        name: brand
+        schema:
+          type: integer
+          minimum: 1
+        description: Limit reads and writes to this brand. Supplied product brands
+          must match.
       - in: path
         name: id
         schema:
@@ -648,6 +670,13 @@ paths:
     put:
       operationId: management_products_update
       parameters:
+      - in: query
+        name: brand
+        schema:
+          type: integer
+          minimum: 1
+        description: Limit reads and writes to this brand. Supplied product brands
+          must match.
       - in: path
         name: id
         schema:
@@ -680,6 +709,13 @@ paths:
     patch:
       operationId: management_products_partial_update
       parameters:
+      - in: query
+        name: brand
+        schema:
+          type: integer
+          minimum: 1
+        description: Limit reads and writes to this brand. Supplied product brands
+          must match.
       - in: path
         name: id
         schema:
@@ -711,6 +747,13 @@ paths:
     delete:
       operationId: management_products_destroy
       parameters:
+      - in: query
+        name: brand
+        schema:
+          type: integer
+          minimum: 1
+        description: Limit reads and writes to this brand. Supplied product brands
+          must match.
       - in: path
         name: id
         schema:

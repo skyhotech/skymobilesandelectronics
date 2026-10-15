@@ -1,5 +1,17 @@
 # SKY frontend management
 
+## Products inside Brands
+
+The sidebar contains Brands and Categories. Every brand card has a **Products**
+button that opens its product manager within the Brands page, without a browser
+popup or leaving `/management/admin/brands`. Use **Back to brands** to return.
+Search, pagination, add/edit/delete and image uploads operate on the selected
+brand. New products have that brand selected and cannot switch to another brand
+inside this panel. Django validates the `brand` scope independently.
+
+`/management/admin` opens Brands; the old `/management/admin/products` URL redirects
+to Brands. Existing products and public storefront product pages are preserved.
+
 The management top bar stays visible while scrolling and uses the existing SKY
 logo linked to the dashboard. The sidebar offsets itself below the bar, including
 when mobile controls wrap. View website and Sign out remain accessible.
@@ -60,7 +72,7 @@ The frontend owner login uses a responsive SKY-branded split layout on desktop a
 
 ## Dashboard layout
 
-At widths768px and above, management navigation occupies25% and main content75% of the dashboard workspace. Sidebar navigation switches between Products, Brands and Categories and provides advanced administration access. Below768px navigation becomes a compact row above the content. Live owner CRUD browser coverage also checks the desktop1:3 width ratio and horizontal overflow at1440/1024/768/390px. Production build, typecheck and lint passed.
+At widths768px and above, management navigation occupies25% and main content75% of the dashboard workspace. Sidebar navigation switches between Brands and Categories; products are managed inside each brand card. Below768px navigation becomes a compact row above the content. Live owner CRUD browser coverage also checks the desktop1:3 width ratio and horizontal overflow at1440/1024/768/390px. Production build, typecheck and lint passed.
 
 
 ## Manage Explore Our Categories

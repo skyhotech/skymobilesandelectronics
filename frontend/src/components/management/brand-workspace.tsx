@@ -7,14 +7,15 @@ import { Icon } from "./category-cards";
 import { BrandCards } from "./brand-cards";
 import styles from "./category-manager.module.css";
 
-export function BrandWorkspace({ onAdd, onEdit, onDelete }: {
+export function BrandWorkspace({ onAdd, onEdit, onDelete, onProducts }: {
   onAdd: () => void; onEdit: (brand: Reference) => void; onDelete: (brand: Reference) => void;
+  onProducts: (brand: Reference) => void;
 }) {
   const cache = useQueryClient();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<"all" | "active" | "inactive">("all");
   const [view, setView] = useState<"grid" | "list">("grid");
-  const brands = useQuery({ queryKey: ["management", "brands", "cards"], queryFn: () => allReferences("brands"), retry: false });
+  const brands = useQuery({ queryKey: ["management", "brands", "cards"], queryFn: () => allReferences("brands"), staleTime: 0, retry: false });
   const move = useMutation({
     mutationFn: ({ id, before }: { id: number; before: number | null }) => managementApi("brands/move/", "POST", { id, before }),
     onSuccess: async () => {
@@ -46,7 +47,7 @@ export function BrandWorkspace({ onAdd, onEdit, onDelete }: {
         </div>
         {brands.isPending ? <p role="status">Loading brands…</p> : brands.error ? <div className={styles.emptyState}><p role="alert">{brands.error.message}</p><button className={styles.primaryButton} onClick={() => brands.refetch()}>Retry</button></div> : <>
           {!visible.length && <div className={styles.emptyState}><h2>No matching brands</h2><p>Try another search or add a brand.</p></div>}
-          <BrandCards brands={visible} view={view} disabled={!!query.trim() || filter !== "all"} saving={move.isPending} onMove={(id, before) => move.mutate({ id, before })} onAdd={onAdd} onEdit={onEdit} onDelete={onDelete} />
+          <BrandCards brands={visible} view={view} disabled={!!query.trim() || filter !== "all"} saving={move.isPending} onMove={(id, before) => move.mutate({ id, before })} onAdd={onAdd} onEdit={onEdit} onDelete={onDelete} onProducts={onProducts} />
         </>}
         {move.isPending && <p role="status">Saving brand order…</p>}
         {move.error && <p role="alert">{move.error.message}</p>}

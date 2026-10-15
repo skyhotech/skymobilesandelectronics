@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ManagementDashboard } from "@/components/management/dashboard";
 
 export default async function AdminSection({
@@ -7,6 +7,7 @@ export default async function AdminSection({
   params: Promise<{ section: string; categoryPath?: string[] }>;
 }) {
   const { section, categoryPath = [] } = await params;
+  if (section === "products" && categoryPath.length === 0) redirect("/management/admin/brands");
   if (!["products", "brands", "categories"].includes(section)) notFound();
   if (
     categoryPath.length > 1 ||

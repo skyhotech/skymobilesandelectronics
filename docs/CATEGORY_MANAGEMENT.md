@@ -43,12 +43,13 @@ or delete the children first. Existing product-category protections still apply.
 
 ## Nested category cards
 
-The sidebar uses real URLs: `/management/admin/products`,
-`/management/admin/brands`, and `/management/admin/categories`.
+The sidebar uses real URLs: `/management/admin/brands` and
+`/management/admin/categories`. Products open inside each brand card's Products panel.
 Opening a category card goes to `/management/admin/categories/<id>` and shows
 only that category's immediate subcategories. Open another card to go deeper.
 Breadcrumbs, direct links, page refresh and browser Back preserve the folder.
-The root `/management/admin` remains a compatible entry to the products section.
+The root `/management/admin` opens Brands. The old standalone product management
+URL redirects to Brands; it does not delete product data.
 
 Each card displays its image, name, status, subcategory count and Edit/Delete
 controls. Add category inside a folder automatically selects that parent.

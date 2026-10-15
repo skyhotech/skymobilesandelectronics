@@ -1,5 +1,25 @@
 # Project status - 15 October 2026
 
+## Product management inside brand cards
+
+Removed the standalone Products navigation item; admin entry now shows Brands.
+Each card opens a brand-specific product panel within the same Brands page. The
+existing product editor, image uploads, search, pagination, validation and deletion
+are reused; selected brand is fixed in the editor. Back to brands restores the
+directory. The old management Products URL redirects to Brands. Public product
+pages and existing data are preserved.
+
+Django management products accept optional positive `brand` scope on CRUD. Lists
+and detail lookup are constrained; mismatched create/update payloads are rejected.
+Unscoped API clients remain compatible. OpenAPI updated; no migrations.
+
+Verified: 99 backend tests, 28 frontend tests, production build, typecheck and
+targeted lint passed. Live browser tests passed for scoped product CRUD/image
+uploads, excluding another brand's product, fixed-brand form, redirect/back,
+responsive layout, brand drag persistence/homepage updates and category navigation.
+Temporary test records were cleaned up; existing brand orders restored.
+Production, native touch and Playwright MCP remain NOT TESTED.
+
 ## Brands workspace matches Categories
 
 Replaced the brand table with the shared Categories workspace styling: summary

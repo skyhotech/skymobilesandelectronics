@@ -10,7 +10,7 @@ from django.urls import include, path
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from redis.exceptions import RedisError
 from rest_framework import filters, permissions, serializers, status, viewsets
 from rest_framework.authentication import SessionAuthentication
@@ -208,10 +208,46 @@ class ManagementViewSet(viewsets.ModelViewSet):
             )
 
 
+@extend_schema(parameters=[OpenApiParameter(
+    name="brand",
+    type={"type": "integer", "minimum": 1},
+    location=OpenApiParameter.QUERY,
+    required=False,
+    description="Limit reads and writes to this brand. Supplied product brands must match.",
+)])
 class ProductViewSet(ManagementViewSet):
     queryset = Product.objects.select_related("brand", "category").all()
     serializer_class = ProductSerializer
     search_fields = ("name", "sku")
+
+    def scoped_brand_id(self):
+        if "brand" in self.request.query_params:
+            field = serializers.IntegerField(min_value=1)
+            try:
+                return field.run_validation(self.request.query_params["brand"])
+            except serializers.ValidationError as error:
+                raise serializers.ValidationError({"brand": error.detail}) from error
+        return None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        brand_id = self.scoped_brand_id()
+        if brand_id is not None:
+            queryset = queryset.filter(brand_id=brand_id)
+        return queryset
+
+    def save_scoped_product(self, serializer):
+        brand_id = self.scoped_brand_id()
+        brand = serializer.validated_data.get("brand")
+        if brand_id is not None and brand is not None and brand.pk != brand_id:
+            raise serializers.ValidationError({"brand": "Choose the brand being managed."})
+        serializer.save()
+
+    def perform_create(self, serializer):
+        self.save_scoped_product(serializer)
+
+    def perform_update(self, serializer):
+        self.save_scoped_product(serializer)
 
 
 class BrandMoveSerializer(serializers.Serializer):

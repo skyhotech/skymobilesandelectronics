@@ -14,7 +14,7 @@ test("banner media renders through the shared component and missing images fall 
   await page.getByLabel("Username", { exact: true }).fill(process.env.SKY_ADMIN_USERNAME!);
   await page.getByLabel("Password", { exact: true }).fill(process.env.SKY_ADMIN_PASSWORD!);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Manage your catalog" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Brands", exact: true })).toBeVisible();
   const session = await (await page.request.get("/management/api/session/")).json();
   const headers = { "X-CSRFToken": session.csrfToken };
   try {
