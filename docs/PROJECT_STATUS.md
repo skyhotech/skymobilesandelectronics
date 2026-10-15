@@ -1,5 +1,11 @@
 # Project status - 15 October 2026
 
+## Login Redis outage fix
+
+Docker Engine was stopped, making configured loopback Redis cache/Channels/broker connections time out. Started Docker Desktop and the existing Redis-only Compose service without changing database volumes. Verified PING, cross-process cache access, Channels delivery and broker connection.
+
+Login throttle storage failures now return JSON 503 with Retry-After instead of an unhandled 500. Login fails closed; CSRF, owner authorization and 429 throttling remain enforced. Verification: 76 backend tests passed; two browser tests passed for outage messaging and real owner login/logout at `http://localhost:3000`. Targeted lint passed; existing unrelated E501 lines in management API were excluded from its lint check. Production and Playwright MCP: NOT TESTED. Use localhost for this local setup; 127.0.0.1 is a separate origin and is not in its configured CSRF trusted origins.
+
 Scope: Next.js storefront/admin and Django API. Preserve existing data; no live WordPress changes.
 
 ## Current milestone: public catalog

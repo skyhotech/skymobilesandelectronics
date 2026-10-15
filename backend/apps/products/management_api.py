@@ -1,21 +1,25 @@
 """Owner-only management APIs; the customer catalog remains a separate contract."""
 
+import logging
+
 from django.contrib.auth import authenticate, login, logout
-from django.db.models.deletion import ProtectedError
 from django.db import transaction
+from django.db.models.deletion import ProtectedError
 from django.middleware.csrf import get_token
 from django.urls import include, path
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from drf_spectacular.utils import extend_schema
+from redis.exceptions import RedisError
 from rest_framework import filters, permissions, serializers, status, viewsets
 from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import action
+from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
-from rest_framework.decorators import action
 
 from apps.brands.models import Brand
 from apps.categories.api import CategorySerializer, ManagementCategoryTreeSerializer
@@ -54,9 +58,25 @@ class ManagementErrorSerializer(serializers.Serializer):
     detail = serializers.CharField()
 
 
+class LoginServiceUnavailable(APIException):
+    status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+    default_detail = "Sign-in is temporarily unavailable. Please try again shortly."
+    default_code = "login_unavailable"
+    wait = 10
+
+
 class ManagementLoginThrottle(AnonRateThrottle):
     scope = "management_login"
     rate = "10/min"
+
+    def allow_request(self, request, view):
+        try:
+            return super().allow_request(request, view)
+        except RedisError as error:
+            # Fail closed: never authenticate without the shared login limiter.
+            # Do not include connection URLs, credentials or submitted data in logs.
+            logging.getLogger(__name__).error("Login rate-limit storage is unavailable")
+            raise LoginServiceUnavailable() from error
 
     def get_cache_key(self, request, view):
         # Authenticated staff must not bypass login-attempt rate limiting.
@@ -92,6 +112,7 @@ class ManagementSession(APIView):
             400: ManagementErrorSerializer,
             403: ManagementErrorSerializer,
             429: ManagementErrorSerializer,
+            503: ManagementErrorSerializer,
         },
     )
     def post(self, request):

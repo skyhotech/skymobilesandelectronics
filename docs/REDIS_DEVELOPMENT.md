@@ -42,6 +42,19 @@ polling. Enabling Redis here does not silently turn those endpoints into WebSock
 DRF's cache-based throttle is best-effort, not a strict atomic rate-limit guarantee.
 Start Redis before using endpoints that depend on caching/throttling.
 
+## Login timeouts / stopped Docker Engine
+
+If session GET succeeds but login POST times out, check Docker Desktop and run
+`scripts/start-redis.ps1`, then `backend/.venv/Scripts/python.exe scripts/check_redis.py`.
+Session bootstrap does not use the login limiter; a successful GET does not prove
+Redis is reachable. Start only Redis; do not recreate database volumes.
+
+Login now fails closed with JSON HTTP 503 and `Retry-After: 10` if Redis rejects
+or times out while reading/writing throttle state. Authentication is not attempted
+without that state. The existing frontend displays the message and permits retry.
+Healthy Redis continues to enforce HTTP 429 after ten attempts per minute.
+No in-process fallback or disabled throttling is used.
+
 Verified locally: Redis PING, cross-process cache access, Channels group delivery,
 Celery broker connectivity, cache persistence after actual container recreation,
 and HTTP 200 from Django readiness. All 53 backend tests passed. Docker Desktop

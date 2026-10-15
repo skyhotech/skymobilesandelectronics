@@ -738,6 +738,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ManagementError'
           description: ''
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementError'
+          description: ''
     delete:
       operationId: management_session_destroy
       tags:
