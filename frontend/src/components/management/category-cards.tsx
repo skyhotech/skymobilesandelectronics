@@ -1,5 +1,7 @@
 "use client";
 
+import { DirectoryFilterOptions } from "./directory-filters";
+import { defaultDirectoryFilters, directoryFiltersActive, filterDirectory } from "@/lib/directory-filters";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -123,6 +125,7 @@ export function CategoryCards({
   onDelete: (entry: Reference) => void;
 }) {
   const cache = useQueryClient();
+  const [extraFilters, setExtraFilters] = useState(defaultDirectoryFilters);
   const [filter, setFilter] = useState<Filter>("all");
   const [view, setView] = useState<View>("grid");
   const [query, setQuery] = useState("");
@@ -244,20 +247,21 @@ export function CategoryCards({
 
   const matchesFilter = (node: HomepageCategory) =>
     filter === "all" || (filter === "active" ? node.is_active : !node.is_active);
-  const sorted = (children.get(parentId) ?? []).filter(matchesFilter);
+  const sorted = filterDirectory((children.get(parentId) ?? []).filter(matchesFilter), extraFilters, node => node.image_url);
   // While dragging, show the live preview order so cards swap instantly under the pointer.
   const siblings = preview
     ? preview.order.map((id) => byId.get(id)).filter((node): node is HomepageCategory => !!node)
     : sorted;
   const needle = query.trim().toLowerCase();
   const searching = needle.length > 0;
+  const canReorder = !searching && filter === "all" && !directoryFiltersActive(extraFilters);
   const visible = searching
-    ? nodes
+    ? filterDirectory(nodes
         .filter(
           (node) =>
             matchesFilter(node) && `${node.name} ${node.slug}`.toLowerCase().includes(needle),
         )
-        .sort((a, b) => a.name.localeCompare(b.name))
+        .sort((a, b) => a.name.localeCompare(b.name)), extraFilters, node => node.image_url)
     : sorted;
 
   const stats = {
@@ -570,6 +574,7 @@ export function CategoryCards({
                 </button>
               ))}
             </div>
+            <DirectoryFilterOptions value={extraFilters} onChange={setExtraFilters} onClear={() => { setQuery(""); setFilter("all"); setExtraFilters(defaultDirectoryFilters); }} />
             <div className={styles.segmented} role="group" aria-label="Layout">
               <button
                 type="button"
@@ -633,7 +638,7 @@ export function CategoryCards({
                       >
                         {node.is_active ? "Active" : "Inactive"}
                       </span>
-                      {!searching && (
+                      {canReorder && (
                         <button
                           type="button"
                           className={styles.dragHandle}
@@ -739,7 +744,7 @@ export function CategoryCards({
                       >
                         Delete
                       </button>
-                      {!searching && (
+                      {canReorder && (
                         <span className={styles.orderButtons}>
                           <button
                             className={styles.iconButton}

@@ -18,5 +18,10 @@ describe("public catalog contract", () => {
     expect(catalogParams({ brand }).get("brand")).toBe(brand);
     expect(catalogParams({ category: "foo/bar", brand: "a".repeat(141) }).toString()).toBe("");
   });
+  it("preserves decimal price bounds and rejects unsafe or invalid price input", () => {
+    expect(catalogParams({ min_price: "100.01", max_price: "200" }).toString()).toBe("min_price=100.01&max_price=200");
+    expect(catalogParams({ min_price: "-1", max_price: "NaN" }).toString()).toBe("");
+    expect(catalogParams({ min_price: "1.001", max_price: "1e9" }).toString()).toBe("");
+  });
   it("formats INR for customers", () => { expect(formatPrice("12000.00")).toContain("12,000.00"); });
 });

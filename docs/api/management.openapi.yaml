@@ -597,6 +597,41 @@ paths:
           minimum: 1
         description: Limit reads and writes to this brand. Supplied product brands
           must match.
+      - in: query
+        name: category
+        schema:
+          type: integer
+          minimum: 1
+      - in: query
+        name: max_price
+        schema:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+      - in: query
+        name: min_price
+        schema:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+      - in: query
+        name: ordering
+        schema:
+          enum:
+          - name
+          - -name
+          - price
+          - -price
+          - -id
+          type: string
+          default: name
+          minLength: 1
+        description: |-
+          * `name` - name
+          * `-name` - -name
+          * `price` - price
+          * `-price` - -price
+          * `-id` - -id
       - name: page
         required: false
         in: query
@@ -609,6 +644,20 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: status
+        schema:
+          enum:
+          - all
+          - active
+          - inactive
+          type: string
+          default: all
+          minLength: 1
+        description: |-
+          * `all` - all
+          * `active` - active
+          * `inactive` - inactive
       tags:
       - management
       security:
@@ -900,6 +949,18 @@ paths:
           pattern: ^[-a-zA-Z0-9_]+$
           minLength: 1
       - in: query
+        name: max_price
+        schema:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+      - in: query
+        name: min_price
+        schema:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+      - in: query
         name: ordering
         schema:
           enum:
@@ -956,6 +1017,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CatalogProduct'
+          description: ''
+  /api/v1/products/filters/options/:
+    get:
+      operationId: products_filters_options_retrieve
+      tags:
+      - products
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductFilterOptions'
           description: ''
 components:
   schemas:
@@ -1714,6 +1789,20 @@ components:
       - sku
       - slug
       - updated_at
+    ProductFilterOptions:
+      type: object
+      properties:
+        brands:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogBrand'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogCategory'
+      required:
+      - brands
+      - categories
     PublicBrand:
       type: object
       properties:

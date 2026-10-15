@@ -1,5 +1,22 @@
 # Project status - 15 October 2026
 
+## Listing filters and Themes
+
+Added shared validated price filters and owner product status/category/order filters,
+plus published-only catalog filter options. Customer catalog now has brand/category
+selectors and price bounds. Admin directories add homepage/image/order filters with
+safe drag restrictions and reset; global search adds record-type filtering.
+Themes sits below Dashboard and shows the existing Default theme selected. No
+homepage design, theme persistence, database schema or production settings changed.
+
+Verified: 117 existing backend tests and 11 new filter tests passed; 30 frontend
+unit tests, typecheck, lint, production build and OpenAPI validation passed. Browser
+checks passed for combined directory/product/catalog filters, range errors, reset,
+refresh, record-type search and the protected Themes route at four viewport widths.
+The existing optional live-product fixture test was skipped; isolated products were
+created and deleted by the filter/search tests. Playwright MCP unavailable; installed
+Playwright Test used. Production remains NOT TESTED.
+
 ## Global search
 
 Added owner-only `/api/v1/management/search/?q=...`, sticky top-bar suggestions,

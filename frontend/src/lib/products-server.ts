@@ -1,6 +1,6 @@
 import "server-only";
 import { cache } from "react";
-import { productPageSchema, productSchema, catalogParams, type CatalogFilters } from "./products";
+import { productPageSchema, productSchema, productFilterOptionsSchema, catalogParams, type CatalogFilters } from "./products";
 
 export class CatalogUnavailable extends Error {}
 
@@ -27,3 +27,10 @@ export const loadProduct = cache(async (slug: string) => {
   try { return productSchema.parse(await response.json()); }
   catch { throw new CatalogUnavailable("Invalid product response"); }
 });
+
+export async function loadProductFilterOptions() {
+  const response = await read("filters/options/");
+  if (!response.ok) throw new CatalogUnavailable("Filter options unavailable");
+  try { return productFilterOptionsSchema.parse(await response.json()); }
+  catch { throw new CatalogUnavailable("Invalid filter options"); }
+}

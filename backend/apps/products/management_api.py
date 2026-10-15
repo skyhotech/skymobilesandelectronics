@@ -28,6 +28,7 @@ from apps.categories.api import CategorySerializer, ManagementCategoryTreeSerial
 from apps.categories.hierarchy import published_categories
 from apps.categories.models import Category, CategoryTreeState
 from apps.media_library.api import MediaReferenceField
+from common.product_filters import ManagementProductFilters, filter_prices
 from common.search import search_queryset
 
 from .models import Product
@@ -264,6 +265,10 @@ class ManagementViewSet(viewsets.ModelViewSet):
     description="Limit reads and writes to this brand. Supplied product brands must match.",
 )])
 class ProductViewSet(ManagementViewSet):
+    @extend_schema(parameters=[ManagementProductFilters])
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
     queryset = Product.objects.select_related("brand", "category").all()
     serializer_class = ProductSerializer
     search_fields = ("name", "sku", "description", "brand__name", "category__name")
@@ -282,6 +287,16 @@ class ProductViewSet(ManagementViewSet):
         brand_id = self.scoped_brand_id()
         if brand_id is not None:
             queryset = queryset.filter(brand_id=brand_id)
+        # Listing filters must never hide the target of a read/update/delete request.
+        if self.action == "list":
+            payload = ManagementProductFilters(data=self.request.query_params)
+            payload.is_valid(raise_exception=True)
+            values = payload.validated_data
+            if values["status"] != "all":
+                queryset = queryset.filter(is_active=values["status"] == "active")
+            if "category" in values:
+                queryset = queryset.filter(category_id=values["category"])
+            queryset = filter_prices(queryset, values).order_by(values["ordering"], "id")
         return queryset
 
     def save_scoped_product(self, serializer):

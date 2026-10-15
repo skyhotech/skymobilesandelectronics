@@ -2,10 +2,13 @@
 
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics, permissions, serializers
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from apps.brands.models import Brand
 from apps.categories.models import Category
 from apps.media_library.api import MediaReferenceField
+from common.product_filters import PriceFilters, filter_prices
 from common.search import search_queryset
 
 from .models import Product
@@ -36,7 +39,7 @@ class CatalogProductSerializer(serializers.ModelSerializer):
         )
 
 
-class CatalogFilters(serializers.Serializer):
+class CatalogFilters(PriceFilters):
     search = serializers.CharField(required=False, allow_blank=True, max_length=120)
     category = serializers.SlugField(required=False, max_length=140)
     brand = serializers.SlugField(required=False, max_length=140)
@@ -74,8 +77,26 @@ class ProductList(CatalogMixin, generics.ListAPIView):
             queryset = queryset.filter(category__slug=values["category"])
         if values.get("brand"):
             queryset = queryset.filter(brand__slug=values["brand"])
-        return queryset.order_by(values["ordering"], "id")
+        return filter_prices(queryset, values).order_by(values["ordering"], "id")
 
 
 class ProductDetail(CatalogMixin, generics.RetrieveAPIView):
     lookup_field = "slug"
+
+
+class ProductFilterOptionsSerializer(serializers.Serializer):
+    brands = CatalogBrandSerializer(many=True)
+    categories = CatalogCategorySerializer(many=True)
+
+
+class ProductFilterOptions(CatalogMixin, APIView):
+    @extend_schema(responses={200: ProductFilterOptionsSerializer})
+    def get(self, request):
+        products = self.get_queryset()
+        brands = Brand.objects.filter(pk__in=products.values("brand_id")).order_by("name", "id")
+        categories = Category.objects.filter(
+            pk__in=products.values("category_id")
+        ).order_by("name", "id")
+        return Response(ProductFilterOptionsSerializer({
+            "brands": brands, "categories": categories,
+        }).data)

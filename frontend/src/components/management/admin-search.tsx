@@ -10,6 +10,7 @@ import styles from "./admin-search.module.css";
 
 const schema = z.object({ results: z.array(z.object({ kind: z.enum(["brand", "category", "product"]), id: z.number().int().positive(), name: z.string(), brand_id: z.number().int().positive().nullable() })) });
 const pages = [
+  { name: "Themes", href: "/management/admin/themes", terms: "themes theme appearance homepage design style" },
   { name: "Dashboard", href: "/management/admin/dashboard", terms: "dashboard overview totals home" },
   { name: "Brands", href: "/management/admin/brands", terms: "brands brand manufacturers companies" },
   { name: "Categories", href: "/management/admin/categories", terms: "categories category folders" },
@@ -22,6 +23,7 @@ export function AdminSearch() {
   const [value, setValue] = useState("");
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
+  const [resultType, setResultType] = useState("all");
   const [active, setActive] = useState(0);
   useEffect(() => { const timer = setTimeout(() => setQuery(value.trim()), 250); return () => clearTimeout(timer); }, [value]);
   useEffect(() => {
@@ -40,7 +42,7 @@ export function AdminSearch() {
     name: result.name, kind: result.kind,
     href: result.kind === "category" ? `/management/admin/categories/${result.id}` : `/management/admin/brands?${new URLSearchParams({ brand: String(result.kind === "brand" ? result.id : result.brand_id), ...(result.kind === "product" ? { search: result.name } : {}) })}`,
   }));
-  const results = [...navigation, ...records];
+  const results = [...navigation, ...records].filter(result => resultType === "all" || result.kind === resultType);
   const close = () => { setOpen(false); setValue(""); setQuery(""); };
   return <div ref={root} className={styles.search} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false); }}>
     <label className={styles.field}>
@@ -54,6 +56,7 @@ export function AdminSearch() {
         }} />
     </label>
     {open && <div className={styles.results}>
+      <label className={styles.typeFilter}>Search in<select aria-label="Search result type" value={resultType} onChange={event => { setResultType(event.target.value); setActive(0); }}><option value="all">All administration</option><option value="Page">Pages</option><option value="brand">Brands</option><option value="category">Categories</option><option value="product">Products</option></select></label>
       {value.trim().length < 2 ? <p>Search pages, brands, categories or products. Use any letter case.</p> : value.trim() !== query || search.isFetching ? <p role="status">Searching…</p> : null}
       {search.error && <p role="alert">Catalog search is unavailable. Try again shortly.</p>}
       <div id={id} role="listbox" aria-label="Admin search results">{value.trim() === query && results.map((result, index) => <Link role="option" id={`${id}-${index}`} aria-selected={active === index} className={styles.result} href={result.href} key={`${result.kind}-${result.href}`} onMouseEnter={() => setActive(index)} onClick={close}><strong>{result.name}</strong><small>{result.kind}</small></Link>)}</div>

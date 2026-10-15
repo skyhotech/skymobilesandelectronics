@@ -23,15 +23,18 @@ import { CategoryCards, categoryUrl } from "./category-cards";
 import { MediaUploadField } from "./media-upload-field";
 import { BrandWorkspace } from "./brand-workspace";
 import { ManagementOverview } from "./overview";
+import { ManagementThemes } from "./themes";
 import { AdminSearch } from "./admin-search";
+import { ProductFilters, defaultProductFilters } from "./product-filters";
 
-type Resource = "products" | "brands" | "categories" | "dashboard";
+type Resource = "products" | "brands" | "categories" | "dashboard" | "themes";
 type Entry = Reference | Product;
 const singular: Record<Resource, string> = {
   products: "product",
   brands: "brand",
   categories: "category",
   dashboard: "dashboard",
+  themes: "theme",
 };
 const money = z
   .string()
@@ -84,6 +87,8 @@ export function ManagementDashboard({
   const brandScope = resource === "products" && selectedBrand ? `brand=${selectedBrand.id}` : "";
   const [search, setSearch] = useState(initialSearch);
   const [page, setPage] = useState(1);
+  const [productFilters, setProductFilters] = useState(defaultProductFilters);
+  const filterParams = new URLSearchParams(Object.entries(productFilters).filter(([, value]) => value !== ""));
   const [editing, setEditing] = useState<Entry | "new" | null>(null);
   const [deleting, setDeleting] = useState<Entry | null>(null);
   const [notice, setNotice] = useState("");
@@ -120,9 +125,9 @@ export function ManagementDashboard({
     retry: false,
   });
   const entries = useQuery({
-    queryKey: ["management", resource, search, page, selectedBrand?.id],
+    queryKey: ["management", resource, search, page, selectedBrand?.id, productFilters],
     queryFn: () =>
-      managementApi<Page<Entry>>(`${resource}/?search=${encodeURIComponent(search)}&page=${page}&${brandScope}`),
+      managementApi<Page<Entry>>(`${resource}/?search=${encodeURIComponent(search)}&page=${page}&${brandScope}&${filterParams}`),
     enabled: Boolean(session.data?.user) && resource === "products",
     retry: false,
   });
@@ -218,7 +223,7 @@ export function ManagementDashboard({
           </div>
           <p className={styles.sidebarSection}>CATALOG</p>
           <nav className={styles.sidebarNav} aria-label="Management sections">
-            {(["dashboard", "brands", "categories"] as Resource[]).map((item) => (
+            {(["dashboard", "themes", "brands", "categories"] as Resource[]).map((item) => (
               <Link
                 key={item}
                 href={`/management/admin/${item}`}
@@ -227,7 +232,7 @@ export function ManagementDashboard({
                 aria-current={section === item ? "page" : undefined}
               >
                 <span className={styles.sidebarIcon} aria-hidden="true">
-                  {item === "dashboard" ? "D" : item === "brands" ? "B" : "C"}
+                  {item === "dashboard" ? "D" : item === "themes" ? "T" : item === "brands" ? "B" : "C"}
                 </span>
                 <span>{item[0].toUpperCase() + item.slice(1)}</span>
                 <span className={styles.sidebarArrow} aria-hidden="true">
@@ -242,6 +247,7 @@ export function ManagementDashboard({
         </aside>
         <main className={`${styles.main} ${styles.dashboardMain}`}>
           {resource === "dashboard" && <ManagementOverview />}
+          {resource === "themes" && <ManagementThemes />}
           {resource === "products" && (
             <div className={styles.intro}>
               <div>
@@ -286,8 +292,9 @@ export function ManagementDashboard({
               </button>
             </div>
           )}
+          {resource === "products" && <ProductFilters value={productFilters} onApply={value => { setProductFilters(value); setPage(1); }} onClear={() => { setProductFilters(defaultProductFilters); setSearch(""); setPage(1); }} />}
           {resource === "brands" && initialBrandId && (scopedBrand.error ? <p role="alert">Unable to load this brand. <Link href="/management/admin/brands">Back to brands</Link></p> : <p role="status">Loading brand products...</p>)}
-          {resource === "brands" && !initialBrandId && <BrandWorkspace onAdd={() => setEditing("new")} onEdit={setEditing} onDelete={entry => { remove.reset(); setDeleting(entry); }} onProducts={brand => { setSelectedBrand(brand); setSearch(""); setPage(1); setNotice(""); }} />}
+          {resource === "brands" && !initialBrandId && <BrandWorkspace onAdd={() => setEditing("new")} onEdit={setEditing} onDelete={entry => { remove.reset(); setDeleting(entry); }} onProducts={brand => { setProductFilters(defaultProductFilters); setSelectedBrand(brand); setSearch(""); setPage(1); setNotice(""); }} />}
           {resource === "categories" && (
             <CategoryCards
               parentId={categoryParent}

@@ -11,3 +11,6 @@
 .result small { font-size: 11px; color: #5a7394; }
 .result[aria-selected="true"], .result:focus-visible { background: #edf4ff; outline: 1px solid #b9d3ff; }
 @media (max-width: 640px) { .search { max-width: none; flex-basis: 100%; order: 3; } .results { min-width: 0; } }
+
+.typeFilter { display: grid; gap: 6px; padding: 8px 10px; font-size: 12px; }
+.typeFilter select { width: 100%; padding: 8px; border: 1px solid #c6d4e5; border-radius: 6px; background: white; color: #18304e; }

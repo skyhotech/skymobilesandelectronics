@@ -1,0 +1,11 @@
+.disclosure { position: relative; font-size: 13px; color: #18304e; }
+.disclosure > button { cursor: pointer; padding: 10px 12px; border: 1px solid #c6d4e5; border-radius: 8px; background: white; white-space: nowrap; color: inherit; font: inherit; }
+.popup { position: fixed; margin: 0; inset: auto; z-index: 60; display: grid; gap: 12px; padding: 16px; width: min(280px, calc(100vw - 48px)); border: 1px solid #c6d4e5; border-radius: 10px; background: white; box-shadow: 0 12px 30px #122c4b26; max-height: min(70dvh, 340px); overflow: auto; }
+.popup:not(:popover-open) { display: none; }
+.popup label, .productFilters label { display: grid; gap: 6px; font-size: 13px; min-width: 0; }
+.popup select, .popup button, .productFilters select, .productFilters input, .productFilters button { min-width: 0; width: 100%; padding: 9px; border: 1px solid #c6d4e5; border-radius: 7px; background: white; color: #18304e; font: inherit; }
+.popup p { font-size: 12px; line-height: 1.4; }
+.productFilters { display: flex; gap: 12px; flex-wrap: wrap; padding: 16px; margin-bottom: 20px; border: 1px solid #d8e2ef; background: #f4f8fc; border-radius: 12px; align-items: end; }
+.productFilters label { flex: 1 1 140px; }
+.productFilters button { width: auto; cursor: pointer; }
+.productFilters p { width: 100%; margin: 0; color: #a01b32; }

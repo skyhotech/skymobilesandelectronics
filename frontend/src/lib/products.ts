@@ -8,12 +8,13 @@ export const productSchema = z.object({
   currency: z.literal("INR"), image_url: z.string().nullable(),
   brand: reference, category: reference,
 });
+export const productFilterOptionsSchema = z.object({ brands: z.array(reference), categories: z.array(reference) });
 export const productPageSchema = z.object({
   count: z.number().int().nonnegative(), next: z.string().nullable(),
   previous: z.string().nullable(), results: z.array(productSchema),
 });
 export type CatalogProduct = z.infer<typeof productSchema>;
-export type CatalogFilters = { search?: string; category?: string; brand?: string; ordering?: string; page?: string };
+export type CatalogFilters = { search?: string; category?: string; brand?: string; ordering?: string; page?: string; min_price?: string; max_price?: string };
 export const catalogOrdering = ["name", "-name", "price", "-price"] as const;
 
 export function catalogParams(filters: CatalogFilters): URLSearchParams {
@@ -23,6 +24,10 @@ export function catalogParams(filters: CatalogFilters): URLSearchParams {
     if (!value) continue;
     if (key === "search") params.set(key, value.slice(0, 120));
     else if (/^[a-zA-Z0-9_-]{1,140}$/.test(value)) params.set(key, value);
+  }
+  for (const key of ["min_price", "max_price"] as const) {
+    const value = filters[key]?.trim();
+    if (value && /^\d{1,10}(\.\d{1,2})?$/.test(value)) params.set(key, value);
   }
   if (catalogOrdering.includes(filters.ordering as typeof catalogOrdering[number]))
     params.set("ordering", filters.ordering!);

@@ -1,5 +1,24 @@
 # SKY frontend management
 
+## Themes and filters
+
+Themes appears directly below Dashboard at `/management/admin/themes`. The existing
+homepage is the selected Default theme and the only option. This page is a starting
+point for future themes; it does not change the current homepage or save a new design.
+
+Brands and Categories retain status/search controls and add a Filters popup for
+homepage enabled/disabled settings, images present/missing and name/saved ordering.
+Clear all filters resets search, status and extra filters. Reordering is available
+only with no filters and saved order, protecting the complete sibling order.
+
+Brand product panels support status, category, minimum/maximum INR price and sorting
+by name, price or newest. Apply filters resets pagination; Clear filters resets search
+as well. Django validates the filters and always retains the selected brand scope.
+Public catalog filters include selectable brand/category, price range and sorting;
+URLs preserve selections on refresh and pagination. Options come only from published
+products. Invalid ranges display an error without applying an incorrect range.
+The global admin search also lets you choose pages, brands, categories or products.
+
 ## Global admin and storefront search
 
 The sticky top bar searches Dashboard, Brands, Categories and catalog records.
