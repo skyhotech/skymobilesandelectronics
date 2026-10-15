@@ -187,7 +187,7 @@ export function ManagementDashboard({
         </div>
       </header>
       <div className={styles.dashboardLayout}>
-        <aside className={styles.sidebar} aria-label="Management sidebar">
+        <aside className={styles.sidebar} aria-label="Management sidebar" tabIndex={0}>
           <div>
             <p className={styles.eyebrow}>MANAGEMENT</p>
             <h2>Store workspace</h2>

@@ -3,6 +3,8 @@
 The management top bar stays visible while scrolling and uses the existing SKY
 logo linked to the dashboard. The sidebar offsets itself below the bar, including
 when mobile controls wrap. View website and Sign out remain accessible.
+The brighter management sidebar has its own scrollbar-hidden scroll area and
+stays below the top bar. It supports keyboard focus and compact mobile navigation.
 
 ## Live homepage brands
 
