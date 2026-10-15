@@ -22,13 +22,15 @@ import { CategoryForm } from "./category-form";
 import { CategoryCards, categoryUrl } from "./category-cards";
 import { MediaUploadField } from "./media-upload-field";
 import { BrandWorkspace } from "./brand-workspace";
+import { ManagementOverview } from "./overview";
 
-type Resource = "products" | "brands" | "categories";
+type Resource = "products" | "brands" | "categories" | "dashboard";
 type Entry = Reference | Product;
 const singular: Record<Resource, string> = {
   products: "product",
   brands: "brand",
   categories: "category",
+  dashboard: "dashboard",
 };
 const money = z
   .string()
@@ -55,7 +57,7 @@ const productSchema = referenceSchema.extend({
 type Fields = z.infer<typeof productSchema>;
 
 export function ManagementDashboard({
-  section = "brands",
+  section = "dashboard",
   parentId = null,
 }: {
   section?: Resource;
@@ -64,6 +66,7 @@ export function ManagementDashboard({
   const router = useRouter();
   const cache = useQueryClient();
   const headerRef = useRef<HTMLElement>(null);
+  const sidebarRef = useRef<HTMLElement>(null);
   const [selectedBrand, setSelectedBrand] = useState<Reference | null>(null);
   const resource = section === "brands" && selectedBrand ? "products" : section;
   const brandScope = resource === "products" && selectedBrand ? `brand=${selectedBrand.id}` : "";
@@ -134,10 +137,15 @@ export function ManagementDashboard({
   useEffect(() => {
     const header = headerRef.current;
     if (!header) return;
-    const measure = () => header.parentElement?.style.setProperty("--admin-header-height", `${header.getBoundingClientRect().height}px`);
+    const measure = () => {
+      header.parentElement?.style.setProperty("--admin-header-height", `${header.getBoundingClientRect().height}px`);
+      const mobileHeight = window.matchMedia("(max-width: 767px)").matches ? sidebarRef.current?.getBoundingClientRect().height || 0 : 0;
+      header.parentElement?.style.setProperty("--admin-mobile-navigation-height", `${mobileHeight}px`);
+    };
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(header);
+    if (sidebarRef.current) observer.observe(sidebarRef.current);
     return () => observer.disconnect();
   }, [session.data?.user]);
   const permissionError =
@@ -189,7 +197,7 @@ export function ManagementDashboard({
         </div>
       </header>
       <div className={styles.dashboardLayout}>
-        <aside className={styles.sidebar} aria-label="Management sidebar" tabIndex={0}>
+        <aside ref={sidebarRef} className={styles.sidebar} aria-label="Management sidebar" tabIndex={0}>
           <div>
             <p className={styles.eyebrow}>MANAGEMENT</p>
             <h2>Store workspace</h2>
@@ -197,7 +205,7 @@ export function ManagementDashboard({
           </div>
           <p className={styles.sidebarSection}>CATALOG</p>
           <nav className={styles.sidebarNav} aria-label="Management sections">
-            {(["brands", "categories"] as Resource[]).map((item) => (
+            {(["dashboard", "brands", "categories"] as Resource[]).map((item) => (
               <Link
                 key={item}
                 href={`/management/admin/${item}`}
@@ -206,7 +214,7 @@ export function ManagementDashboard({
                 aria-current={section === item ? "page" : undefined}
               >
                 <span className={styles.sidebarIcon} aria-hidden="true">
-                  {item === "products" ? "P" : item === "brands" ? "B" : "C"}
+                  {item === "dashboard" ? "D" : item === "brands" ? "B" : "C"}
                 </span>
                 <span>{item[0].toUpperCase() + item.slice(1)}</span>
                 <span className={styles.sidebarArrow} aria-hidden="true">
@@ -220,6 +228,7 @@ export function ManagementDashboard({
           </div>
         </aside>
         <main className={`${styles.main} ${styles.dashboardMain}`}>
+          {resource === "dashboard" && <ManagementOverview />}
           {resource === "products" && (
             <div className={styles.intro}>
               <div>

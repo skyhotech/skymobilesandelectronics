@@ -4,6 +4,7 @@ import logging
 
 from django.contrib.auth import authenticate, login, logout
 from django.db import transaction
+from django.db.models import Count, Q
 from django.db.models.deletion import ProtectedError
 from django.middleware.csrf import get_token
 from django.urls import include, path
@@ -21,8 +22,10 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 
+from apps.brands.api import published_brands
 from apps.brands.models import Brand
 from apps.categories.api import CategorySerializer, ManagementCategoryTreeSerializer
+from apps.categories.hierarchy import published_categories
 from apps.categories.models import Category, CategoryTreeState
 from apps.media_library.api import MediaReferenceField
 
@@ -38,6 +41,41 @@ class OwnerPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         return is_owner(request.user)
+
+
+class ManagementCountsSerializer(serializers.Serializer):
+    total = serializers.IntegerField(min_value=0)
+    active = serializers.IntegerField(min_value=0)
+
+
+class ManagementHomepageCountsSerializer(ManagementCountsSerializer):
+    homepage = serializers.IntegerField(min_value=0)
+
+
+class ManagementOverviewSerializer(serializers.Serializer):
+    brands = ManagementHomepageCountsSerializer()
+    categories = ManagementHomepageCountsSerializer()
+    products = ManagementCountsSerializer()
+
+
+@method_decorator(never_cache, name="dispatch")
+class ManagementOverview(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [OwnerPermission]
+
+    @extend_schema(responses={200: ManagementOverviewSerializer})
+    def get(self, request):
+        def counts(model):
+            return model.objects.aggregate(
+                total=Count("pk"), active=Count("pk", filter=Q(is_active=True))
+            )
+
+        data = {
+            "brands": {**counts(Brand), "homepage": published_brands().count()},
+            "categories": {**counts(Category), "homepage": len(published_categories())},
+            "products": counts(Product),
+        }
+        return Response(ManagementOverviewSerializer(data).data)
 
 
 class LoginSerializer(serializers.Serializer):
@@ -369,6 +407,7 @@ router.register("brands", BrandViewSet, basename="management-brand")
 router.register("categories", CategoryViewSet, basename="management-category")
 
 management_urlpatterns = [
+    path("overview/", ManagementOverview.as_view(), name="management-overview"),
     path("session/", ManagementSession.as_view(), name="management-session"),
     path("", include(router.urls)),
 ]

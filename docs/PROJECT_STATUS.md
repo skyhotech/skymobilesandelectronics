@@ -1,5 +1,25 @@
 # Project status - 15 October 2026
 
+## Dashboard and pinned Brands workspace
+
+Admin root now opens Dashboard, the first navigation item. New owner-only read API
+`GET /api/v1/management/overview/` returns real totals/active counts for brands,
+categories and products plus brand/category homepage counts using public visibility
+rules. The dashboard validates the response, handles errors and supports refresh
+plus a 30-second foreground update. No sales, order or revenue data is invented.
+
+Brands summary/directory/filter controls stay in place; cards and directory scroll
+independently. Mobile controls compact within the available space. Drag edge-scroll
+targets the card viewport. Existing product panels remain available.
+
+Verified: 105 backend tests, 28 frontend tests, typecheck, targeted lint and production
+build passed. Live overview/brand-drag tests passed including counts against API,
+fixed controls while cards scroll at 390/768/1024/1440px, and saved ordering/homepage
+updates. Product CRUD and category navigation regression flows also passed. Final
+900px-height browser checks verified a usable card area and independently scrolling
+directory; mobile screenshots were visually inspected. Helper copy compacts on mobile.
+No migrations. Production, native touch and Playwright MCP remain NOT TESTED.
+
 ## Product management inside brand cards
 
 Removed the standalone Products navigation item; admin entry now shows Brands.

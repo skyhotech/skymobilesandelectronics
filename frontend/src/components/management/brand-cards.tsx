@@ -50,8 +50,15 @@ export function BrandCards({ brands, disabled, saving, view, onMove, onEdit, onD
             }
             const row = target(event.clientX, event.clientY);
             setOver(row ? Number(row.dataset.brandRow) : null);
-            if (event.clientY < 80) window.scrollBy(0, -16);
-            if (event.clientY > window.innerHeight - 70) window.scrollBy(0, 16);
+            const scroll = event.currentTarget.closest<HTMLElement>("[data-brand-scroll]");
+            if (scroll) {
+              const bounds = scroll.getBoundingClientRect();
+              if (event.clientY < bounds.top + 45) scroll.scrollBy(0, -16);
+              if (event.clientY > bounds.bottom - 45) scroll.scrollBy(0, 16);
+            } else {
+              if (event.clientY < 80) window.scrollBy(0, -16);
+              if (event.clientY > window.innerHeight - 70) window.scrollBy(0, 16);
+            }
           }}
           onPointerUp={event => {
             const drag = active.current;

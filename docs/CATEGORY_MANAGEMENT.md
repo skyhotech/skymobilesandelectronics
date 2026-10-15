@@ -48,7 +48,7 @@ The sidebar uses real URLs: `/management/admin/brands` and
 Opening a category card goes to `/management/admin/categories/<id>` and shows
 only that category's immediate subcategories. Open another card to go deeper.
 Breadcrumbs, direct links, page refresh and browser Back preserve the folder.
-The root `/management/admin` opens Brands. The old standalone product management
+The root `/management/admin` opens Dashboard. The old standalone product management
 URL redirects to Brands; it does not delete product data.
 
 Each card displays its image, name, status, subcategory count and Edit/Delete

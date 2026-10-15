@@ -286,6 +286,39 @@
   outline: 2px solid var(--brand);
   outline-offset: 2px;
 }
+.brandPinned {
+  height: max(360px, calc(100dvh - var(--admin-header-height, 88px) - var(--admin-mobile-navigation-height, 0px) - 72px));
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+}
+.brandPinned .body { min-height: 0; align-items: stretch; overflow: hidden; }
+.brandPinned .treePanel { position: static; height: 100%; min-height: 0; overflow: hidden; }
+.brandPinned .treePanel > nav { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.brandPinned .treeHeading, .brandPinned .treeRow { flex: none; }
+.brandPinned .brandDirectoryScroll { min-height: 0; max-height: none; flex: 1; }
+.brandPinned .content { display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+.brandPinned .toolbar { flex: none; padding: 10px; background: white; border: 1px solid var(--line); border-radius: 12px; }
+.brandCardsScroll { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; scrollbar-width: none; padding: 3px 3px 12px; }
+.brandCardsScroll::-webkit-scrollbar { display: none; }
+.brandCardsScroll:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+@media (max-width: 1100px) {
+  .brandPinned .body { grid-template-rows: auto minmax(0, 1fr); }
+  .brandPinned .treePanel { height: 144px; max-height: 144px; }
+  .brandPinned .pageHeader { padding: 12px; gap: 8px; }
+  .brandPinned .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+  .brandPinned .stats > div { padding: 8px; }
+  .brandPinned .titleBlock p { font-size: 12px; }
+}
+@media (max-width: 767px) {
+  .brandPinned { height: max(420px, calc(100dvh - var(--admin-header-height, 88px) - var(--admin-mobile-navigation-height, 0px) - 50px)); gap: 12px; }
+  .brandPinned .body { gap: 12px; }
+  .brandPinned .treePanel { height: 144px; max-height: 144px; }
+  .brandPinned .titleRow { flex-wrap: nowrap; gap: 8px; }
+  .brandPinned .titleBlock p { display: none; }
+  .brandPinned .headerActions { width: auto; flex: none; }
+  .brandPinned .headerActions > * { flex: none; }
+  .brandPinned .stats dd { font-size: 23px; }
+}
 .treeRow {
   display: flex;
   align-items: center;

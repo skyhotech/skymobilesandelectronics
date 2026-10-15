@@ -9,7 +9,7 @@ test("frontend owner product CRUD", async ({ page }) => {
   await page.getByLabel("Username", { exact: true }).fill(process.env.SKY_ADMIN_USERNAME!);
   await page.getByLabel("Password", { exact: true }).fill(process.env.SKY_ADMIN_PASSWORD!);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Brands", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Dashboard", exact: true })).toBeVisible();
   // A full server request must accept the real Django session as well.
   expect((await page.request.get("/management/admin", { maxRedirects: 0 })).status()).toBe(200);
   const sidebar = page.getByRole("complementary", { name: "Management sidebar" });

@@ -25,7 +25,7 @@ export function BrandWorkspace({ onAdd, onEdit, onDelete, onProducts }: {
   });
   const nodes = brands.data || [];
   const visible = nodes.filter(brand => (filter === "all" || brand.is_active === (filter === "active")) && `${brand.name} ${brand.slug}`.toLowerCase().includes(query.trim().toLowerCase()));
-  return <section className={styles.workspace} aria-label="Brand manager">
+  return <section className={`${styles.workspace} ${styles.brandPinned}`} aria-label="Brand manager">
     <header className={styles.pageHeader}>
       <nav className={styles.breadcrumbs} aria-label="Brand breadcrumbs"><span>Main brands</span></nav>
       <div className={styles.titleRow}><div className={styles.titleBlock}><div><h1>Brands</h1><p>Organise your storefront brands. Drag cards to reorder or open a card to edit.</p></div></div><div className={styles.headerActions}><button className={styles.primaryButton} onClick={onAdd}>{Icon.plus} Add brand</button></div></div>
@@ -45,10 +45,12 @@ export function BrandWorkspace({ onAdd, onEdit, onDelete, onProducts }: {
           <div className={styles.segmented} role="group" aria-label="Status filter">{(["all", "active", "inactive"] as const).map(value => <button key={value} aria-pressed={filter === value} onClick={() => setFilter(value)}>{value[0].toUpperCase() + value.slice(1)}</button>)}</div>
           <div className={styles.segmented} role="group" aria-label="Layout"><button aria-label="Grid view" aria-pressed={view === "grid"} onClick={() => setView("grid")}>{Icon.grid}</button><button aria-label="List view" aria-pressed={view === "list"} onClick={() => setView("list")}>{Icon.list}</button></div>
         </div>
+        <div className={styles.brandCardsScroll} role="region" aria-label="Scrollable brand cards" tabIndex={0} data-brand-scroll>
         {brands.isPending ? <p role="status">Loading brands…</p> : brands.error ? <div className={styles.emptyState}><p role="alert">{brands.error.message}</p><button className={styles.primaryButton} onClick={() => brands.refetch()}>Retry</button></div> : <>
           {!visible.length && <div className={styles.emptyState}><h2>No matching brands</h2><p>Try another search or add a brand.</p></div>}
           <BrandCards brands={visible} view={view} disabled={!!query.trim() || filter !== "all"} saving={move.isPending} onMove={(id, before) => move.mutate({ id, before })} onAdd={onAdd} onEdit={onEdit} onDelete={onDelete} onProducts={onProducts} />
         </>}
+        </div>
         {move.isPending && <p role="status">Saving brand order…</p>}
         {move.error && <p role="alert">{move.error.message}</p>}
         {move.isSuccess && <p role="status">Brand order saved.</p>}
