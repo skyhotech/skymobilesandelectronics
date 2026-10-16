@@ -66,3 +66,7 @@
 .employeeSubmenu { display: grid; gap: 4px; margin: 8px 0 8px 22px; padding-left: 14px; border-left: 1px solid #527198; }
 .employeeSubmenu a { padding: 10px; color: #d9e6f7; border-radius: 8px; text-decoration: none; font-size: 14px; }
 .employeeSubmenu a:hover, .employeeSubmenu a[aria-current="page"] { background: #2c527f; color: white; }
+
+.broadcastForm select { padding: 12px; border: 1px solid #ced9e8; border-radius: 8px; font: inherit; max-width: 100%; }
+.broadcastForm input[type="checkbox"] { width: auto; }
+.jobActions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }

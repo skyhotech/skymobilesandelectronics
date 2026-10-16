@@ -74,3 +74,17 @@ connected yet.
 Employees expands in the sidebar to All, Working, Leave and Past Employees.
 Selections persist in `/hr/employees?status=all|working|leave|past` and mark the
 active view. Invalid statuses use All. Employee records remain unconnected.
+
+## Careers
+
+Careers in the HR sidebar (`/hr/careers`) supports create, edit, publish/unpublish
+and confirmed deletion of job openings. Required fields: title, location, employment
+type, plain-text description and application email. New openings are drafts.
+`/carrears` publicly lists published openings and supports applications via email.
+The public page fetches fresh data per request; refresh an already open page after
+HR updates. No applicant collection or application upload is implemented.
+
+HR CRUD API: `/api/v1/hr/careers/` and `/api/v1/hr/careers/<id>/` (GET/POST,
+GET/PATCH/DELETE respectively), with session/HR membership/CSRF enforcement.
+Public read-only API: `GET /api/v1/careers/`. Lists are paginated (24 per page).
+Run migrations before deployment; existing branch/employee records are unchanged.

@@ -90,6 +90,39 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await expect(page.getByRole("heading", { name: "Leave Requests", exact: true })).toBeVisible();
     await expect(page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: "Leave Requests", exact: true })).toHaveAttribute("aria-current", "page");
     await expect(page.getByText("Leave requests are not connected yet.", { exact: true })).toBeVisible();
+    await page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: "Careers", exact: true }).click();
+    await page.getByLabel("Job title", { exact: true }).fill(username);
+    await page.getByLabel("Location", { exact: true }).fill("Chennai");
+    await page.getByLabel("Description", { exact: true }).fill("Help customers choose electronics.");
+    await page.getByLabel("Application email", { exact: true }).fill("jobs@example.com");
+    await page.getByRole("button", { name: "Create opening", exact: true }).click();
+    await expect(page.getByText("Job opening saved.", { exact: true })).toBeVisible();
+    const publicPage = await page.context().newPage();
+    await publicPage.goto("/carrears");
+    await expect(publicPage.getByRole("heading", { name: username, exact: true })).toHaveCount(0);
+    await page.getByRole("button", { name: `Edit ${username}`, exact: true }).click();
+    await page.getByLabel("Publish on careers page", { exact: true }).check();
+    await page.getByRole("button", { name: "Save changes", exact: true }).click();
+    await expect(page.getByText("Job opening saved.", { exact: true })).toBeVisible();
+    await publicPage.reload();
+    await expect(publicPage.getByRole("heading", { name: username, exact: true })).toBeVisible();
+    await expect(publicPage.getByRole("link", { name: "Apply by email", exact: false }).first()).toHaveAttribute("href", /mailto:/);
+    for (const width of [390, 768, 1024, 1440]) {
+      await publicPage.setViewportSize({ width, height: 900 });
+      expect(await publicPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    }
+    await page.getByRole("button", { name: `Edit ${username}`, exact: true }).click();
+    await page.getByLabel("Job title", { exact: true }).fill(`${username}-updated`);
+    await page.getByRole("button", { name: "Save changes", exact: true }).click();
+    await expect(page.getByText("Job opening saved.", { exact: true })).toBeVisible();
+    await publicPage.reload();
+    await expect(publicPage.getByRole("heading", { name: `${username}-updated`, exact: true })).toBeVisible();
+    page.once("dialog", dialog => dialog.accept());
+    await page.getByRole("button", { name: `Delete ${username}-updated`, exact: true }).click();
+    await expect(page.getByText("Job opening deleted.", { exact: true })).toBeVisible();
+    await publicPage.reload();
+    await expect(publicPage.getByRole("heading", { name: `${username}-updated`, exact: true })).toHaveCount(0);
+    await publicPage.close();
     await page.getByRole("link", { name: "Dashboard", exact: true }).click();
     await expect(page.getByRole("heading", { name: "Dashboard", exact: true })).toBeVisible();
     expect((await page.request.get("/management/api/overview/")).status()).toBe(403);
@@ -98,7 +131,7 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await expect(page.getByRole("heading", { name: "HR sign in", exact: true })).toBeVisible();
     await page.screenshot({ path: "../.run/hr-login-desktop.png" });
   } finally {
-    run("import os; from apps.notifications.models import Broadcast; Broadcast.objects.filter(sender__username=os.environ['SKY_HR_TEST_USERNAME']).delete(); from django.contrib.auth.models import User; User.objects.filter(username=os.environ['SKY_HR_TEST_USERNAME']).delete()");
+    run("import os; from apps.careers.models import JobOpening; JobOpening.objects.filter(created_by__username=os.environ['SKY_HR_TEST_USERNAME']).delete(); from apps.notifications.models import Broadcast; Broadcast.objects.filter(sender__username=os.environ['SKY_HR_TEST_USERNAME']).delete(); from django.contrib.auth.models import User; User.objects.filter(username=os.environ['SKY_HR_TEST_USERNAME']).delete()");
     if (setup.includes("HR_GROUP_CREATED:True")) run("from django.contrib.auth.models import Group; group=Group.objects.filter(name='HR').first(); group.delete() if group and not group.user_set.exists() else None");
   }
 });

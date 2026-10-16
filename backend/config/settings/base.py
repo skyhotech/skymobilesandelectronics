@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "apps.products",
     "apps.inventory",
     "apps.notifications",
+    "apps.careers",
     "apps.media_library",
 ]
 MIDDLEWARE = [

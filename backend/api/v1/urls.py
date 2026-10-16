@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from apps.accounts.apx_customers import CustomerLookup
 from apps.accounts.hr_auth import HRSession
 from apps.brands.api import HomepageBrandList
+from apps.careers.api import HRJobs, PublicJobs
 from apps.categories.api import CategoryImageUpload, HomepageCategoryList, PublicCategoryTree
 from apps.inventory.api import InventoryReport
 from apps.media_library.api import MediaAssetViewSet, MediaUpload
@@ -17,7 +18,12 @@ from .health import liveness, readiness
 media_router = DefaultRouter()
 media_router.register("media", MediaAssetViewSet, basename="management-media")
 
+hr_router = DefaultRouter()
+hr_router.register("careers", HRJobs, basename="hr-careers")
+
 urlpatterns = [
+    path("hr/", include(hr_router.urls)),
+    path("careers/", PublicJobs.as_view(), name="public-careers"),
     path("hr/notifications/", BroadcastList.as_view(), name="hr-notifications"),
     path("hr/session/", HRSession.as_view(), name="hr-session"),
     path("management/customers/lookup/", CustomerLookup.as_view(), name="management-customers"),
