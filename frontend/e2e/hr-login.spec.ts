@@ -27,7 +27,16 @@ test("separate HR login authenticates only an HR account and protects the worksp
     }
     await page.getByRole("button", { name: "Sign in", exact: true }).click();
     await expect(page).toHaveURL(/\/hr$/);
-    await expect(page.getByRole("heading", { name: "HR workspace", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Dashboard", exact: true })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: "Dashboard" })).toHaveAttribute("aria-current", "page");
+    for (const width of [390, 768, 1024, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      if (width >= 768) {
+        const sidebar = await page.locator("aside").boundingBox();
+        expect(sidebar!.width / width).toBeCloseTo(0.2, 2);
+      }
+    }
     await expect(page.getByText(`Signed in as ${username}.`, { exact: true })).toBeVisible();
     expect((await page.request.get("/management/api/overview/")).status()).toBe(403);
     await page.getByRole("button", { name: "Sign out", exact: true }).click();

@@ -2,8 +2,10 @@
 
 Open `http://localhost:3000/hr/login`. This is a separate HR sign-in with SKY
 branding, password visibility controls, 3D motion and the shared video loader.
-Successful sign-in opens the protected `/hr` workspace. This landing page confirms
-the signed-in identity; employee, payroll and attendance features are not implemented.
+Successful sign-in opens the protected `/hr` dashboard with a sticky, independently
+scrollable 20% sidebar and 80% main content on desktop. The Dashboard navigation,
+account details and sign-out are available; mobile uses a stacked layout.
+Employee, payroll and attendance features are not implemented.
 
 ## Accounts
 
