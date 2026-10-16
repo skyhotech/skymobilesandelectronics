@@ -108,3 +108,6 @@ RETAILER supply no city, so city is blank. Addresses/phones are blank where abse
 City labels are not a verified geographical/address directory. Unknown city/address
 fields are optional in the schema; no existing values or stock relations are removed.
 `GET /api/v1/hr/branches/` is HR-only, paginated, and supports `?search=arni`.
+
+The HR sidebar uses local SVG icons. Its scrollbar is hidden while wheel, touch
+and keyboard scrolling remain available. Employee submenus retain text labels.

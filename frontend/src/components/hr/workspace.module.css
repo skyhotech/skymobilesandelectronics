@@ -70,3 +70,10 @@
 .broadcastForm select { padding: 12px; border: 1px solid #ced9e8; border-radius: 8px; font: inherit; max-width: 100%; }
 .broadcastForm input[type="checkbox"] { width: auto; }
 .jobActions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+.sidebar { scrollbar-width: none; -ms-overflow-style: none; }
+.sidebar::-webkit-scrollbar { display: none; width: 0; height: 0; }
+.navigation svg, .websiteLink svg { flex-shrink: 0; }
+.employeeSubmenu a { display: flex; align-items: center; gap: 10px; }
+.employeeSubmenu svg { width: 17px; height: 17px; }
+.websiteLink { display: flex; align-items: center; gap: 10px; }
