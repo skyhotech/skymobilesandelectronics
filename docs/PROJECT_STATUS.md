@@ -1,5 +1,20 @@
 # Project status - 15 October 2026
 
+## Shared video loader - 16 October 2026
+
+The supplied /videos/loader.mp4 is now the shared full-screen loading animation.
+Root loading.tsx handles streamed page/route loading; the query provider covers
+active first-data queries and pending mutations. Inventory opts into loading for
+manual refresh as well. Cached background polling and typeahead search do not
+interrupt the page. The overlay disappears on success or failure, with no artificial
+minimum duration. Playback is muted/looping/inline and pauses for reduced motion;
+readable loading text remains if playback is unavailable.
+
+Verified: typecheck, lint, 30 unit tests and production build passed. The browser
+loader test delayed report responses, checked actual video decoding, four viewport
+widths, reduced-motion pause and removal on success/error. Screenshot reviewed.
+No backend or credential changes. Production remains NOT TESTED.
+
 ## APX inventory report - 16 October 2026
 
 Added Inventory sidebar/search navigation and an owner-only read endpoint that

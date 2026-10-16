@@ -11,6 +11,7 @@ export function ManagementInventory() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const report = useQuery({
+    meta: { globalLoader: "always" },
     queryKey: ["management", "inventory"],
     queryFn: async () => schema.parse(await managementApi("inventory/")),
     staleTime: 0, retry: false, refetchOnWindowFocus: false,

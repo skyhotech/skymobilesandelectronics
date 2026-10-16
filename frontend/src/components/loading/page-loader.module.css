@@ -1,0 +1,4 @@
+.overlay { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; background: #fff; padding: 24px; }
+.content { width: min(420px, 100%); text-align: center; }
+.content video { display: block; width: 100%; height: auto; max-height: 60dvh; object-fit: contain; }
+.content p { margin: 12px 0 0; color: #385574; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.5; }

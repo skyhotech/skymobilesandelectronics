@@ -33,6 +33,7 @@ export function AdminSearch() {
     return () => document.removeEventListener("pointerdown", dismiss);
   }, []);
   const search = useQuery({
+    meta: { globalLoader: false },
     queryKey: ["management", "global-search", query],
     queryFn: async () => schema.parse(await managementApi(`search/?q=${encodeURIComponent(query)}`)),
     enabled: open && query.length >= 2, staleTime: 10000, retry: false,
