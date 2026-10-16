@@ -30,7 +30,7 @@ test("HR and employee exchange messages, files and an accepted video call", asyn
     await h.getByRole("button", { name: new RegExp(`${env.CHAT_QA_PREFIX}-employee`) }).click();
     await e.getByRole("button", { name: new RegExp(`${env.CHAT_QA_PREFIX}-hr`) }).click();
     await h.getByLabel("Message", { exact: true }).fill("Private HR message test");
-    await h.getByRole("button", { name: "Send message", exact: true }).click();
+    await h.getByLabel("Message", { exact: true }).press("Enter");
     await expect(e.getByRole("log")).toContainText("Private HR message test", { timeout: 15000 });
     await e.getByLabel("Message", { exact: true }).fill("Employee file reply");
     await e.getByLabel("Attach a file", { exact: false }).setInputFiles({ name: "private-chat.txt", mimeType: "text/plain", buffer: Buffer.from("Isolated chat test file") });
@@ -42,7 +42,15 @@ test("HR and employee exchange messages, files and an accepted video call", asyn
     for (const width of [390, 768, 1024, 1440]) {
       await h.setViewportSize({ width, height: 900 });
       expect(await h.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      if (width === 390) {
+        await h.getByRole("button", { name: "Back to conversations", exact: true }).click();
+        await expect(h.getByRole("heading", { name: "Chats", exact: true })).toBeVisible();
+        await h.getByRole("button", { name: new RegExp(`${env.CHAT_QA_PREFIX}-employee`) }).click();
+        await expect(h.getByLabel("Message", { exact: true })).toBeVisible();
+        if (process.env.SKY_CHAT_PREVIEW) await h.getByRole("region", { name: "Employee and HR chat", exact: true }).screenshot({ path: "../.run/chat-mobile.png" });
+      }
     }
+    if (process.env.SKY_CHAT_PREVIEW) await h.getByRole("region", { name: "Employee and HR chat", exact: true }).screenshot({ path: "../.run/chat-desktop.png" });
     await h.getByRole("button", { name: "Request video call", exact: true }).click();
     await expect(e.getByRole("button", { name: "Accept call", exact: true })).toBeVisible({ timeout: 15000 });
     await e.getByRole("button", { name: "Accept call", exact: true }).click();

@@ -131,3 +131,7 @@ It also exercises mute, hangup and declined calls. No production staff data,
 paid relay, camera feed or real credentials are used. Playwright MCP is unavailable;
 Playwright Test provides browser verification. Cross-network TURN, closed-browser
 push, production load and real hardware remain NOT TESTED.
+
+## Chat interface
+
+The shared HR/employee interface uses a WhatsApp-style light layout with a chat list, All/Unread filters, avatars, patterned conversation background, green outgoing bubbles, read ticks and an icon composer. Enter sends; Shift+Enter adds a newline. Attachment removal, emoji selection, shared files and searching loaded messages are available. Mobile switches between the list and conversation using a Back button. Notification permission prompts appear in the chat list and disappear after permission is granted. Existing account permissions and call infrastructure requirements still apply.

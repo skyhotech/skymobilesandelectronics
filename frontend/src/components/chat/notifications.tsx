@@ -10,12 +10,19 @@ export function useInbox() {
   return useQuery({ queryKey: ["chat", "inbox"], queryFn: () => chatApi<Inbox>("inbox/"), refetchInterval: 5000, retry: false, meta: { globalLoader: false } });
 }
 
-export function ChatNotifications({ href = "/hr/chat" }: { href?: string }) {
+export function ChatNotifications({ href = "/hr/chat", inline = false }: { href?: string; inline?: boolean }) {
   const inbox = useInbox();
   const cache = useQueryClient();
   const lastCall = useRef(0);
   const previous = useRef<number | null>(null);
   const [permission, setPermission] = useState("");
+  useEffect(() => {
+    let stopped = false;
+    let status: PermissionStatus | undefined;
+    const update = () => { if (!stopped && status) setPermission(status.state); };
+    if ("permissions" in navigator) navigator.permissions.query({ name: "notifications" }).then(value => { if (stopped) return; status = value; update(); status.addEventListener("change", update); }).catch(() => {});
+    return () => { stopped = true; status?.removeEventListener("change", update); };
+  }, []);
   const unread = inbox.data?.conversations.reduce((sum, thread) => sum + thread.unread, 0) || 0;
   const incoming = inbox.data?.calls.find(call => call.caller !== inbox.data?.me.id && call.status === "ringing");
   useEffect(() => {
@@ -48,13 +55,15 @@ export function ChatNotifications({ href = "/hr/chat" }: { href?: string }) {
     connect();
     return () => { stopped = true; clearTimeout(timer); clearInterval(heartbeat); socket?.close(); };
   }, [cache]);
-  return <aside className={styles.notice} aria-label="Chat notifications">
-    <Link href={href}>Messages{unread ? ` (${unread} unread)` : ""}</Link>
+  if (inline && permission === "granted" && !incoming) return null;
+  return <aside className={inline ? styles.inlineNotice : styles.notice} aria-label="Chat notifications">
+    {!inline && <Link href={href}>Messages{unread ? ` (${unread} unread)` : ""}</Link>}
+    {inline && permission !== "granted" && <span>Get notified of new messages</span>}
     {incoming && <Link role="alert" href={`${href}?thread=${incoming.conversation}`}>Incoming {incoming.kind} call - open to answer</Link>}
-    <button type="button" onClick={async () => {
+    <button type="button" disabled={permission === "granted"} onClick={async () => {
       if (!("Notification" in window)) { setPermission("Browser notifications are unavailable."); return; }
       setPermission(await Notification.requestPermission());
-    }}>Enable chat notifications</button>
-    {permission && <small role="status">Notifications: {permission}</small>}
+    }}>{permission === "granted" ? "Notifications on" : "Enable notifications"}</button>
+    {permission && <small className={styles.srOnly} role="status">Notifications: {permission}</small>}
   </aside>;
 }
