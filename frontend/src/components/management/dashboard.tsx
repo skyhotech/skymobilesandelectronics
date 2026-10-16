@@ -24,10 +24,11 @@ import { MediaUploadField } from "./media-upload-field";
 import { BrandWorkspace } from "./brand-workspace";
 import { ManagementOverview } from "./overview";
 import { ManagementThemes } from "./themes";
+import { ManagementInventory } from "./inventory";
 import { AdminSearch } from "./admin-search";
 import { ProductFilters, defaultProductFilters } from "./product-filters";
 
-type Resource = "products" | "brands" | "categories" | "dashboard" | "themes";
+type Resource = "products" | "brands" | "categories" | "dashboard" | "themes" | "inventory";
 type Entry = Reference | Product;
 const singular: Record<Resource, string> = {
   products: "product",
@@ -35,6 +36,7 @@ const singular: Record<Resource, string> = {
   categories: "category",
   dashboard: "dashboard",
   themes: "theme",
+  inventory: "inventory",
 };
 const money = z
   .string()
@@ -223,7 +225,7 @@ export function ManagementDashboard({
           </div>
           <p className={styles.sidebarSection}>CATALOG</p>
           <nav className={styles.sidebarNav} aria-label="Management sections">
-            {(["dashboard", "themes", "brands", "categories"] as Resource[]).map((item) => (
+            {(["dashboard", "themes", "inventory", "brands", "categories"] as Resource[]).map((item) => (
               <Link
                 key={item}
                 href={`/management/admin/${item}`}
@@ -232,7 +234,7 @@ export function ManagementDashboard({
                 aria-current={section === item ? "page" : undefined}
               >
                 <span className={styles.sidebarIcon} aria-hidden="true">
-                  {item === "dashboard" ? "D" : item === "themes" ? "T" : item === "brands" ? "B" : "C"}
+                  {item === "dashboard" ? "D" : item === "inventory" ? "I" : item === "themes" ? "T" : item === "brands" ? "B" : "C"}
                 </span>
                 <span>{item[0].toUpperCase() + item.slice(1)}</span>
                 <span className={styles.sidebarArrow} aria-hidden="true">
@@ -248,6 +250,7 @@ export function ManagementDashboard({
         <main className={`${styles.main} ${styles.dashboardMain}`}>
           {resource === "dashboard" && <ManagementOverview />}
           {resource === "themes" && <ManagementThemes />}
+          {resource === "inventory" && <ManagementInventory />}
           {resource === "products" && (
             <div className={styles.intro}>
               <div>

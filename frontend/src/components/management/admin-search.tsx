@@ -10,11 +10,12 @@ import styles from "./admin-search.module.css";
 
 const schema = z.object({ results: z.array(z.object({ kind: z.enum(["brand", "category", "product"]), id: z.number().int().positive(), name: z.string(), brand_id: z.number().int().positive().nullable() })) });
 const pages = [
+  { name: "Inventory", href: "/management/admin/inventory", terms: "inventory stock closing breakup report availability" },
   { name: "Themes", href: "/management/admin/themes", terms: "themes theme appearance homepage design style" },
   { name: "Dashboard", href: "/management/admin/dashboard", terms: "dashboard overview totals home" },
   { name: "Brands", href: "/management/admin/brands", terms: "brands brand manufacturers companies" },
   { name: "Categories", href: "/management/admin/categories", terms: "categories category folders" },
-  { name: "Products by brand", href: "/management/admin/brands", terms: "products product inventory catalog catalogue" },
+  { name: "Products by brand", href: "/management/admin/brands", terms: "products product catalog catalogue" },
 ];
 export function AdminSearch() {
   const router = useRouter();

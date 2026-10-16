@@ -1,5 +1,22 @@
 # Project status - 15 October 2026
 
+## APX inventory report - 16 October 2026
+
+Added Inventory sidebar/search navigation and an owner-only read endpoint that
+POSTs ClosingStockBreakupReport server-side with configured credentials and scope.
+The report view supports vendor columns, text search, 100-row pagination, manual
+refresh and safe empty/error handling. No local stock records are overwritten.
+
+Recovered request property names/types from the supplied APX DLL and report
+response conventions from its JavaScript client; see docs/APX_INVENTORY.md.
+Live empty POST reached APX but returned business status 201/Failed. Backend APX
+credentials and an approved scoped JSON request are not configured. Successful
+live inventory retrieval remains NOT VERIFIED; the page honestly reports this.
+
+Verified: 9 backend adapter/permission tests and the inventory browser flow passed,
+with fixture-based data clearly distinguished from live stock. Frontend lint,
+unit tests and build checked. No credentials are committed and no migrations run.
+
 ## Rebuilt dashboard
 
 The dashboard now includes four catalog summary cards, storefront visibility bars,
