@@ -6,6 +6,8 @@ Successful sign-in opens the protected `/hr` dashboard with a sticky, independen
 scrollable 20% sidebar and 80% main content on desktop. The Dashboard navigation,
 account details and sign-out are available; mobile uses a stacked layout.
 Employee, payroll and attendance features are not implemented.
+The sidebar includes Employees at `/hr/employees`, protected by the same HR
+session checks. It currently shows an explicit unconnected directory state.
 
 ## Accounts
 

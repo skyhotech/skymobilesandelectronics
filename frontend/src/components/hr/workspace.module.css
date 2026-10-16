@@ -5,6 +5,10 @@
 .navLabel { margin: 48px 12px 12px; color: #b7cce6; text-transform: uppercase; font-size: 11px; letter-spacing: .12em; }
 .activeLink { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 12px; color: white; text-decoration: none; background: #2c527f; font-weight: 650; }
 .activeLink span { font-size: 23px; }
+.navigation { display: grid; gap: 8px; }
+.navLink { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 12px; color: #d9e6f7; text-decoration: none; font-weight: 650; }
+.navLink span { font-size: 23px; }
+.navLink:hover { background: #23436a; }
 .websiteLink { margin-top: auto; padding: 28px 12px 0; color: #d9e6f7; font-size: 14px; text-decoration: none; }
 .main { min-width: 0; padding: 32px clamp(20px, 3vw, 56px); }
 .header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 32px; }
