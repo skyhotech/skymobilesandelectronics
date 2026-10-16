@@ -70,3 +70,7 @@ It uses HR session protection; branch management data/actions are not connected.
 Leave Requests is available at `/hr/leave-requests` in the sidebar and navbar
 search, protected by HR session checks. Leave submission and approvals are not
 connected yet.
+
+Employees expands in the sidebar to All, Working, Leave and Past Employees.
+Selections persist in `/hr/employees?status=all|working|leave|past` and mark the
+active view. Invalid statuses use All. Employee records remain unconnected.

@@ -50,10 +50,18 @@ test("separate HR login authenticates only an HR account and protects the worksp
     const clock = await page.getByLabel("Current India time", { exact: true }).getAttribute("datetime");
     await expect(page.getByLabel("Current India time", { exact: true })).not.toHaveAttribute("datetime", clock!);
     expect(await page.locator("header").evaluate(element => getComputedStyle(element.parentElement!).position)).toBe("sticky");
-    await page.getByRole("link", { name: "Employees", exact: true }).click();
-    await expect(page).toHaveURL(/\/hr\/employees$/);
+    await page.locator("summary").filter({ hasText: "Employees" }).click();
+    await page.getByRole("link", { name: "All", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "All employees", exact: true })).toBeVisible();
+    for (const [label, status, heading] of [["Working", "working", "Working employees"], ["Leave", "leave", "Employees on leave"], ["Past Employees", "past", "Past employees"]]) {
+      await page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: label, exact: true }).click();
+      await expect(page).toHaveURL(new RegExp(`status=${status}$`));
+      await expect(page.getByRole("heading", { name: heading, exact: true })).toBeVisible();
+      await expect(page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: label, exact: true })).toHaveAttribute("aria-current", "page");
+    }
+    await expect(page).toHaveURL(/\/hr\/employees\?status=past$/);
     await expect(page.getByRole("heading", { name: "Employees", exact: true })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Employees", exact: true })).toHaveAttribute("aria-current", "page");
+    await expect(page.locator("details")).toHaveAttribute("open", "");
     await expect(page.getByText("Employee records are not connected yet.", { exact: true })).toBeVisible();
     await page.getByRole("link", { name: "Attendance", exact: true }).click();
     await expect(page).toHaveURL(/\/hr\/attendance$/);

@@ -58,3 +58,11 @@
 .liveClock span { color: #52647e; font-size: 11px; }
 @media (max-width: 1023px) { .navbarTools { align-items: stretch; flex-direction: column; } }
 @media (max-width: 767px) { .navbar { padding-top: 12px; } .searchArea { flex-wrap: wrap; } .searchArea input { flex-basis: 100%; } .searchArea select { max-width: 100%; width: 100%; } .navbar .header h1 { font-size: 23px; overflow-wrap: anywhere; } }
+
+.employeeMenu summary { cursor: pointer; list-style: none; }
+.employeeMenu summary::-webkit-details-marker { display: none; }
+.chevron { margin-left: auto; }
+.employeeMenu[open] .chevron { transform: rotate(180deg); }
+.employeeSubmenu { display: grid; gap: 4px; margin: 8px 0 8px 22px; padding-left: 14px; border-left: 1px solid #527198; }
+.employeeSubmenu a { padding: 10px; color: #d9e6f7; border-radius: 8px; text-decoration: none; font-size: 14px; }
+.employeeSubmenu a:hover, .employeeSubmenu a[aria-current="page"] { background: #2c527f; color: white; }
