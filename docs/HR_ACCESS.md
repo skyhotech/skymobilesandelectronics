@@ -111,3 +111,9 @@ fields are optional in the schema; no existing values or stock relations are rem
 
 The HR sidebar uses local SVG icons. Its scrollbar is hidden while wheel, touch
 and keyboard scrolling remain available. Employee submenus retain text labels.
+
+The global SKY loader completes one full video playback (about 10 seconds) per
+visible loading cycle and waits for active requests, including route loading.
+Overlapping requests share one cycle. Reduced-motion mode shows a static loader;
+blocked, failed or stalled video playback falls back without holding completed
+requests indefinitely (10-second playback-start/stall timeout).

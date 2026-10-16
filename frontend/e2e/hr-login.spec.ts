@@ -3,7 +3,7 @@ import { randomBytes } from "node:crypto";
 import path from "node:path";
 import { expect, test } from "@playwright/test";
 
-test.use({ trace: "off", screenshot: "off", video: "off" });
+test.use({ reducedMotion: "reduce", trace: "off", screenshot: "off", video: "off" });
 test("separate HR login authenticates only an HR account and protects the workspace", async ({ page, baseURL }) => {
   test.skip(!process.env.SKY_HR_TESTS || !["localhost", "127.0.0.1"].includes(new URL(baseURL!).hostname), "Requires explicitly enabled local HR fixture test");
   const backend = path.resolve("../backend");

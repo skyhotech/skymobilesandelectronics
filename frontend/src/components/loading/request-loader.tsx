@@ -1,7 +1,8 @@
 "use client";
 
 import { useIsFetching, useIsMutating } from "@tanstack/react-query";
-import { PageLoader } from "./page-loader";
+import { VideoLoader } from "./video-loader";
+import { useRouteLoading } from "./route-loading";
 
 export function RequestLoader() {
   const fetching = useIsFetching({ predicate: query =>
@@ -9,5 +10,6 @@ export function RequestLoader() {
     (query.state.data === undefined || query.meta?.globalLoader === "always"),
   });
   const mutating = useIsMutating();
-  return fetching + mutating > 0 ? <PageLoader /> : null;
+  const routeLoading = useRouteLoading();
+  return <VideoLoader active={fetching + mutating > 0 || routeLoading} />;
 }
