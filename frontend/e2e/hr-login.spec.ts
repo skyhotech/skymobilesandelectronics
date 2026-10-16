@@ -5,6 +5,7 @@ import { expect, test } from "@playwright/test";
 
 test.use({ reducedMotion: "reduce", trace: "off", screenshot: "off", video: "off" });
 test("separate HR login authenticates only an HR account and protects the workspace", async ({ page, baseURL }) => {
+  test.setTimeout(90000);
   test.skip(!process.env.SKY_HR_TESTS || !["localhost", "127.0.0.1"].includes(new URL(baseURL!).hostname), "Requires explicitly enabled local HR fixture test");
   const backend = path.resolve("../backend");
   const username = `qa-hr-${Date.now()}`;
@@ -93,10 +94,23 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await page.getByLabel("Branch name", { exact: true }).fill(username);
     await page.getByLabel("Branch code", { exact: true }).fill(username);
     await page.getByLabel("City", { exact: true }).fill("Test city");
+    await page.getByLabel("Google Maps link", { exact: true }).fill("https://www.google.com/maps/search/?api=1&query=Test");
     await page.getByRole("button", { name: "Save branch", exact: true }).click();
     await expect(page.getByText("Branch saved.", { exact: true })).toBeVisible();
     await page.getByLabel("Search branches or cities", { exact: true }).fill(username);
     await page.getByRole("button", { name: "Search branches", exact: true }).click();
+    const locatorPage = await page.context().newPage();
+    await locatorPage.goto("/", { waitUntil: "domcontentloaded" });
+    const locator = locatorPage.getByRole("region", { name: "Find your nearest store", exact: true });
+    await expect(locator.locator("iframe")).toHaveAttribute("src", /1CKN57mmNV4leZOg8TogGsFTtWhoMf04/);
+    await locator.getByLabel("Search stores", { exact: true }).fill(username);
+    await expect(locator.getByRole("heading", { name: username, exact: true })).toBeVisible();
+    await expect(locator.getByRole("link", { name: "Get directions", exact: true })).toHaveAttribute("href", "https://www.google.com/maps/search/?api=1&query=Test");
+    for (const width of [390, 1440]) {
+      await locatorPage.setViewportSize({ width, height: 900 });
+      expect(await locatorPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    }
+    await locatorPage.close();
     await page.getByRole("button", { name: `View ${username}`, exact: true }).click();
     await expect(page.getByRole("dialog", { name: "Branch details", exact: true })).toContainText("Test city");
     await page.getByRole("button", { name: "Close", exact: true }).click();

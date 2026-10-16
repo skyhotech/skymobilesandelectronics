@@ -1,0 +1,122 @@
+{
+  "source": "https://skymobile.in/contact-us/",
+  "map": "https://www.google.com/maps/d/embed?mid=1CKN57mmNV4leZOg8TogGsFTtWhoMf04&ehbc=2E312F",
+  "reviewed": "2026-10-16",
+  "branches": [
+    {
+      "code": "vellore-1",
+      "address": "34/24, Katpadi Road, Near CMC Out Gate, Vellore 632001",
+      "phone": "+918754740006"
+    },
+    {
+      "code": "vellore-2",
+      "address": "1, Periya Allapuram, Thorapadi, Vellore 632001",
+      "phone": "+918754780007"
+    },
+    {
+      "code": "vellore-4",
+      "address": "262/AB, RTO Road, Sathuvachari, Vellore 632009",
+      "phone": "+918754966941"
+    },
+    {
+      "code": "vellore-5",
+      "address": "89A, Arni Road, Virupatchipuram, Vellore 632002",
+      "phone": "+919361553446"
+    },
+    {
+      "code": "arni-1",
+      "address": "21, Big Bazaar Street, Arni, Thiruvannamalai 632301",
+      "phone": "+918754750009"
+    },
+    {
+      "code": "arni-2",
+      "address": "46d, Gandhi Road, Opposite Manikoondu, Arni, Thiruvannamalai 632301",
+      "phone": "+919361684885"
+    },
+    {
+      "code": "arni-3",
+      "address": "204, A.B.C Big Bazaar Street, Arni, Thiruvannamalai 632301",
+      "phone": "+916383941914"
+    },
+    {
+      "code": "thiruvanamalai-1",
+      "address": "105/25, Polur Road, Opposite Hotel Ramakrishna, Thiruvannamalai 606601",
+      "phone": "+918754905008"
+    },
+    {
+      "code": "thiruvanamalai-2",
+      "address": "160/2, Car Street, Opposite Ponrajan Silks, Thiruvannamalai 606601",
+      "phone": "+919025244200"
+    },
+    {
+      "code": "thiruvanamalai-3",
+      "address": "31A, Kosamada Street, Opposite SBI Main Branch, Thiruvannamalai 606601",
+      "phone": "+917904741512"
+    },
+    {
+      "code": "thiruvanamalai-4",
+      "address": "108, Polur Road, Thiruvannamalai (Vivo showroom)",
+      "phone": "+917010141694"
+    },
+    {
+      "code": "chengam",
+      "address": "949, LRS Complex, Bangalore Main Road, Near Bus Stand, Chengam 606709",
+      "phone": "+919655895592"
+    },
+    {
+      "code": "chetpet",
+      "address": "100, Vandavasi Road, Chetpet, Thiruvannamalai 606801",
+      "phone": "+918754740009"
+    },
+    {
+      "code": "walajapet",
+      "address": "81, M.B.D Road, Walajapet, Vellore 632513",
+      "phone": "+919150363646"
+    },
+    {
+      "code": "polur",
+      "address": "Railway Station Road, Near Arun Theater, Polur, Thiruvannamalai 606803",
+      "phone": "+919361358553"
+    },
+    {
+      "code": "kannamangalam",
+      "address": "85/9, Kannamangalam Bus Stand, Kannamangalam, Thiruvannamalai 632311",
+      "phone": "+918489492300"
+    },
+    {
+      "code": "arcot",
+      "address": "86, Shandy Bazaar, Kalavai Road, Arcot, Ranipet 632503",
+      "phone": "+919361373727"
+    },
+    {
+      "code": "sholinghur",
+      "address": "6/1B, Walaja Road, Sholingur, Ranipet 631102",
+      "phone": "+919344799353"
+    },
+    {
+      "code": "gudiyatham",
+      "address": "4/1, Katpadi Road, Gudiyatham, Vellore 632602",
+      "phone": "+917845082979"
+    },
+    {
+      "code": "puducherry",
+      "address": "200/202, Anna Salai, Puducherry 605001",
+      "phone": "+918778829472"
+    },
+    {
+      "code": "avalurpet",
+      "address": "7/142, Bazaar Street, Avalurpet, Villupuram 604201",
+      "phone": "+919123525312"
+    },
+    {
+      "code": "krishnagiri",
+      "address": "112, Bangalore Road, Opposite AVR Swarna Mahal, Krishnagiri 635001",
+      "phone": "+917695866652"
+    },
+    {
+      "code": "dharmapuri",
+      "address": "115 & 116, Municipality Commercial Complex, Opposite Mohammed Ali Club Road, Rajagopal Gounder Park, Dharmapuri 636701",
+      "phone": "+919080349183"
+    }
+  ]
+}

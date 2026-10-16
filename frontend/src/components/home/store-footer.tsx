@@ -205,7 +205,7 @@ export function StoreFooter() {
                 <a
                   className="hover:text-primary transition-colors"
                   data-path="store-locator"
-                  href="#contact"
+                  href="#store-locator"
                 >
                   {"Store Locator (30+ Branches)"}
                 </a>

@@ -6,6 +6,7 @@ from apps.accounts.hr_auth import HRSession
 from apps.accounts.hr_overview import HROverview
 from apps.brands.api import HomepageBrandList
 from apps.branches.hr_api import HRBranches
+from apps.branches.public_api import StoreLocations
 from apps.careers.api import HRJobs, PublicJobs
 from apps.categories.api import CategoryImageUpload, HomepageCategoryList, PublicCategoryTree
 from apps.inventory.api import InventoryReport
@@ -24,6 +25,7 @@ hr_router = DefaultRouter()
 hr_router.register("careers", HRJobs, basename="hr-careers")
 
 urlpatterns = [
+    path("branches/", StoreLocations.as_view(), name="public-store-locations"),
     path("hr/overview/", HROverview.as_view(), name="hr-overview"),
     path("hr/branches/", HRBranches.as_view({"get": "list", "post": "create"}), name="hr-branches"),
     path("hr/branches/<int:pk>/", HRBranches.as_view({"get": "retrieve", "patch": "partial_update", "delete": "destroy"}), name="hr-branch-detail"),

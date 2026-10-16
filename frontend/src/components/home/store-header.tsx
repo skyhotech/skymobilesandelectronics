@@ -14,7 +14,7 @@ export function StoreHeader({ categories: initialCategories }: { categories: Hom
     ...categories.filter((item) => !item.parent).map((item) => [item.name, item.destination]),
     ["Top Brands", "#brands"],
     ["Deals & Offers", "#offers"],
-    ["Store Locator", "#contact"],
+    ["Store Locator", "#store-locator"],
   ];
   const header = useRef<HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -95,7 +95,7 @@ export function StoreHeader({ categories: initialCategories }: { categories: Hom
             <small>Bag</small>
           </a>
           <a
-            href="#contact"
+            href="#store-locator"
             data-path="store-locator"
             className="store-locator-button"
             aria-label="Store Locator"

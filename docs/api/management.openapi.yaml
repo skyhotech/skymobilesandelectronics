@@ -3,6 +3,22 @@ info:
   title: SKY Platform API
   version: 1.0.0
 paths:
+  /api/v1/branches/:
+    get:
+      operationId: v1_branches_list
+      tags:
+      - v1
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StoreLocation'
+          description: ''
   /api/v1/hr/branches/{id}/:
     get:
       operationId: v1_hr_branches_retrieve
@@ -1442,6 +1458,33 @@ paths:
           description: ''
 components:
   schemas:
+    StoreLocation:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 160
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        phone:
+          type: string
+          maxLength: 24
+        google_maps_url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 2000
+          - type: string
+            maxLength: 0
+      required:
+      - id
+      - name
     HROverview:
       type: object
       properties:
@@ -1530,6 +1573,13 @@ components:
         phone:
           type: string
           maxLength: 24
+        google_maps_url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 2000
+          - type: string
+            maxLength: 0
         is_active:
           type: boolean
       required:

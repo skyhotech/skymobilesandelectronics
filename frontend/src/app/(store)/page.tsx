@@ -12,6 +12,8 @@ import { HomepageInteractions } from "@/components/home/homepage-interactions";
 import { LaptopCollection } from "@/components/home/laptop-collection";
 import { ServiceAssurance } from "@/components/home/service-assurance";
 import { SmartphoneCollection } from "@/components/home/smartphone-collection";
+import { StoreLocator } from "@/components/home/store-locator";
+import { loadStoreLocations } from "@/lib/store-locations-server";
 import { StoreFooter } from "@/components/home/store-footer";
 import { StoreHeader } from "@/components/home/store-header";
 import { WhatsAppLink } from "@/components/home/whatsapp-link";
@@ -21,9 +23,10 @@ import { loadHomepageCategories } from "@/lib/categories-server";
 import { loadHomepageBrands } from "@/lib/brands-server";
 
 export default async function HomePage() {
-  const [categoryData, brands] = await Promise.all([
+  const [categoryData, brands, storeLocations] = await Promise.all([
     loadHomepageCategories(),
     loadHomepageBrands(),
+    loadStoreLocations(),
   ]);
   return (
     <HomepageInteractions>
@@ -49,6 +52,7 @@ export default async function HomePage() {
           <WhySky />
           <CommunityCollection />
           <FinancePartners />
+          <StoreLocator initialLocations={storeLocations} />
         </div>
       </main>
       <WhatsAppLink />

@@ -140,3 +140,22 @@ filtering (5:5:0.65:5:5:0), CRF 21/preset slow, yuv420p and MP4 faststart.
 The unused audio track is removed. File size is approximately 11.6 MB; the
 original `/videos/loader.mp4` is preserved. This is an upscale, not native 4K
 footage; source blur cannot be fully recovered without a higher-quality original.
+
+## Branch maps and homepage store locator
+
+Branches have an optional Google Maps link, editable in HR. Only HTTPS Google
+Maps/place URLs are accepted; cards and View details expose the saved location.
+The homepage Store Locator links target `#store-locator`, with city/search filters,
+phone links and directions from active branch data (`GET /api/v1/branches/`, max 200).
+Locationless and inactive branches are excluded; the public API omits internal codes.
+The list refreshes every minute while visible.
+
+The embedded Google My Maps map is reused from https://skymobile.in/contact-us/
+(map ID 1CKN57mmNV4leZOg8TogGsFTtWhoMf04). This is an external map maintained
+separately; HR changes update our cards, not pins on that external map. No paid
+Google API or key is used. `import_website_locations` fills missing fields on 23
+matched existing branches from reviewed website addresses/phones, preserving edits.
+Maps links search those verified addresses; they are not independently geocoded pins.
+Ambiguous numbered branches, conflicting duplicate entries and missing locations
+were not guessed. Some legacy Locate Us buttons target different branches.
+Source data/provenance: `backend/apps/branches/data/website_locations.json`.

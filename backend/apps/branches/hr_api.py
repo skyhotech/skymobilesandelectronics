@@ -13,7 +13,38 @@ from .models import Branch
 class BranchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Branch
-        fields = ["id", "name", "code", "city", "address", "phone", "is_active"]
+        fields = ["id", "name", "code", "city", "address", "phone", "google_maps_url", "is_active"]
+
+    def validate_google_maps_url(self, value):
+        if not value:
+            return value
+        from urllib.parse import urlsplit
+
+        parsed = urlsplit(value)
+        allowed = {
+            "www.google.com",
+            "google.com",
+            "maps.google.com",
+            "maps.app.goo.gl",
+            "goo.gl",
+            "g.co",
+        }
+        if (
+            parsed.scheme != "https"
+            or parsed.hostname not in allowed
+            or parsed.username
+            or parsed.password
+        ):
+            raise serializers.ValidationError("Use an HTTPS Google Maps link.")
+        if parsed.hostname in {"www.google.com", "google.com"} and not parsed.path.startswith(
+            "/maps"
+        ):
+            raise serializers.ValidationError("Use a Google Maps URL, not another Google page.")
+        if parsed.hostname == "goo.gl" and not parsed.path.startswith("/maps/"):
+            raise serializers.ValidationError("Use a Google Maps short link.")
+        if parsed.hostname == "g.co" and not parsed.path.startswith("/kgs/"):
+            raise serializers.ValidationError("Use a Google Maps place link.")
+        return value
 
     def validate_code(self, value):
         value = value.lower()
