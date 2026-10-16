@@ -5,7 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { hrApi, type Page } from "@/lib/management-api";
-import { HRIcon } from "./icon";
+import { BranchLocationCard } from "@/components/branch-location-card";
+import { branchDirections } from "@/lib/branch-directions";
 import styles from "./workspace.module.css";
 const schema = z.object({ name: z.string().trim().min(1).max(160), code: z.string().trim().min(1).max(40).regex(/^[a-zA-Z0-9_-]+$/, "Use letters, numbers, hyphens or underscores"), city: z.string().trim().max(100), address: z.string().trim().max(5000), phone: z.string().trim().max(24), google_maps_url: z.string().trim().max(2000).refine(value => !value || /^https:\/\//.test(value), "Use an HTTPS Google Maps link"), is_active: z.boolean() });
 type Values = z.infer<typeof schema>;
@@ -36,7 +37,7 @@ function BranchView({ id, close }: { id: number; close: () => void }) {
   return <dialog ref={dialog} className={styles.branchDialog} aria-labelledby="branch-view-title" onCancel={event => { event.preventDefault(); close(); }}>
     <div className={styles.dashboardHeading}><h2 id="branch-view-title">Branch details</h2><button className={styles.signOut} onClick={close}>Close</button></div>
     {detail.isPending && <p role="status">Loading branch...</p>}{detail.error && <p role="alert">Unable to load branch. <button onClick={() => detail.refetch()}>Retry</button></p>}
-    {detail.data && <><h3>{detail.data.name}</h3><dl>{([ ["Code", detail.data.code], ["City", detail.data.city], ["Address", detail.data.address], ["Phone", detail.data.phone], ["Status", detail.data.is_active ? "Active" : "Inactive"] ]).map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value || "Not supplied"}</dd></div>)}</dl>{detail.data.google_maps_url && <p><a href={detail.data.google_maps_url} target="_blank" rel="noopener noreferrer">Open in Google Maps</a></p>}</>}
+    {detail.data && <><h3>{detail.data.name}</h3><dl>{([ ["Code", detail.data.code], ["City", detail.data.city], ["Address", detail.data.address], ["Phone", detail.data.phone], ["Status", detail.data.is_active ? "Active" : "Inactive"] ]).map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value || "Not supplied"}</dd></div>)}</dl>{branchDirections(detail.data) && <p><a href={branchDirections(detail.data)!} target="_blank" rel="noopener noreferrer">Get directions</a></p>}{detail.data.google_maps_url && <p><a href={detail.data.google_maps_url} target="_blank" rel="noopener noreferrer">Open in Google Maps</a></p>}</>}
   </dialog>;
 }
 
@@ -49,7 +50,9 @@ export function HRBranches() {
   const [view, setView] = useState<number | null>(null);
   const [notice, setNotice] = useState("");
   const branches = useQuery({ queryKey: ["hr", "branches", term, page], queryFn: () => hrApi<Page<Branch>>(`branches/?search=${encodeURIComponent(term)}&page=${page}`) });
-  const refresh = () => { cache.invalidateQueries({ queryKey: ["hr", "branches"] }); cache.invalidateQueries({ queryKey: ["hr", "overview"] }); };
+  const refresh = () => {
+    cache.invalidateQueries({ queryKey: ["public", "store-locations"] });
+    try { localStorage.setItem("sky-branches-updated", String(Date.now())); } catch { /* Cross-tab notifications are optional; periodic refresh remains active. */ } cache.invalidateQueries({ queryKey: ["hr", "branches"] }); cache.invalidateQueries({ queryKey: ["hr", "overview"] }); };
   const remove = useMutation({ mutationFn: (id: number) => hrApi(`branches/${id}/`, "DELETE"), onSuccess: (_, id) => { if (editor?.id === id) setEditor(undefined); setNotice("Branch deleted."); setPage(1); refresh(); } });
   return <>
     <div className={styles.dashboardHeading}><h2>Branch directory</h2><button className={styles.signOut} onClick={() => { setEditor(null); setNotice(""); }}>Add branch</button></div>
@@ -57,9 +60,9 @@ export function HRBranches() {
     <section className={styles.card}><form className={`${styles.broadcastForm} ${styles.branchSearch}`} onSubmit={event => { event.preventDefault(); setTerm(search.trim()); setPage(1); }}><label htmlFor="branch-search">Search branches or cities</label><input id="branch-search" value={search} onChange={event => setSearch(event.target.value)} maxLength={150} /><button className={styles.signOut}>Search branches</button></form>
       {notice && <p role="status">{notice}</p>}{remove.error && <p role="alert">{remove.error.message}</p>}
       {branches.isPending && <p role="status">Loading branches...</p>}{branches.error && <p role="alert">Unable to load branches. <button onClick={() => branches.refetch()}>Retry</button></p>}
-      {branches.data && <><p>{branches.data.count} branches found</p><div className={styles.moduleGrid}>{branches.data.results.map(branch => <article className={styles.branchCard} key={branch.id}><HRIcon name="branches" /><h3>{branch.name}</h3><p>{branch.city || "City not supplied"}</p><p>Code: {branch.code}</p>{branch.address && <p>{branch.address}</p>}{branch.google_maps_url ? <p><a href={branch.google_maps_url} target="_blank" rel="noopener noreferrer">Open in Google Maps</a></p> : <p>Map location not set</p>}<span className={branch.is_active ? styles.connected : styles.pending}>{branch.is_active ? "Active" : "Inactive"}</span><div className={styles.jobActions}>
+      {branches.data && <><p>{branches.data.count} branches found</p><div className={styles.moduleGrid}>{branches.data.results.map(branch => <BranchLocationCard key={branch.id} branch={branch} actions={<>
         <button className={styles.signOut} onClick={() => setView(branch.id)} aria-label={`View ${branch.name}`}>View</button><button className={styles.signOut} onClick={() => { setEditor(branch); setNotice(""); }} aria-label={`Edit ${branch.name}`}>Edit</button><button className={styles.signOut} disabled={remove.isPending} onClick={() => { if (window.confirm(`Delete ${branch.name}? Branches with inventory cannot be deleted.`)) remove.mutate(branch.id); }} aria-label={`Delete ${branch.name}`}>Delete</button>
-      </div></article>)}</div>{branches.data.count === 0 && <p>No branches match your search.</p>}<div className={styles.jobActions} style={{ marginTop: 24 }}><button className={styles.signOut} disabled={!branches.data.previous} onClick={() => setPage(page - 1)}>Previous</button><span>Page {page}</span><button className={styles.signOut} disabled={!branches.data.next} onClick={() => setPage(page + 1)}>Next</button></div></>}
+      </>} />)}</div>{branches.data.count === 0 && <p>No branches match your search.</p>}<div className={styles.jobActions} style={{ marginTop: 24 }}><button className={styles.signOut} disabled={!branches.data.previous} onClick={() => setPage(page - 1)}>Previous</button><span>Page {page}</span><button className={styles.signOut} disabled={!branches.data.next} onClick={() => setPage(page + 1)}>Next</button></div></>}
     </section>{view !== null && <BranchView id={view} close={() => setView(null)} />}
   </>;
 }

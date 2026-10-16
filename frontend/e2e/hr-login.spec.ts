@@ -112,20 +112,24 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await expect(locator.locator("iframe")).toHaveAttribute("src", /1CKN57mmNV4leZOg8TogGsFTtWhoMf04/);
     await locator.getByLabel("Search stores", { exact: true }).fill(username);
     await expect(locator.getByRole("heading", { name: username, exact: true })).toBeVisible();
-    await expect(locator.getByRole("link", { name: "Get directions", exact: true })).toHaveAttribute("href", "https://www.google.com/maps/search/?api=1&query=Test");
+    await expect(locator.getByRole("link", { name: "Get directions", exact: true })).toHaveAttribute("href", "https://www.google.com/maps/dir/?api=1&destination=Test&dir_action=navigate");
     for (const width of [390, 1440]) {
       await locatorPage.setViewportSize({ width, height: 900 });
       expect(await locatorPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     }
-    await locatorPage.close();
     await page.getByRole("button", { name: `View ${username}`, exact: true }).click();
     await expect(page.getByRole("dialog", { name: "Branch details", exact: true })).toContainText("Test city");
     await page.getByRole("button", { name: "Close", exact: true }).click();
     await page.getByRole("button", { name: `Edit ${username}`, exact: true }).click();
     await page.getByLabel("City", { exact: true }).fill("Updated city");
+    await page.getByLabel("Google Maps link", { exact: true }).fill("https://www.google.com/maps/search/?api=1&query=Updated");
     await page.getByRole("button", { name: "Save branch", exact: true }).click();
     await expect(page.getByText("Branch saved.", { exact: true })).toBeVisible();
     await expect(page.getByRole("article").filter({ has: page.getByRole("heading", { name: username, exact: true }) })).toContainText("Updated city");
+    await expect(locator.getByRole("link", { name: "Get directions", exact: true })).toHaveAttribute("href", "https://www.google.com/maps/dir/?api=1&destination=Updated&dir_action=navigate");
+    const hrCard = page.getByRole("article").filter({ has: page.getByRole("heading", { name: username, exact: true }) });
+    await expect(hrCard.getByRole("link", { name: "Get directions", exact: true })).toHaveAttribute("href", "https://www.google.com/maps/dir/?api=1&destination=Updated&dir_action=navigate");
+    await locatorPage.close();
     page.once("dialog", dialog => dialog.accept());
     await page.getByRole("button", { name: `Delete ${username}`, exact: true }).click();
     await expect(page.getByText("Branch deleted.", { exact: true })).toBeVisible();

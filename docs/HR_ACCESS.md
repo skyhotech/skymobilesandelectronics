@@ -159,3 +159,14 @@ Maps links search those verified addresses; they are not independently geocoded 
 Ambiguous numbered branches, conflicting duplicate entries and missing locations
 were not guessed. Some legacy Locate Us buttons target different branches.
 Source data/provenance: `backend/apps/branches/data/website_locations.json`.
+
+HR and public branch cards share one design and Google directions URL builder.
+Get directions uses `https://www.google.com/maps/dir/?api=1&destination=...`
+with `dir_action=navigate`; no API key, paid SDK, geocoder or site geolocation
+request is involved. Google Maps selects/asks for the starting location. Saved
+destination/query and place ID are preserved when available; otherwise the street
+address is used. Short Maps links remain available via View map, but require an
+address for separate directions. Locations are never guessed from city alone.
+HR edits invalidate the local locator cache and notify other same-browser tabs
+through a storage event; periodic refresh still handles other browsers/devices.
+Official reference: https://developers.google.com/maps/documentation/urls/get-started
