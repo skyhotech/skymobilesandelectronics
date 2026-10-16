@@ -1,0 +1,29 @@
+"use client";
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { hrApi } from "@/lib/management-api";
+import { BranchStreetView } from "@/components/branch-street-view";
+import styles from "./workspace.module.css";
+
+type State = { configuration: { enabled: boolean; server_ready: boolean; embed_ready: boolean; keys_separate: boolean }; branch: { id: number; name: string; branch_id: string; street_view_status: string; street_view_verified: boolean; location_verified: boolean; latitude: string | null; longitude: string | null; street_view_preview_url: string; sync_error: string; imagery_date?: string; last_checked_at: string | null; last_verified_at: string | null; panorama_distance_m: number | null; location_candidates: { place_id: string; evidence: Record<string, boolean> }[] }; history: { id: number; action: string; status: string; note: string; actor_name: string; created_at: string }[] };
+export function StreetViewManager({ id }: { id: number }) {
+  const cache = useQueryClient();
+  const [note, setNote] = useState("");
+  const [confirmed, setConfirmed] = useState(false);
+  const [place, setPlace] = useState("");
+  const state = useQuery({ queryKey: ["hr", "streetview", id], queryFn: () => hrApi<State>(`branches/${id}/streetview/`) });
+  const action = useMutation({ mutationFn: (name: string) => hrApi<State>(`branches/${id}/streetview/`, "POST", { action: name, note, confirmed, ...(place ? { place_id: place } : {}) }), onSuccess: result => { cache.setQueryData(["hr", "streetview", id], result); cache.invalidateQueries({ queryKey: ["hr", "branches"] }); cache.invalidateQueries({ queryKey: ["public", "store-locations"] }); try { localStorage.setItem("sky-branches-updated", String(Date.now())); } catch {} setConfirmed(false); } });
+  if (state.isPending) return <p role="status">Loading location review...</p>;
+  if (state.error) return <p role="alert">Unable to load location review. <button onClick={() => state.refetch()}>Retry</button></p>;
+  const branch = state.data!.branch;
+  return <section className={styles.locationReview} aria-label="Street View management"><h3>Location and Street View review</h3><p>{branch.branch_id} | Status: <strong>{branch.street_view_status.replaceAll("_", " ")}</strong></p><p>Location: {branch.location_verified ? "Matched" : "Needs review"} | Storefront: {branch.street_view_verified ? "Human verified" : "Not verified"}</p><p>Coordinates: {branch.latitude ?? "Not supplied"}, {branch.longitude ?? "Not supplied"}</p>{branch.panorama_distance_m !== null && <p>Panorama distance: {branch.panorama_distance_m} m</p>}{branch.imagery_date && <p>Image date from last metadata response: {branch.imagery_date} (not cached)</p>}<p>Last checked: {branch.last_checked_at || "Never"}</p><p>Last verified: {branch.last_verified_at || "Never"}</p>
+    {branch.sync_error && <p role="alert">Sync error: {branch.sync_error}</p>}
+    <div className={styles.jobActions}><button className={styles.signOut} disabled={action.isPending} onClick={() => action.mutate("sync")}>Discover location</button><button className={styles.signOut} disabled={action.isPending} onClick={() => action.mutate("metadata")}>Refresh nearby imagery</button></div>
+    <BranchStreetView name={branch.name} embedUrl={branch.street_view_preview_url} preview />
+    {(!state.data!.configuration.enabled || !state.data!.configuration.server_ready || !state.data!.configuration.embed_ready) && <p role="status">Google API setup incomplete. Manual share embeds remain available for review.</p>}{!state.data!.configuration.keys_separate && <p role="alert">Configure separate server and browser keys before using generated embeds.</p>}<p>Discovery uses configured Google server APIs. Missing credentials are reported as an error; they do not mean imagery is unavailable.</p>
+    {branch.location_candidates.length > 0 && <><label>Suggested Google place<select value={place} onChange={event => setPlace(event.target.value)}><option value="">Select a candidate</option>{branch.location_candidates.map(candidate => <option key={candidate.place_id} value={candidate.place_id}>{candidate.place_id}</option>)}</select></label>{branch.location_candidates.map(candidate => <article key={candidate.place_id}><a href={`https://www.google.com/maps/search/?${new URLSearchParams({ api: "1", query: branch.name, query_place_id: candidate.place_id })}`} target="_blank" rel="noopener noreferrer">Review Google Maps place {candidate.place_id}</a><p>Matching evidence: {Object.entries(candidate.evidence).filter(([, value]) => value).map(([key]) => key.replaceAll("_", " ")).join(", ") || "No strong evidence"}</p></article>)}</>}
+    <label>Verification note<textarea rows={3} maxLength={500} value={note} onChange={event => setNote(event.target.value)} /></label><label><input type="checkbox" checked={confirmed} onChange={event => setConfirmed(event.target.checked)} /> I visually checked this exact branch location or storefront panorama</label>
+    <div className={styles.jobActions}>{place && <button className={styles.signOut} disabled={action.isPending || !confirmed || note.trim().length < 10} onClick={() => action.mutate("review_location")}>Confirm selected location</button>}<button className={styles.signOut} disabled={action.isPending || !confirmed || note.trim().length < 10 || !branch.street_view_preview_url} onClick={() => action.mutate("confirm_storefront")}>Confirm storefront panorama</button><button className={styles.signOut} disabled={action.isPending} onClick={() => action.mutate("revoke")}>Revoke verification</button></div>
+    {action.error && <p role="alert">{action.error.message}</p>}<h4>Verification history</h4>{!state.data!.history.length && <p>No review history yet.</p>}{state.data!.history.map(item => <p key={item.id}>{item.action} | {item.status} | {item.actor_name} | {item.note} | {item.created_at}</p>)}
+  </section>;
+}

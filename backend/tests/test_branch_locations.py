@@ -31,9 +31,10 @@ def test_public_locations_and_maps_validation(client):
         google_maps_url="https://www.google.com/maps/search/?api=1&query=Test",
     )
     Branch.objects.create(name="Hidden", code="hidden", address="Hidden", is_active=False)
-    Branch.objects.create(name="Unset", code="unset")
+    unset = Branch.objects.create(name="Unset", code="unset")
+    Branch.objects.create(name="HEAD OFFICE", code="head-office", is_showroom=False)
     response = client.get("/api/v1/branches/")
-    assert [row["id"] for row in response.json()] == [branch.id]
+    assert {row["id"] for row in response.json()} == {branch.id, unset.id}
     assert "code" not in response.json()[0]
     user = User.objects.create_user("maps-hr")
     user.groups.add(Group.objects.create(name="HR"))
@@ -77,7 +78,8 @@ def test_street_view_accepts_share_embed_only(client):
     assert response.status_code == 200
     assert response.json()["street_view_embed_url"] == embed
     public = client.get("/api/v1/branches/").json()
-    assert public[0]["street_view_embed_url"] == embed
+    assert public[0]["street_view_embed_url"] == ""
+    assert not public[0]["street_view_verified"]
     for invalid in [
         "javascript:alert(1)",
         "https://evil.example/maps/embed?pb=x",

@@ -1,3 +1,3 @@
 import { z } from "zod";
-export const storeLocationsSchema = z.array(z.object({ id: z.number(), name: z.string(), city: z.string(), address: z.string(), phone: z.string(), google_maps_url: z.string(), street_view_embed_url: z.string().default("") }));
+export const storeLocationsSchema = z.array(z.object({ id: z.number(), name: z.string(), city: z.string(), address: z.string(), phone: z.string(), google_maps_url: z.string(), street_view_embed_url: z.string().default(""), location_embed_url: z.string().default(""), latitude: z.string().nullable().default(null), longitude: z.string().nullable().default(null), google_place_id: z.string().default(""), street_view_status: z.string().default("pending"), street_view_verified: z.boolean().default(false) }));
 export type StoreLocation = z.infer<typeof storeLocationsSchema>[number];

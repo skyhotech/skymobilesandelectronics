@@ -1,19 +1,37 @@
 from django.db.models.deletion import ProtectedError
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, serializers, viewsets
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
 
 from apps.notifications.api import HRPermission
 
-from .models import Branch
+from .models import Branch, BranchLocationAudit
+from .streetview import embed_url, location_embed_url
 
 
 class BranchSerializer(serializers.ModelSerializer):
     street_view_embed_url = serializers.CharField(
         max_length=12000, required=False, allow_blank=True
     )
+
+    location_embed_url = serializers.SerializerMethodField()
+
+    def get_location_embed_url(self, branch) -> str:
+        return location_embed_url(branch)
+
+    imagery_date = serializers.SerializerMethodField()
+
+    def get_imagery_date(self, branch) -> str:
+        return getattr(branch, "_imagery_date", "")
+
+    branch_id = serializers.CharField(read_only=True)
+    street_view_preview_url = serializers.SerializerMethodField()
+
+    def get_street_view_preview_url(self, branch) -> str:
+        return embed_url(branch, preview=True)
 
     class Meta:
         model = Branch
@@ -27,7 +45,63 @@ class BranchSerializer(serializers.ModelSerializer):
             "google_maps_url",
             "street_view_embed_url",
             "is_active",
+            "imagery_date",
+            "location_embed_url",
+            "branch_id",
+            "is_showroom",
+            "google_place_id",
+            "latitude",
+            "longitude",
+            "location_verified",
+            "manual_override",
+            "street_view_enabled",
+            "street_view_status",
+            "street_view_verified",
+            "panorama_id",
+            "panorama_latitude",
+            "panorama_longitude",
+            "panorama_distance_m",
+            "heading",
+            "pitch",
+            "last_checked_at",
+            "last_verified_at",
+            "location_candidates",
+            "sync_error",
+            "street_view_preview_url",
+            "google_data_expires_at",
+            "location_source",
         ]
+
+        read_only_fields = [
+            "branch_id",
+            "street_view_preview_url",
+            "street_view_status",
+            "street_view_verified",
+            "panorama_id",
+            "panorama_latitude",
+            "panorama_longitude",
+            "panorama_distance_m",
+            "last_checked_at",
+            "last_verified_at",
+            "location_candidates",
+            "sync_error",
+            "google_data_expires_at",
+            "location_source",
+        ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["google_place_id"] = data.get("google_place_id") or ""
+        return data
+
+    def validate_google_place_id(self, value):
+        import re
+
+        if not value:
+            return None
+        if not re.fullmatch(r"[A-Za-z0-9_-]{1,255}", value):
+            raise serializers.ValidationError("Use a valid Google Place ID.")
+        return value
 
     def validate_street_view_embed_url(self, value):
         from html import unescape
@@ -120,6 +194,14 @@ class BranchSerializer(serializers.ModelSerializer):
             existing = existing.exclude(pk=self.instance.pk)
         if existing.exists():
             raise serializers.ValidationError("This branch already exists in this city.")
+        lat = attrs.get("latitude", getattr(self.instance, "latitude", None))
+        lng = attrs.get("longitude", getattr(self.instance, "longitude", None))
+        if (lat is None) != (lng is None):
+            raise serializers.ValidationError("Provide both latitude and longitude, or neither.")
+        if attrs.get("location_verified") and lat is None:
+            raise serializers.ValidationError(
+                "Verified coordinates require latitude and longitude."
+            )
         attrs.update(name=name, city=city)
         return attrs
 
@@ -130,7 +212,13 @@ class HRBranches(viewsets.ModelViewSet):
     serializer_class = BranchSerializer
     authentication_classes = [SessionAuthentication]
     permission_classes = [HRPermission]
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    filterset_fields = [
+        "is_showroom",
+        "street_view_status",
+        "location_verified",
+        "street_view_verified",
+    ]
     search_fields = ["name", "city", "code"]
 
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]
@@ -141,4 +229,58 @@ class HRBranches(viewsets.ModelViewSet):
         except ProtectedError:
             return Response(
                 {"detail": "This branch has inventory records. Deactivate it instead."}, status=409
+            )
+
+    def perform_create(self, serializer):
+        branch = serializer.save()
+        BranchLocationAudit.objects.create(
+            branch=branch,
+            actor=self.request.user,
+            action="created",
+            status=branch.street_view_status,
+        )
+
+    def perform_update(self, serializer):
+        from django.db import transaction
+
+        with transaction.atomic():
+            current = Branch.objects.select_for_update().get(pk=serializer.instance.pk)
+            serializer.instance = current
+            changed = {
+                key
+                for key, value in serializer.validated_data.items()
+                if getattr(current, key) != value
+            }
+            sensitive = {
+                "address",
+                "city",
+                "google_maps_url",
+                "street_view_embed_url",
+                "google_place_id",
+                "latitude",
+                "longitude",
+                "heading",
+                "pitch",
+            }
+            extra = {"location_revision": current.location_revision + 1}
+            if changed & sensitive:
+                extra.update(
+                    street_view_verified=False,
+                    last_verified_at=None,
+                    street_view_status="needs_review",
+                    manual_override=True,
+                )
+                if changed & {"latitude", "longitude"}:
+                    extra.update(location_source="manual", google_data_expires_at=None)
+                if changed & {"address", "city", "google_place_id", "latitude", "longitude"}:
+                    extra.update(panorama_id="", panorama_latitude=None, panorama_longitude=None)
+                    if "location_verified" not in serializer.validated_data:
+                        extra["location_verified"] = False
+            branch = serializer.save(**extra)
+            BranchLocationAudit.objects.create(
+                branch=branch,
+                actor=self.request.user,
+                action="edited",
+                status=branch.street_view_status,
+                note=", ".join(sorted(changed))[:500],
             )

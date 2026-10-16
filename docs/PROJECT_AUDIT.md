@@ -40,3 +40,7 @@ The first catalog milestone is implemented and its final checks are recorded in 
 4. Add inventory and commerce through tested vertical features; then CI, staging, security and recovery gates.
 
 No production readiness claim. Live WordPress and production data remain untouched.
+
+## Branch location integration ? 2026-10-16
+
+Reused the existing HR branch CRUD, public locator and workbook import. Current database contains 31 showrooms and two non-showroom entries. Existing addresses are preserved; exact coordinates and panoramas are unverified. Google credentials are absent, so live discovery is NOT TESTED. The new service records configuration errors explicitly and uses mocked API tests; setup and verification workflow are in `GOOGLE_STREETVIEW.md`. MySQL remains unchanged.

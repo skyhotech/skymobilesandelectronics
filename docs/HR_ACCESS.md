@@ -182,3 +182,12 @@ plus the HR View dialog. No Google API key/SDK, panorama discovery or scraping
 is used. Missing panoramas are explicitly unconfigured; no real branch panorama
 has been supplied/verified yet. Google controls coverage and viewer availability.
 Use the viewer fullscreen control for a larger panorama. Run migrations on deploy.
+
+## Automated location and panorama review
+
+See [Google Street View setup](GOOGLE_STREETVIEW.md) for the current authoritative
+workflow, fields, API keys, commands, status definitions and retention. All 31
+showrooms now appear even when location is missing; 2 non-showroom entries stay
+in HR. Customer 360 viewers require recorded human verification. The earlier
+manual preview behavior is retained for HR, but an unverified manual iframe no
+longer publishes automatically. Discovery is disabled until external keys are set.

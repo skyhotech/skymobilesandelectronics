@@ -93,7 +93,7 @@ test("separate HR login authenticates only an HR account and protects the worksp
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: 900 });
       await page.locator("form").filter({ has: page.getByLabel("Search branches or cities", { exact: true }) }).evaluate(element => window.scrollTo({ top: window.scrollY + element.getBoundingClientRect().top + 500, behavior: "instant" }));
-      await expect.poll(() => page.locator("form").filter({ has: page.getByLabel("Search branches or cities", { exact: true }) }).evaluate(element => Math.abs(element.getBoundingClientRect().top - Number.parseFloat(getComputedStyle(element).top)))).toBeLessThan(2);
+      await expect.poll(() => page.locator("form").filter({ has: page.getByLabel("Search branches or cities", { exact: true }) }).evaluate(element => { window.scrollTo({ top: window.scrollY + element.getBoundingClientRect().top + 500, behavior: "instant" }); return Math.abs(element.getBoundingClientRect().top - Number.parseFloat(getComputedStyle(element).top)); })).toBeLessThan(2);
     }
     await page.setViewportSize({ width: 1440, height: 900 });
 
@@ -117,17 +117,32 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await expect(locator.getByRole("heading", { name: username, exact: true })).toBeVisible();
     await expect(locator.getByRole("link", { name: "Get directions", exact: true })).toHaveAttribute("href", "https://www.google.com/maps/dir/?api=1&destination=Test&dir_action=navigate");
     await expect(locator.locator(`iframe[src="${panorama}"]`)).toHaveCount(0);
-    await locator.getByRole("button", { name: /View 360.* Street View/ }).click();
-    await expect(locator.locator(`iframe[src="${panorama}"]`)).toBeVisible();
-    await locator.getByRole("button", { name: /Close 360.* Street View/ }).click();
+    await expect(locator.getByRole("button", { name: "Explore in 360", exact: true })).toHaveCount(0);
     for (const width of [390, 1440]) {
       await locatorPage.setViewportSize({ width, height: 900 });
       await expect.poll(() => locatorPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     }
     await page.getByRole("button", { name: `View ${username}`, exact: true }).click();
     await expect(page.getByRole("dialog", { name: "Branch details", exact: true })).toContainText("Test city");
-    await page.getByRole("dialog").getByRole("button", { name: /View 360.* Street View/ }).click();
-    await expect(page.getByRole("dialog").locator(`iframe[src="${panorama}"]`)).toBeVisible();
+    await page.getByRole("dialog", { name: "Branch details", exact: true }).getByRole("button", { name: "Preview 360 Street View", exact: true }).click();
+    await expect(page.getByRole("dialog", { name: `${username} - 360 Street View`, exact: true }).locator(`iframe[src="${panorama}"]`)).toBeVisible();
+    await page.getByRole("button", { name: "Close viewer", exact: true }).click();
+    const review = page.getByRole("region", { name: "Street View management", exact: true });
+    await review.getByLabel("Verification note", { exact: true }).fill("Test-only panorama fixture inspected for this isolated test branch.");
+    await review.getByLabel("I visually checked this exact branch location or storefront panorama", { exact: true }).check();
+    await review.getByRole("button", { name: "Confirm storefront panorama", exact: true }).click();
+    await expect(review.getByText("storefront verified", { exact: true })).toBeVisible();
+    await locator.getByRole("button", { name: "Explore in 360", exact: true }).click();
+    await expect(locator.locator(`iframe[src="${panorama}"]`)).toBeVisible();
+    for (const width of [390, 768, 1024, 1440]) {
+      await locatorPage.setViewportSize({ width, height: 900 });
+      const panoramaDialog = locatorPage.getByRole("dialog", { name: `${username} - 360 Street View`, exact: true });
+      const box = await panoramaDialog.boundingBox();
+      expect(box!.width).toBeLessThanOrEqual(width);
+      await expect(panoramaDialog.locator("iframe")).toHaveAttribute("allowfullscreen", "");
+    }
+    await locatorPage.keyboard.press("Escape");
+    await expect(locatorPage.getByRole("dialog", { name: `${username} - 360 Street View`, exact: true })).toHaveCount(0);
     await page.getByRole("button", { name: "Close", exact: true }).click();
     await page.getByRole("button", { name: `Edit ${username}`, exact: true }).click();
     await page.getByLabel("City", { exact: true }).fill("Updated city");
@@ -136,6 +151,7 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await expect(page.getByText("Branch saved.", { exact: true })).toBeVisible();
     await expect(page.getByRole("article").filter({ has: page.getByRole("heading", { name: username, exact: true }) })).toContainText("Updated city");
     await expect(locator.getByRole("link", { name: "Get directions", exact: true })).toHaveAttribute("href", "https://www.google.com/maps/dir/?api=1&destination=Updated&dir_action=navigate");
+    await expect(locator.getByRole("button", { name: "Explore in 360", exact: true })).toHaveCount(0);
     const hrCard = page.getByRole("article").filter({ has: page.getByRole("heading", { name: username, exact: true }) });
     await expect(hrCard.getByRole("link", { name: "Get directions", exact: true })).toHaveAttribute("href", "https://www.google.com/maps/dir/?api=1&destination=Updated&dir_action=navigate");
     await locatorPage.close();

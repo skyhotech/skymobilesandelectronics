@@ -108,7 +108,12 @@ class Command(BaseCommand):
             if len(city) > 100:
                 raise CommandError("City label exceeds the schema limit.")
             if options["apply"]:
-                Branch.objects.create(name=name, code=code, city=city)
+                Branch.objects.create(
+                    name=name,
+                    code=code,
+                    city=city,
+                    is_showroom=name not in {"HEAD OFFICE", "MAINLINE RETAILER"},
+                )
             created += 1
         prefix = "Imported" if options["apply"] else "Dry run; would import"
         self.stdout.write(

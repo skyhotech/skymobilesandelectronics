@@ -272,3 +272,9 @@ Storefront pages use server rendering and no-store fetches rather than a duplica
 2. PostgreSQL migration rehearsal against a separate database and tested data export/restore.
 3. Replace homepage demo product collections; then inventory movement/reservations and commerce.
 4. CI gates, staging and production acceptance including restore/load/security checks.
+
+## Branch location and Street View milestone ? 2026-10-16
+
+HR Manage Branches now supports location editing, candidate review, individual discovery/metadata refresh, visual confirmation and audit history. The locator includes all 31 showrooms; HEAD OFFICE and MAINLINE RETAILER remain separate. Migrations 0005?0008 are applied locally without replacing MySQL. Automated Google requests are disabled until separate restricted keys and billing are configured; no live panorama or location has been newly verified. JSON/CSV exports are generated locally under `.run/branch-streetview-report`. See `GOOGLE_STREETVIEW.md` for setup, retention and commands.
+
+Validation: mocked backend location tests, frontend direction tests, typecheck/lint, production build, OpenAPI validation and HR browser flow passed. Browser review covered 390/768/1024/1440 px and verification/revocation. Playwright MCP is unavailable; Playwright Test was used. Live Google APIs, production/load testing and deployment are NOT TESTED.

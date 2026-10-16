@@ -180,3 +180,17 @@ APX_SECURITY_CODE = env("APX_SECURITY_CODE", default="")
 APX_CLOSING_STOCK_BODY = env("APX_CLOSING_STOCK_BODY", default="")
 
 APX_COMPANY_CODE = env("APX_COMPANY_CODE", default="")
+
+GOOGLE_MAPS_EMBED_API_KEY = env("GOOGLE_MAPS_EMBED_API_KEY", default="")
+GOOGLE_MAPS_SERVER_API_KEY = env("GOOGLE_MAPS_SERVER_API_KEY", default="")
+GOOGLE_MAPS_STREETVIEW_ENABLED = env.bool("GOOGLE_MAPS_STREETVIEW_ENABLED", default=False)
+GOOGLE_MAPS_MAX_PANORAMA_DISTANCE_M = env.int("GOOGLE_MAPS_MAX_PANORAMA_DISTANCE_M", default=75)
+GOOGLE_MAPS_SYNC_DELAY_SECONDS = env.float("GOOGLE_MAPS_SYNC_DELAY_SECONDS", default=1.0)
+
+# Retention cleanup only: never schedules billable discovery automatically.
+CELERY_BEAT_SCHEDULE = {
+    "purge-google-location-cache": {
+        "task": "apps.branches.tasks.purge_google_location_cache",
+        "schedule": 3600.0,
+    }
+}

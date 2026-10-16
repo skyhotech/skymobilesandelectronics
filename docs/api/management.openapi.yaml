@@ -3,6 +3,57 @@ info:
   title: SKY Platform API
   version: 1.0.0
 paths:
+  /api/v1/hr/branches/{id}/streetview/:
+    get:
+      operationId: v1_hr_branches_streetview_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewState'
+          description: ''
+    post:
+      operationId: v1_hr_branches_streetview_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReviewRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReviewRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewState'
+          description: ''
   /api/v1/branches/:
     get:
       operationId: v1_branches_list
@@ -102,6 +153,14 @@ paths:
     get:
       operationId: v1_hr_branches_list
       parameters:
+      - in: query
+        name: is_showroom
+        schema:
+          type: boolean
+      - in: query
+        name: location_verified
+        schema:
+          type: boolean
       - name: page
         required: false
         in: query
@@ -114,6 +173,28 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: street_view_status
+        schema:
+          type: string
+          enum:
+          - available_nearby
+          - error
+          - needs_review
+          - pending
+          - storefront_verified
+          - unavailable
+        description: |-
+          * `pending` - pending
+          * `needs_review` - needs review
+          * `available_nearby` - available nearby
+          * `storefront_verified` - storefront verified
+          * `unavailable` - unavailable
+          * `error` - error
+      - in: query
+        name: street_view_verified
+        schema:
+          type: boolean
       tags:
       - v1
       security:
@@ -1458,6 +1539,237 @@ paths:
           description: ''
 components:
   schemas:
+    PatchedBranch:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 160
+        code:
+          type: string
+          maxLength: 40
+          pattern: ^[-a-zA-Z0-9_]+$
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        phone:
+          type: string
+          maxLength: 24
+        google_maps_url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 2000
+          - type: string
+            maxLength: 0
+        street_view_embed_url:
+          type: string
+          maxLength: 12000
+        is_active:
+          type: boolean
+        imagery_date:
+          type: string
+          readOnly: true
+        location_embed_url:
+          type: string
+          readOnly: true
+        branch_id:
+          type: string
+          readOnly: true
+        is_showroom:
+          type: boolean
+        google_place_id:
+          type: string
+          nullable: true
+          maxLength: 255
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,7})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,7})?$
+          nullable: true
+        location_verified:
+          type: boolean
+        manual_override:
+          type: boolean
+        street_view_enabled:
+          type: boolean
+        street_view_status:
+          allOf:
+          - $ref: '#/components/schemas/StreetViewStatusEnum'
+          readOnly: true
+        street_view_verified:
+          type: boolean
+          readOnly: true
+        panorama_id:
+          type: string
+          readOnly: true
+        panorama_latitude:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        panorama_longitude:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        panorama_distance_m:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        heading:
+          type: number
+          format: double
+          maximum: 360
+          minimum: 0
+        pitch:
+          type: number
+          format: double
+          maximum: 90
+          minimum: -90
+        last_checked_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        last_verified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        location_candidates:
+          readOnly: true
+        sync_error:
+          type: string
+          readOnly: true
+        street_view_preview_url:
+          type: string
+          readOnly: true
+        google_data_expires_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        location_source:
+          type: string
+          readOnly: true
+    ActionEnum:
+      enum:
+      - sync
+      - metadata
+      - review_location
+      - confirm_storefront
+      - revoke
+      type: string
+      description: |-
+        * `sync` - sync
+        * `metadata` - metadata
+        * `review_location` - review_location
+        * `confirm_storefront` - confirm_storefront
+        * `revoke` - revoke
+    ReviewRequest:
+      type: object
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionEnum'
+        place_id:
+          type: string
+          pattern: ^[A-Za-z0-9_-]{1,255}$
+        confirmed:
+          type: boolean
+          default: false
+        note:
+          type: string
+          maxLength: 500
+      required:
+      - action
+    ConfigurationState:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        server_ready:
+          type: boolean
+        embed_ready:
+          type: boolean
+        keys_separate:
+          type: boolean
+      required:
+      - embed_ready
+      - enabled
+      - keys_separate
+      - server_ready
+    StreetViewStatusEnum:
+      enum:
+      - pending
+      - needs_review
+      - available_nearby
+      - storefront_verified
+      - unavailable
+      - error
+      type: string
+      description: |-
+        * `pending` - pending
+        * `needs_review` - needs review
+        * `available_nearby` - available nearby
+        * `storefront_verified` - storefront verified
+        * `unavailable` - unavailable
+        * `error` - error
+    Audit:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        action:
+          type: string
+          maxLength: 40
+        status:
+          type: string
+          maxLength: 32
+        note:
+          type: string
+          maxLength: 500
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        actor_name:
+          type: string
+          readOnly: true
+          default: System
+      required:
+      - action
+      - actor_name
+      - created_at
+      - id
+      - status
+    ReviewState:
+      type: object
+      properties:
+        configuration:
+          $ref: '#/components/schemas/ConfigurationState'
+        branch:
+          $ref: '#/components/schemas/Branch'
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/Audit'
+      required:
+      - branch
+      - configuration
+      - history
     StoreLocation:
       type: object
       properties:
@@ -1482,16 +1794,43 @@ components:
             maxLength: 2000
           - type: string
             maxLength: 0
+        location_embed_url:
+          type: string
+          readOnly: true
         street_view_embed_url:
-          oneOf:
-          - type: string
-            format: uri
-            maxLength: 8000
-          - type: string
-            maxLength: 0
+          type: string
+          readOnly: true
+        branch_id:
+          type: string
+          readOnly: true
+        street_view_status:
+          type: string
+          readOnly: true
+        street_view_verified:
+          type: boolean
+          readOnly: true
+        latitude:
+          type: string
+          nullable: true
+          readOnly: true
+        longitude:
+          type: string
+          nullable: true
+          readOnly: true
+        google_place_id:
+          type: string
+          readOnly: true
       required:
+      - branch_id
+      - google_place_id
       - id
+      - latitude
+      - location_embed_url
+      - longitude
       - name
+      - street_view_embed_url
+      - street_view_status
+      - street_view_verified
     HROverview:
       type: object
       properties:
@@ -1592,10 +1931,118 @@ components:
           maxLength: 12000
         is_active:
           type: boolean
+        imagery_date:
+          type: string
+          readOnly: true
+        location_embed_url:
+          type: string
+          readOnly: true
+        branch_id:
+          type: string
+          readOnly: true
+        is_showroom:
+          type: boolean
+        google_place_id:
+          type: string
+          nullable: true
+          maxLength: 255
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,7})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,7})?$
+          nullable: true
+        location_verified:
+          type: boolean
+        manual_override:
+          type: boolean
+        street_view_enabled:
+          type: boolean
+        street_view_status:
+          allOf:
+          - $ref: '#/components/schemas/StreetViewStatusEnum'
+          readOnly: true
+        street_view_verified:
+          type: boolean
+          readOnly: true
+        panorama_id:
+          type: string
+          readOnly: true
+        panorama_latitude:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        panorama_longitude:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        panorama_distance_m:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        heading:
+          type: number
+          format: double
+          maximum: 360
+          minimum: 0
+        pitch:
+          type: number
+          format: double
+          maximum: 90
+          minimum: -90
+        last_checked_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        last_verified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        location_candidates:
+          readOnly: true
+        sync_error:
+          type: string
+          readOnly: true
+        street_view_preview_url:
+          type: string
+          readOnly: true
+        google_data_expires_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        location_source:
+          type: string
+          readOnly: true
       required:
+      - branch_id
       - code
+      - google_data_expires_at
       - id
+      - imagery_date
+      - last_checked_at
+      - last_verified_at
+      - location_candidates
+      - location_embed_url
+      - location_source
       - name
+      - panorama_distance_m
+      - panorama_id
+      - panorama_latitude
+      - panorama_longitude
+      - street_view_preview_url
+      - street_view_status
+      - street_view_verified
+      - sync_error
     PublicJob:
       type: object
       properties:

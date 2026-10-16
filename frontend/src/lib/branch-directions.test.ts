@@ -10,6 +10,11 @@ describe("Google directions without API keys", () => {
     expect(url.searchParams.has("origin")).toBe(false);
     expect(url.searchParams.has("key")).toBe(false);
   });
+  it("uses fresh verified coordinates and place ID for directions", () => {
+    const url = new URL(branchDirections({ ...branch, latitude: "12.6723", longitude: "79.2873", google_place_id: "place-test", location_verified: true })!);
+    expect(url.searchParams.get("destination")).toBe("12.6723,79.2873");
+    expect(url.searchParams.get("destination_place_id")).toBe("place-test");
+  });
   it("preserves a saved destination and place identifier", () => {
     const url = new URL(branchDirections({ ...branch, google_maps_url: "https://www.google.com/maps/search/?api=1&query=SKY+Arni&query_place_id=place-test" })!);
     expect(url.searchParams.get("destination")).toBe("SKY Arni");
