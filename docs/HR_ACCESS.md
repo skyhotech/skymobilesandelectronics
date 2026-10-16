@@ -66,7 +66,7 @@ The live clock displays Asia/Kolkata time and updates every second.
 
 Manage Branches is available at `/hr/branches` in the HR sidebar and navbar search.
 It uses HR session protection and shows the stored branch directory, with search
-and pagination. Editing branches from HR is not implemented.
+and pagination. Branch cards offer View, Add, Edit and confirmed Delete controls.
 
 Leave Requests is available at `/hr/leave-requests` in the sidebar and navbar
 search, protected by HR session checks. Leave submission and approvals are not
@@ -123,3 +123,9 @@ counts, branches grouped by city, recent jobs and recent broadcasts. Employee,
 attendance, hiring workflow and leave tools are explicitly marked unconnected;
 no counts are invented. HR-only `GET /api/v1/hr/overview/` supplies real database
 summaries, refreshed each minute while visible and via Refresh overview.
+
+Branch CRUD uses HR-authorized, CSRF-protected POST `/api/v1/hr/branches/` and
+GET/PATCH/DELETE `/api/v1/hr/branches/<id>/`. Codes are normalized to lowercase
+and checked for uniqueness; duplicate names within a city are rejected. Multiple
+distinct branches can share a city. Branches referenced by inventory return 409
+on deletion and can be deactivated instead. View opens an accessible details dialog.

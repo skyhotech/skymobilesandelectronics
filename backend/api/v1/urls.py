@@ -25,7 +25,8 @@ hr_router.register("careers", HRJobs, basename="hr-careers")
 
 urlpatterns = [
     path("hr/overview/", HROverview.as_view(), name="hr-overview"),
-    path("hr/branches/", HRBranches.as_view(), name="hr-branches"),
+    path("hr/branches/", HRBranches.as_view({"get": "list", "post": "create"}), name="hr-branches"),
+    path("hr/branches/<int:pk>/", HRBranches.as_view({"get": "retrieve", "patch": "partial_update", "delete": "destroy"}), name="hr-branch-detail"),
     path("hr/", include(hr_router.urls)),
     path("careers/", PublicJobs.as_view(), name="public-careers"),
     path("hr/notifications/", BroadcastList.as_view(), name="hr-notifications"),

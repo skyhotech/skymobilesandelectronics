@@ -89,6 +89,26 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await expect(page.getByRole("heading", { name: "Manage Branches", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Branch directory", exact: true })).toBeVisible();
     await expect(page.getByLabel("Search branches or cities", { exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "Add branch", exact: true }).click();
+    await page.getByLabel("Branch name", { exact: true }).fill(username);
+    await page.getByLabel("Branch code", { exact: true }).fill(username);
+    await page.getByLabel("City", { exact: true }).fill("Test city");
+    await page.getByRole("button", { name: "Save branch", exact: true }).click();
+    await expect(page.getByText("Branch saved.", { exact: true })).toBeVisible();
+    await page.getByLabel("Search branches or cities", { exact: true }).fill(username);
+    await page.getByRole("button", { name: "Search branches", exact: true }).click();
+    await page.getByRole("button", { name: `View ${username}`, exact: true }).click();
+    await expect(page.getByRole("dialog", { name: "Branch details", exact: true })).toContainText("Test city");
+    await page.getByRole("button", { name: "Close", exact: true }).click();
+    await page.getByRole("button", { name: `Edit ${username}`, exact: true }).click();
+    await page.getByLabel("City", { exact: true }).fill("Updated city");
+    await page.getByRole("button", { name: "Save branch", exact: true }).click();
+    await expect(page.getByText("Branch saved.", { exact: true })).toBeVisible();
+    await expect(page.getByRole("article").filter({ has: page.getByRole("heading", { name: username, exact: true }) })).toContainText("Updated city");
+    page.once("dialog", dialog => dialog.accept());
+    await page.getByRole("button", { name: `Delete ${username}`, exact: true }).click();
+    await expect(page.getByText("Branch deleted.", { exact: true })).toBeVisible();
+
     await expect(page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: "Manage Branches", exact: true })).toHaveAttribute("aria-current", "page");
     await page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: "Leave Requests", exact: true }).click();
     await expect(page).toHaveURL(/\/hr\/leave-requests$/);
@@ -139,7 +159,7 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await expect(page.getByRole("heading", { name: "HR sign in", exact: true })).toBeVisible();
     await page.screenshot({ path: "../.run/hr-login-desktop.png" });
   } finally {
-    run("import os; from apps.careers.models import JobOpening; JobOpening.objects.filter(created_by__username=os.environ['SKY_HR_TEST_USERNAME']).delete(); from apps.notifications.models import Broadcast; Broadcast.objects.filter(sender__username=os.environ['SKY_HR_TEST_USERNAME']).delete(); from django.contrib.auth.models import User; User.objects.filter(username=os.environ['SKY_HR_TEST_USERNAME']).delete()");
+    run("import os; from apps.branches.models import Branch; Branch.objects.filter(code=os.environ['SKY_HR_TEST_USERNAME']).delete(); from apps.careers.models import JobOpening; JobOpening.objects.filter(created_by__username=os.environ['SKY_HR_TEST_USERNAME']).delete(); from apps.notifications.models import Broadcast; Broadcast.objects.filter(sender__username=os.environ['SKY_HR_TEST_USERNAME']).delete(); from django.contrib.auth.models import User; User.objects.filter(username=os.environ['SKY_HR_TEST_USERNAME']).delete()");
     if (setup.includes("HR_GROUP_CREATED:True")) run("from django.contrib.auth.models import Group; group=Group.objects.filter(name='HR').first(); group.delete() if group and not group.user_set.exists() else None");
   }
 });
