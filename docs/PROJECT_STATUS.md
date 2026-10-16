@@ -1,5 +1,20 @@
 # Project status - 15 October 2026
 
+## Separate HR sign-in - 16 October 2026
+
+Added /hr/login and a protected /hr landing page with distinct HR authentication
+endpoints/query state and explicit active-user HR group authorization. Owner status
+alone does not grant HR access; HR-only users cannot access management APIs. Shared
+Django identity/session storage, CSRF protection, login throttling and existing SKY
+login styling/video loader are preserved. No default HR account/password is created.
+See docs/HR_ACCESS.md for assigning HR membership and the implemented scope.
+
+Verified: 4 backend HR auth tests, 31 frontend tests, typecheck, lint, OpenAPI and
+production build passed. Real local browser HR login/logout/password toggle/group
+access and four widths passed; its isolated test user was deleted. Existing owner
+login/navbar browser regression also passed. HR screenshot visually reviewed.
+No migrations. Production and future employee/payroll workflows remain NOT TESTED.
+
 ## APX Customers tab - 16 October 2026
 
 Added owner-only Customers sidebar/search navigation and mobile-number lookup.

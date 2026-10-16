@@ -2,9 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 // Django remains authoritative: cookie presence alone never grants access.
 export async function proxy(request: NextRequest) {
+  const isHR = request.nextUrl.pathname === "/hr" || request.nextUrl.pathname.startsWith("/hr/");
+  if (request.nextUrl.pathname.startsWith("/hr/api/")) return NextResponse.next();
+  if (request.nextUrl.pathname === "/hr/login" || request.nextUrl.pathname === "/hr/login/") return NextResponse.next();
   if (/^\/management\/admin\/login\/?$/.test(request.nextUrl.pathname)) return NextResponse.next();
   const login = () => {
-    const url = new URL("/management/admin/login", request.url);
+    const url = new URL(isHR ? "/hr/login" : "/management/admin/login", request.url);
     url.searchParams.set("next", request.nextUrl.pathname + request.nextUrl.search);
     const response = NextResponse.redirect(url);
     response.headers.set("Cache-Control", "private, no-store");
@@ -18,7 +21,7 @@ export async function proxy(request: NextRequest) {
         process.env.NEXT_PUBLIC_API_BASE_URL ||
         "http://localhost:8000/api/v1",
     ).origin;
-    const result = await fetch(`${origin}/api/v1/management/session/`, {
+    const result = await fetch(`${origin}/api/v1/${isHR ? "hr" : "management"}/session/`, {
       headers: { Cookie: `sessionid=${encodeURIComponent(session.value)}` },
       redirect: "error",
       cache: "no-store",
@@ -38,4 +41,4 @@ export async function proxy(request: NextRequest) {
   }
 }
 
-export const config = { matcher: ["/management/admin/:path*"] };
+export const config = { matcher: ["/management/admin/:path*", "/hr/:path*"] };

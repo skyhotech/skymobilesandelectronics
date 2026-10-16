@@ -2,6 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from apps.accounts.apx_customers import CustomerLookup
+from apps.accounts.hr_auth import HRSession
 from apps.brands.api import HomepageBrandList
 from apps.categories.api import CategoryImageUpload, HomepageCategoryList, PublicCategoryTree
 from apps.inventory.api import InventoryReport
@@ -16,6 +17,7 @@ media_router = DefaultRouter()
 media_router.register("media", MediaAssetViewSet, basename="management-media")
 
 urlpatterns = [
+    path("hr/session/", HRSession.as_view(), name="hr-session"),
     path("management/customers/lookup/", CustomerLookup.as_view(), name="management-customers"),
     path("management/inventory/", InventoryReport.as_view(), name="management-inventory"),
     path("management/search/", ManagementSearch.as_view(), name="management-search"),

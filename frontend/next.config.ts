@@ -31,6 +31,7 @@ const nextConfig: NextConfig = {
     return [
       { source: "/catalog/brands/:path*", destination: `${backend}/api/v1/brands/:path*/` },
       { source: "/catalog/categories/:path*", destination: `${backend}/api/v1/categories/:path*/` },
+      { source: "/hr/api/:path*", destination: `${backend}/api/v1/hr/:path*/` },
       { source: "/management/api/:path*", destination: `${backend}/api/v1/management/:path*/` },
       { source: "/media/:path*", destination: `${backend}/media/:path*` },
       { source: "/management/static/:path*", destination: `${backend}/management/static/:path*` },

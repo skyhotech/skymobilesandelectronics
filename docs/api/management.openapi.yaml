@@ -54,6 +54,61 @@ paths:
               schema:
                 $ref: '#/components/schemas/CategoryTree'
           description: ''
+  /api/v1/hr/session/:
+    get:
+      operationId: hr_session_retrieve
+      tags:
+      - hr
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementSession'
+          description: ''
+    post:
+      operationId: hr_session_create
+      tags:
+      - hr
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementSession'
+          description: ''
+    delete:
+      operationId: hr_session_destroy
+      tags:
+      - hr
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementSession'
+          description: ''
   /api/v1/management/brands/:
     get:
       operationId: management_brands_list

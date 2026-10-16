@@ -18,3 +18,13 @@ export function safeManagementReturn(value: string | null): string {
   }
   return "/management/admin";
 }
+
+export function safeHRReturn(value: string | null): string {
+  if (!value || /[\\\r\n]/.test(value)) return "/hr";
+  try {
+    const url = new URL(value, "https://internal.invalid");
+    if (url.origin === "https://internal.invalid" && url.pathname === "/hr")
+      return url.pathname + url.search;
+  } catch { /* Invalid destinations return to the HR workspace. */ }
+  return "/hr";
+}

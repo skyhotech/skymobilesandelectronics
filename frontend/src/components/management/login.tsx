@@ -8,8 +8,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { managementApi, type Session } from "@/lib/management-api";
-import { safeManagementReturn } from "@/lib/auth-routes";
+import { managementApi, hrApi, type Session } from "@/lib/management-api";
+import { safeManagementReturn, safeHRReturn } from "@/lib/auth-routes";
 import styles from "./management.module.css";
 
 const schema = z.object({
@@ -17,7 +17,11 @@ const schema = z.object({
   password: z.string().min(1, "Enter your password"),
 });
 
-export function ManagementLogin() {
+export function ManagementLogin({ portal = "management" }: { portal?: "management" | "hr" }) {
+  const isHR = portal === "hr";
+  const api = isHR ? hrApi : managementApi;
+  const returnPath = isHR ? safeHRReturn : safeManagementReturn;
+  const sessionKey = isHR ? "hr" : "management";
   const sceneRef = useRef<HTMLElement>(null);
   useEffect(() => {
     const scene = sceneRef.current;
@@ -70,27 +74,28 @@ export function ManagementLogin() {
   const router = useRouter();
   const cache = useQueryClient();
   const session = useQuery({
-    queryKey: ["management", "session"],
-    queryFn: () => managementApi<Session>("session/"),
+    queryKey: [sessionKey, "session"],
+    queryFn: () => api<Session>("session/"),
     staleTime: 0,
     retry: false,
   });
   const form = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
   const login = useMutation({
     mutationFn: (values: z.infer<typeof schema>) =>
-      managementApi<Session>("session/", "POST", values),
+      api<Session>("session/", "POST", values),
     onSuccess: (data) => {
-      cache.setQueryData(["management", "session"], data);
-      router.replace(safeManagementReturn(new URLSearchParams(window.location.search).get("next")));
+      cache.removeQueries({ queryKey: [isHR ? "management" : "hr"] });
+      cache.setQueryData([sessionKey, "session"], data);
+      router.replace(returnPath(new URLSearchParams(window.location.search).get("next")));
     },
   });
   useEffect(() => {
     if (session.data?.user)
-      router.replace(safeManagementReturn(new URLSearchParams(window.location.search).get("next")));
-  }, [session.data, router]);
+      router.replace(returnPath(new URLSearchParams(window.location.search).get("next")));
+  }, [session.data, router, returnPath]);
   return (
     <main ref={sceneRef} className={styles.authPage}>
-      <aside className={styles.authBrand} aria-label="SKY store management">
+      <aside className={styles.authBrand} aria-label={isHR ? "SKY HR access" : "SKY store management"}>
         <Link href="/" className={styles.authBrandLink}>
           <Image
             src="/images/homepage/545193f58191.webp"
@@ -104,25 +109,24 @@ export function ManagementLogin() {
           </span>
         </Link>
         <div className={styles.authBrandContent}>
-          <span className={styles.authPill}>STORE MANAGEMENT</span>
+          <span className={styles.authPill}>{isHR ? "HR ACCESS" : "STORE MANAGEMENT"}</span>
           <h2>
-            Your catalog.
+            {isHR ? "Your people." : "Your catalog."}
             <br />
-            One clear workspace.
+            {isHR ? "One secure workspace." : "One clear workspace."}
           </h2>
           <p>
-            Keep your products, prices and brands organized, so your team can focus on what comes
-            next.
+            {isHR ? "Sign in with your authorized SKY HR account." : "Keep your products, prices and brands organized, so your team can focus on what comes next."}
           </p>
           <div className={styles.authCapabilities}>
             <span>
-              <b>01</b> Product catalog
+              <b>01</b> {isHR ? "Secure sign-in" : "Product catalog"}
             </span>
             <span>
-              <b>02</b> Brands &amp; categories
+              <b>02</b> {isHR ? "Protected access" : "Brands & categories"}
             </span>
             <span>
-              <b>03</b> Pricing &amp; availability
+              <b>03</b> {isHR ? "SKY workspace" : "Pricing & availability"}
             </span>
           </div>
         </div>
@@ -145,9 +149,9 @@ export function ManagementLogin() {
               <path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3" />
             </svg>
           </div>
-          <p className={styles.eyebrow}>OWNER ACCESS</p>
-          <h1 id="admin-login-title">Welcome back.</h1>
-          <p className={styles.authSubtitle}>Sign in to manage your SKY store.</p>
+          <p className={styles.eyebrow}>{isHR ? "HR ACCESS" : "OWNER ACCESS"}</p>
+          <h1 id="admin-login-title">{isHR ? "HR sign in" : "Welcome back."}</h1>
+          <p className={styles.authSubtitle}>{isHR ? "Welcome to SKY HR access." : "Sign in to manage your SKY store."}</p>
           <form
             onSubmit={form.handleSubmit((values) => login.mutate(values))}
             className={styles.form}
@@ -221,13 +225,13 @@ export function ManagementLogin() {
               {login.isPending ? "Signing in…" : session.isPending ? "Connecting…" : "Sign in"}
             </button>
           </form>
-          <p className={styles.authAccessNote}>For authorized store administrators.</p>
+          <p className={styles.authAccessNote}>{isHR ? "For accounts with approved HR access." : "For authorized store administrators."}</p>
           <Link className={styles.authBackLink} href="/">
             &larr; Back to website
           </Link>
         </div>
         <p className={styles.authPanelFooter}>
-          SKY Management <span aria-hidden="true">/</span> Your store, connected.
+          {isHR ? "SKY HR" : "SKY Management"} <span aria-hidden="true">/</span> Your store, connected.
         </p>
       </section>
     </main>

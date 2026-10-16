@@ -30,7 +30,7 @@ export class ManagementError extends Error {
   }
 }
 
-export async function managementApi<T>(path: string, method = "GET", body?: unknown): Promise<T> {
+export async function managementApi<T>(path: string, method = "GET", body?: unknown, portal: "management" | "hr" = "management"): Promise<T> {
   const csrf =
     typeof document === "undefined"
       ? ""
@@ -40,7 +40,7 @@ export async function managementApi<T>(path: string, method = "GET", body?: unkn
           ?.split("=")
           .slice(1)
           .join("=") || "";
-  const response = await fetch(`/management/api/${path}`, {
+  const response = await fetch(`/${portal}/api/${path}`, {
     method,
     credentials: "same-origin",
     cache: "no-store",
@@ -76,4 +76,8 @@ export async function allReferences(resource: string): Promise<Reference[]> {
     if (!result.next) return entries;
     page += 1;
   }
+}
+
+export function hrApi<T>(path: string, method = "GET", body?: unknown): Promise<T> {
+  return managementApi<T>(path, method, body, "hr");
 }

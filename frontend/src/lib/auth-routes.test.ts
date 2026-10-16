@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { safeManagementReturn } from "./auth-routes";
+import { safeManagementReturn, safeHRReturn } from "./auth-routes";
 
 describe("management return paths", () => {
   it("preserves an internal management destination", () => {
@@ -17,5 +17,13 @@ describe("management return paths", () => {
     "/\\evil.example",
   ])("rejects unsafe or looping destination %s", (path) => {
     expect(safeManagementReturn(path)).toBe("/management/admin");
+  });
+});
+
+describe("HR return paths", () => {
+  it("stays in HR and rejects external, login and management destinations", () => {
+    expect(safeHRReturn("/hr?view=home")).toBe("/hr?view=home");
+    for (const path of [null, "https://evil.example", "//evil.example", "/hr/login", "/management/admin", "/hr/../management/admin"])
+      expect(safeHRReturn(path)).toBe("/hr");
   });
 });
