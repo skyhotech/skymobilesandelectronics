@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { hrApi, type Session } from "@/lib/management-api";
 import { HRIcon } from "./icon";
 import { HRNavbarTools } from "./navbar";
@@ -19,7 +20,7 @@ export function HRWorkspace({ view = "dashboard", employeeStatus = "all" }: { em
   const logout = useMutation({ mutationFn: () => hrApi("session/", "DELETE"), onSuccess: () => { cache.removeQueries({ queryKey: ["hr"] }); cache.removeQueries({ queryKey: ["management"] }); router.replace("/hr/login"); } });
   return <div className={styles.workspace}>
     <aside className={styles.sidebar}>
-      <Link href="/hr" className={styles.brand}>SKY<span>Human Resources</span></Link>
+      <Link href="/hr" className={styles.brand}><Image className={styles.brandLogo} src="/images/homepage/545193f58191.webp" alt="SKY Mobile & Electronics" width={72} height={72} priority /><span>Human Resources</span></Link>
       <p className={styles.navLabel}>Workspace</p>
       <nav aria-label="HR navigation" className={styles.navigation}>
         <Link href="/hr" aria-current={view === "dashboard" ? "page" : undefined} className={view === "dashboard" ? styles.activeLink : styles.navLink}><HRIcon name="dashboard" /> Dashboard</Link>
