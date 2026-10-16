@@ -41,3 +41,6 @@ Verified: backend HR login/CSRF/logout, wrong-role/inactive rejection, group rev
 and throttle tests; a real local browser flow using an isolated HR fixture account,
 four viewport widths, password toggle, protected landing and management denial.
 The fixture account was deleted afterwards. No HR credentials were committed.
+
+Hiring Process is available below Attendance at `/hr/hiring` with HR session
+protection. Recruitment data and workflows are not connected yet.
