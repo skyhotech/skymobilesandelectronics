@@ -7,6 +7,7 @@ from apps.brands.api import HomepageBrandList
 from apps.categories.api import CategoryImageUpload, HomepageCategoryList, PublicCategoryTree
 from apps.inventory.api import InventoryReport
 from apps.media_library.api import MediaAssetViewSet, MediaUpload
+from apps.notifications.api import BroadcastList
 from apps.products.admin_search import ManagementSearch
 from apps.products.management_api import management_urlpatterns
 from apps.products.public_api import ProductDetail, ProductFilterOptions, ProductList
@@ -17,6 +18,7 @@ media_router = DefaultRouter()
 media_router.register("media", MediaAssetViewSet, basename="management-media")
 
 urlpatterns = [
+    path("hr/notifications/", BroadcastList.as_view(), name="hr-notifications"),
     path("hr/session/", HRSession.as_view(), name="hr-session"),
     path("management/customers/lookup/", CustomerLookup.as_view(), name="management-customers"),
     path("management/inventory/", InventoryReport.as_view(), name="management-inventory"),

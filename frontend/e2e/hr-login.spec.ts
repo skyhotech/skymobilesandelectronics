@@ -53,6 +53,14 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await expect(page.getByRole("heading", { name: "Hiring Process", exact: true })).toBeVisible();
     await expect(page.getByRole("link", { name: "Hiring Process", exact: true })).toHaveAttribute("aria-current", "page");
     await expect(page.getByText("Hiring records are not connected yet.", { exact: true })).toBeVisible();
+    await page.getByRole("link", { name: "Broadcast Notifications", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "Broadcast Notifications", exact: true })).toBeVisible();
+    await page.getByLabel("Title", { exact: true }).fill(username);
+    await page.getByLabel("Message", { exact: true }).fill("Local HR broadcast verification");
+    await page.getByRole("button", { name: "Send broadcast", exact: true }).click();
+    await expect(page.getByRole("status").filter({ hasText: "Broadcast sent to the HR notification feed." })).toBeVisible();
+    await expect(page.getByRole("heading", { name: username, exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Enable browser notifications", exact: true })).toBeVisible();
     await page.getByRole("link", { name: "Dashboard", exact: true }).click();
     await expect(page.getByRole("heading", { name: "Dashboard", exact: true })).toBeVisible();
     expect((await page.request.get("/management/api/overview/")).status()).toBe(403);
@@ -61,7 +69,7 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await expect(page.getByRole("heading", { name: "HR sign in", exact: true })).toBeVisible();
     await page.screenshot({ path: "../.run/hr-login-desktop.png" });
   } finally {
-    run("import os; from django.contrib.auth.models import User; User.objects.filter(username=os.environ['SKY_HR_TEST_USERNAME']).delete()");
+    run("import os; from apps.notifications.models import Broadcast; Broadcast.objects.filter(sender__username=os.environ['SKY_HR_TEST_USERNAME']).delete(); from django.contrib.auth.models import User; User.objects.filter(username=os.environ['SKY_HR_TEST_USERNAME']).delete()");
     if (setup.includes("HR_GROUP_CREATED:True")) run("from django.contrib.auth.models import Group; group=Group.objects.filter(name='HR').first(); group.delete() if group and not group.user_set.exists() else None");
   }
 });

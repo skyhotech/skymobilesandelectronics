@@ -3,6 +3,47 @@ info:
   title: SKY Platform API
   version: 1.0.0
 paths:
+  /api/v1/hr/notifications/:
+    get:
+      operationId: v1_hr_notifications_list
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Broadcast'
+          description: ''
+    post:
+      operationId: v1_hr_notifications_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Broadcast'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Broadcast'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Broadcast'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Broadcast'
+          description: ''
   /api/v1/brands/:
     get:
       operationId: brands_list
@@ -1129,6 +1170,32 @@ paths:
           description: ''
 components:
   schemas:
+    Broadcast:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 120
+        message:
+          type: string
+          maxLength: 2000
+        sender_name:
+          type: string
+          readOnly: true
+          default: Former user
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - message
+      - sender_name
+      - title
     Brand:
       type: object
       properties:

@@ -34,3 +34,7 @@
   .main { padding: 24px 20px; }
   .details { grid-template-columns: 1fr; }
 }
+
+.broadcastForm { display: grid; gap: 12px; margin-bottom: 24px; }
+.broadcastForm input, .broadcastForm textarea { width: 100%; min-width: 0; padding: 12px; border: 1px solid #ced9e8; border-radius: 8px; font: inherit; }
+.broadcastItem { padding: 16px 0; border-top: 1px solid #e0e7f0; overflow-wrap: anywhere; }

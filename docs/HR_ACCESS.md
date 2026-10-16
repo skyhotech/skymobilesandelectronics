@@ -44,3 +44,17 @@ The fixture account was deleted afterwards. No HR credentials were committed.
 
 Hiring Process is available below Attendance at `/hr/hiring` with HR session
 protection. Recruitment data and workflows are not connected yet.
+
+## Broadcast notifications
+
+`/hr/notifications` lets active HR members send title/message broadcasts to all HR
+accounts. `GET /api/v1/hr/notifications/` returns the latest 50 broadcasts;
+`POST` accepts `{"title":"Meeting","message":"At 10"}` (120/2000 character limits).
+Session authentication, HR membership and CSRF are required. Django stores sender
+and creation time. Run migrations before deployment.
+
+HR pages refresh the feed every 30 seconds while visible. Browser alerts require
+explicit permission via Enable browser notifications and a supported secure context
+(localhost or HTTPS). Previously received broadcasts are not replayed on navigation.
+This is local browser delivery while HR is open, not push to closed browsers, SMS
+or email. All HR members can broadcast; employee accounts are not configured yet.
