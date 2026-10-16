@@ -63,3 +63,6 @@ The HR navbar stays at the top while scrolling. Search matches HR section names
 and related keywords (for example staff, interview and alerts), regardless of case;
 a section filter narrows results. It searches navigation, not employee records.
 The live clock displays Asia/Kolkata time and updates every second.
+
+Manage Branch is available at `/hr/branches` in the HR sidebar and navbar search.
+It uses HR session protection; branch management data/actions are not connected.

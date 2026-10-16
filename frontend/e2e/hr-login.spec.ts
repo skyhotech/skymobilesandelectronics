@@ -73,6 +73,10 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await expect(page.getByRole("status").filter({ hasText: "Broadcast sent to the HR notification feed." })).toBeVisible();
     await expect(page.getByRole("heading", { name: username, exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "Enable browser notifications", exact: true })).toBeVisible();
+    await page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: "Manage Branch", exact: true }).click();
+    await expect(page).toHaveURL(/\/hr\/branches$/);
+    await expect(page.getByRole("heading", { name: "Manage Branch", exact: true })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: "Manage Branch", exact: true })).toHaveAttribute("aria-current", "page");
     await page.getByRole("link", { name: "Dashboard", exact: true }).click();
     await expect(page.getByRole("heading", { name: "Dashboard", exact: true })).toBeVisible();
     expect((await page.request.get("/management/api/overview/")).status()).toBe(403);
