@@ -10,6 +10,7 @@ import styles from "./admin-search.module.css";
 
 const schema = z.object({ results: z.array(z.object({ kind: z.enum(["brand", "category", "product"]), id: z.number().int().positive(), name: z.string(), brand_id: z.number().int().positive().nullable() })) });
 const pages = [
+  { name: "Customers", href: "/management/admin/customers", terms: "customers customer mobile lookup" },
   { name: "Inventory", href: "/management/admin/inventory", terms: "inventory stock closing breakup report availability" },
   { name: "Themes", href: "/management/admin/themes", terms: "themes theme appearance homepage design style" },
   { name: "Dashboard", href: "/management/admin/dashboard", terms: "dashboard overview totals home" },

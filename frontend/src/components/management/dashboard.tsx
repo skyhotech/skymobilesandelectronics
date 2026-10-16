@@ -25,10 +25,11 @@ import { BrandWorkspace } from "./brand-workspace";
 import { ManagementOverview } from "./overview";
 import { ManagementThemes } from "./themes";
 import { ManagementInventory } from "./inventory";
+import { ManagementCustomers } from "./customers";
 import { AdminSearch } from "./admin-search";
 import { ProductFilters, defaultProductFilters } from "./product-filters";
 
-type Resource = "products" | "brands" | "categories" | "dashboard" | "themes" | "inventory";
+type Resource = "products" | "brands" | "categories" | "dashboard" | "themes" | "inventory" | "customers";
 type Entry = Reference | Product;
 const singular: Record<Resource, string> = {
   products: "product",
@@ -37,6 +38,7 @@ const singular: Record<Resource, string> = {
   dashboard: "dashboard",
   themes: "theme",
   inventory: "inventory",
+  customers: "customer",
 };
 const money = z
   .string()
@@ -225,7 +227,7 @@ export function ManagementDashboard({
           </div>
           <p className={styles.sidebarSection}>CATALOG</p>
           <nav className={styles.sidebarNav} aria-label="Management sections">
-            {(["dashboard", "themes", "inventory", "brands", "categories"] as Resource[]).map((item) => (
+            {(["dashboard", "themes", "inventory", "customers", "brands", "categories"] as Resource[]).map((item) => (
               <Link
                 key={item}
                 href={`/management/admin/${item}`}
@@ -251,6 +253,7 @@ export function ManagementDashboard({
           {resource === "dashboard" && <ManagementOverview />}
           {resource === "themes" && <ManagementThemes />}
           {resource === "inventory" && <ManagementInventory />}
+          {resource === "customers" && <ManagementCustomers />}
           {resource === "products" && (
             <div className={styles.intro}>
               <div>

@@ -176,3 +176,5 @@ APX_API_BASE_URL = env("APX_API_BASE_URL", default="http://10.10.2.50:8080")
 APX_USER_ID = env("APX_USER_ID", default="")
 APX_SECURITY_CODE = env("APX_SECURITY_CODE", default="")
 APX_CLOSING_STOCK_BODY = env("APX_CLOSING_STOCK_BODY", default="")
+
+APX_COMPANY_CODE = env("APX_COMPANY_CODE", default="")

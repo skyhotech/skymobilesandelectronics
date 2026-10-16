@@ -10,7 +10,7 @@ export default async function AdminSection({
 }) {
   const { section, categoryPath = [] } = await params;
   if (section === "products" && categoryPath.length === 0) redirect("/management/admin/brands");
-  if (!["products", "brands", "categories", "dashboard", "themes", "inventory"].includes(section)) notFound();
+  if (!["products", "brands", "categories", "dashboard", "themes", "inventory", "customers"].includes(section)) notFound();
   if (
     categoryPath.length > 1 ||
     (categoryPath.length && (section !== "categories" || !/^[1-9]\d*$/.test(categoryPath[0])))
@@ -25,7 +25,7 @@ export default async function AdminSection({
   return (
     <ManagementDashboard
       key={`${section}:${brandId}:${query.search || ""}`}
-      section={section as "products" | "brands" | "categories" | "dashboard" | "themes" | "inventory"}
+      section={section as "products" | "brands" | "categories" | "dashboard" | "themes" | "inventory" | "customers"}
       parentId={parentId}
       initialBrandId={brandId}
       initialSearch={(query.search || "").slice(0, 120)}

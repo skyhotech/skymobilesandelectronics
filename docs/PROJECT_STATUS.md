@@ -1,5 +1,17 @@
 # Project status - 15 October 2026
 
+## APX Customers tab - 16 October 2026
+
+Added owner-only Customers sidebar/search navigation and mobile-number lookup.
+Local CSRF-protected POST calls APX GetCustomerList using upstream GET with a fixed
+server company code and approved credentials. Results clear on input changes,
+are not persisted and have no-store responses. No customer import/login is implied.
+
+Verified: 5 backend tests, browser fixture flow at four widths, typecheck, lint and
+production build passed. No live customer record was queried. Configure APX_COMPANY_CODE
+and approved APX credentials; see docs/APX_CUSTOMERS.md for the response contract and
+verification limits. Existing unrelated working changes are preserved.
+
 ## Shared video loader - 16 October 2026
 
 The supplied /videos/loader.mp4 is now the shared full-screen loading animation.
