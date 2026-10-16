@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -14,6 +15,16 @@ import { HRNotifications } from "./notifications";
 import styles from "./workspace.module.css";
 
 export function HRWorkspace({ view = "dashboard", employeeStatus = "all" }: { employeeStatus?: "all" | "working" | "leave" | "past"; view?: "dashboard" | "employees" | "attendance" | "hiring" | "notifications" | "branches" | "leave" | "careers" }) {
+  const navbar = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const element = navbar.current;
+    if (!element) return;
+    const update = () => element.parentElement?.style.setProperty("--hr-navbar-height", `${element.getBoundingClientRect().height}px`);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
   const router = useRouter();
   const cache = useQueryClient();
   const session = useQuery({ queryKey: ["hr", "session"], queryFn: () => hrApi<Session>("session/"), staleTime: 0, retry: false });
@@ -40,7 +51,7 @@ export function HRWorkspace({ view = "dashboard", employeeStatus = "all" }: { em
       <Link className={styles.websiteLink} href="/"><HRIcon name="website" /> View website</Link>
     </aside>
     <main className={styles.main} id="hr-dashboard">
-      <div className={styles.navbar}><header className={styles.header}><div><p className={styles.eyebrow}>SKY HR</p><h1>{view === "careers" ? "Careers" : view === "leave" ? "Leave Requests" : view === "branches" ? "Manage Branches" : view === "notifications" ? "Broadcast Notifications" : view === "hiring" ? "Hiring Process" : view === "attendance" ? "Attendance" : view === "employees" ? "Employees" : "Dashboard"}</h1></div>
+      <div ref={navbar} className={styles.navbar}><header className={styles.header}><div><p className={styles.eyebrow}>SKY HR</p><h1>{view === "careers" ? "Careers" : view === "leave" ? "Leave Requests" : view === "branches" ? "Manage Branches" : view === "notifications" ? "Broadcast Notifications" : view === "hiring" ? "Hiring Process" : view === "attendance" ? "Attendance" : view === "employees" ? "Employees" : "Dashboard"}</h1></div>
         {session.data?.user && <button className={styles.signOut} disabled={logout.isPending} onClick={() => logout.mutate()}>{logout.isPending ? "Signing out…" : "Sign out"}</button>}
       </header><HRNavbarTools /></div>
     {session.error && <p role="alert">Unable to verify your HR session. <button onClick={() => session.refetch()}>Retry</button></p>}

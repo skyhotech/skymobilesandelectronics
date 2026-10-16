@@ -107,3 +107,5 @@
 .branchDialog .dashboardHeading { margin-top: 0; }
 .branchDialog dt { font-weight: 650; margin-top: 18px; }
 .branchDialog dd { margin: 6px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.branchSearch { position: sticky; top: var(--hr-navbar-height, 200px); z-index: 20; padding: 16px 0; background: #fff; border-bottom: 1px solid #dce5f0; box-shadow: 0 8px 12px -12px #14243c55; }

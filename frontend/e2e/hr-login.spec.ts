@@ -90,6 +90,13 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await expect(page.getByRole("heading", { name: "Manage Branches", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Branch directory", exact: true })).toBeVisible();
     await expect(page.getByLabel("Search branches or cities", { exact: true })).toBeVisible();
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.evaluate(() => window.scrollTo(0, 1000));
+      await expect.poll(() => page.locator("form").filter({ has: page.getByLabel("Search branches or cities", { exact: true }) }).evaluate(element => Math.abs(element.getBoundingClientRect().top - Number.parseFloat(getComputedStyle(element).top)))).toBeLessThan(2);
+    }
+    await page.setViewportSize({ width: 1440, height: 900 });
+
     await page.getByRole("button", { name: "Add branch", exact: true }).click();
     await page.getByLabel("Branch name", { exact: true }).fill(username);
     await page.getByLabel("Branch code", { exact: true }).fill(username);
