@@ -23,7 +23,7 @@ export function safeHRReturn(value: string | null): string {
   if (!value || /[\\\r\n]/.test(value)) return "/hr";
   try {
     const url = new URL(value, "https://internal.invalid");
-    if (url.origin === "https://internal.invalid" && ["/hr", "/hr/employees", "/hr/attendance", "/hr/hiring", "/hr/notifications", "/hr/branches", "/hr/leave-requests", "/hr/careers"].includes(url.pathname))
+    if (url.origin === "https://internal.invalid" && ["/hr", "/hr/employees", "/hr/attendance", "/hr/hiring", "/hr/notifications", "/hr/branches", "/hr/leave-requests", "/hr/careers", "/hr/chat"].includes(url.pathname))
       return url.pathname + url.search;
   } catch { /* Invalid destinations return to the HR workspace. */ }
   return "/hr";

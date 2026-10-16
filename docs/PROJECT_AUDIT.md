@@ -44,3 +44,7 @@ No production readiness claim. Live WordPress and production data remain untouch
 ## Branch location integration ? 2026-10-16
 
 Reused the existing HR branch CRUD, public locator and workbook import. Current database contains 31 showrooms and two non-showroom entries. Existing addresses are preserved; exact coordinates and panoramas are unverified. Google credentials are absent, so live discovery is NOT TESTED. The new service records configuration errors explicitly and uses mocked API tests; setup and verification workflow are in `GOOGLE_STREETVIEW.md`. MySQL remains unchanged.
+
+## Staff chat audit ? 2026-10-16
+
+Reused Django session authentication, HR membership checks, private filesystem storage and installed Channels/Redis. Employee records are still scaffolding, so chat access uses an explicit Employees group and individual existing accounts. ASGI previously served HTTP only; it now routes authenticated origin-checked WebSockets. Next previously denied camera/microphone; same-origin permissions now enable calls. Local Chrome media is verified; external TURN and production acceptance remain outstanding.

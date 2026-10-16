@@ -8,6 +8,7 @@ import styles from "./workspace.module.css";
 
 type Overview = { branches: number; active_branches: number; jobs: number; published_jobs: number; broadcasts: number; cities: { city: string; total: number }[]; recent_jobs: JobOpening[]; recent_broadcasts: { id: number; title: string; message: string; sender_name: string; created_at: string }[] };
 const modules = [
+  { title: "Messages & Calls", href: "/hr/chat", icon: "notifications", description: "Employee conversations, private files and voice/video calls.", status: "Connected" },
   { title: "Employees", href: "/hr/employees", icon: "employees", description: "All, working, on leave and past employees.", status: "Employee records not connected" },
   { title: "Attendance", href: "/hr/attendance", icon: "attendance", description: "Employee attendance and check-in records.", status: "Attendance not connected" },
   { title: "Hiring Process", href: "/hr/hiring", icon: "hiring", description: "Candidates, interviews and recruitment progress.", status: "Recruitment workflow not connected" },

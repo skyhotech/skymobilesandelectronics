@@ -10,6 +10,7 @@ from apps.branches.streetview_api import StreetViewReview
 from apps.brands.api import HomepageBrandList
 from apps.careers.api import HRJobs, PublicJobs
 from apps.categories.api import CategoryImageUpload, HomepageCategoryList, PublicCategoryTree
+from apps.chat import api as chat
 from apps.inventory.api import InventoryReport
 from apps.media_library.api import MediaAssetViewSet, MediaUpload
 from apps.notifications.api import BroadcastList
@@ -26,6 +27,14 @@ hr_router = DefaultRouter()
 hr_router.register("careers", HRJobs, basename="hr-careers")
 
 urlpatterns = [
+    path("chat/session/", chat.ChatSession.as_view()),
+    path("chat/inbox/", chat.Inbox.as_view()),
+    path("chat/threads/<int:pk>/messages/", chat.Messages.as_view()),
+    path("chat/threads/<int:pk>/read/", chat.ReadMessages.as_view()),
+    path("chat/threads/<int:pk>/calls/", chat.Calls.as_view()),
+    path("chat/files/<int:pk>/", chat.Attachment.as_view()),
+    path("chat/calls/<int:pk>/", chat.CallDetail.as_view()),
+    path("chat/calls/<int:pk>/signals/", chat.Signals.as_view()),
     path(
         "hr/branches/<int:pk>/streetview/", StreetViewReview.as_view(), name="hr-streetview-review"
     ),

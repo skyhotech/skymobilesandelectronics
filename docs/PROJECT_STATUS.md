@@ -278,3 +278,9 @@ Storefront pages use server rendering and no-store fetches rather than a duplica
 HR Manage Branches now supports location editing, candidate review, individual discovery/metadata refresh, visual confirmation and audit history. The locator includes all 31 showrooms; HEAD OFFICE and MAINLINE RETAILER remain separate. Migrations 0005?0008 are applied locally without replacing MySQL. Automated Google requests are disabled until separate restricted keys and billing are configured; no live panorama or location has been newly verified. JSON/CSV exports are generated locally under `.run/branch-streetview-report`. See `GOOGLE_STREETVIEW.md` for setup, retention and commands.
 
 Validation: mocked backend location tests, frontend direction tests, typecheck/lint, production build, OpenAPI validation and HR browser flow passed. Browser review covered 390/768/1024/1440 px and verification/revocation. Playwright MCP is unavailable; Playwright Test was used. Live Google APIs, production/load testing and deployment are NOT TESTED.
+
+## Staff chat milestone ? 2026-10-16
+
+Implemented HR/employee one-to-one messaging, private attachments/shared-file history, unread/read status, Channels notifications with HTTP fallback, and consent-based WebRTC voice/video calls. Added Employees-group access and a separate employee sign-in; no employee credentials were seeded. Chat migrations applied to the existing local MySQL database.
+
+Validation: 17 backend chat/HR tests passed, including access control and WebSocket tests; two-browser Chrome tests connected local audio/video with synthetic devices, exchanged messages/files and verified responsive layouts, mute, decline and hangup. TypeScript/lint and production build passed. See `STAFF_CHAT.md`. Cross-network TURN, actual cameras/microphones, production load/deployment and closed-browser push are NOT TESTED.

@@ -12,9 +12,11 @@ import { HRDashboard } from "./dashboard";
 import { HRBranches } from "./branches";
 import { HRCareers } from "./careers";
 import { HRNotifications } from "./notifications";
+import { Chat } from "@/components/chat/chat";
+import { ChatNotifications } from "@/components/chat/notifications";
 import styles from "./workspace.module.css";
 
-export function HRWorkspace({ view = "dashboard", employeeStatus = "all" }: { employeeStatus?: "all" | "working" | "leave" | "past"; view?: "dashboard" | "employees" | "attendance" | "hiring" | "notifications" | "branches" | "leave" | "careers" }) {
+export function HRWorkspace({ view = "dashboard", employeeStatus = "all" }: { employeeStatus?: "all" | "working" | "leave" | "past"; view?: "dashboard" | "employees" | "attendance" | "hiring" | "notifications" | "branches" | "leave" | "careers" | "chat" }) {
   const navbar = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const element = navbar.current;
@@ -28,7 +30,7 @@ export function HRWorkspace({ view = "dashboard", employeeStatus = "all" }: { em
   const router = useRouter();
   const cache = useQueryClient();
   const session = useQuery({ queryKey: ["hr", "session"], queryFn: () => hrApi<Session>("session/"), staleTime: 0, retry: false });
-  const logout = useMutation({ mutationFn: () => hrApi("session/", "DELETE"), onSuccess: () => { cache.removeQueries({ queryKey: ["hr"] }); cache.removeQueries({ queryKey: ["management"] }); router.replace("/hr/login"); } });
+  const logout = useMutation({ mutationFn: () => hrApi("session/", "DELETE"), onSuccess: () => { cache.removeQueries({ queryKey: ["chat"] }); cache.removeQueries({ queryKey: ["hr"] }); cache.removeQueries({ queryKey: ["management"] }); router.replace("/hr/login"); } });
   return <div className={styles.workspace}>
     <aside className={styles.sidebar}>
       <Link href="/hr" className={styles.brand}><Image className={styles.brandLogo} src="/images/homepage/545193f58191.webp" alt="SKY Mobile & Electronics" width={72} height={72} priority /><span>Human Resources</span></Link>
@@ -47,16 +49,18 @@ export function HRWorkspace({ view = "dashboard", employeeStatus = "all" }: { em
         <Link href="/hr/branches" aria-current={view === "branches" ? "page" : undefined} className={view === "branches" ? styles.activeLink : styles.navLink}><HRIcon name="branches" /> Manage Branches</Link>
         <Link href="/hr/leave-requests" aria-current={view === "leave" ? "page" : undefined} className={view === "leave" ? styles.activeLink : styles.navLink}><HRIcon name="leave" /> Leave Requests</Link>
         <Link href="/hr/careers" aria-current={view === "careers" ? "page" : undefined} className={view === "careers" ? styles.activeLink : styles.navLink}><HRIcon name="careers" /> Careers</Link>
+        <Link href="/hr/chat" aria-current={view === "chat" ? "page" : undefined} className={view === "chat" ? styles.activeLink : styles.navLink}><HRIcon name="notifications" /> Messages & Calls</Link>
       </nav>
       <Link className={styles.websiteLink} href="/"><HRIcon name="website" /> View website</Link>
     </aside>
     <main className={styles.main} id="hr-dashboard">
-      <div ref={navbar} className={styles.navbar}><header className={styles.header}><div><p className={styles.eyebrow}>SKY HR</p><h1>{view === "careers" ? "Careers" : view === "leave" ? "Leave Requests" : view === "branches" ? "Manage Branches" : view === "notifications" ? "Broadcast Notifications" : view === "hiring" ? "Hiring Process" : view === "attendance" ? "Attendance" : view === "employees" ? "Employees" : "Dashboard"}</h1></div>
+      <div ref={navbar} className={styles.navbar}><header className={styles.header}><div><p className={styles.eyebrow}>SKY HR</p><h1>{view === "chat" ? "Messages & Calls" : view === "careers" ? "Careers" : view === "leave" ? "Leave Requests" : view === "branches" ? "Manage Branches" : view === "notifications" ? "Broadcast Notifications" : view === "hiring" ? "Hiring Process" : view === "attendance" ? "Attendance" : view === "employees" ? "Employees" : "Dashboard"}</h1></div>
         {session.data?.user && <button className={styles.signOut} disabled={logout.isPending} onClick={() => logout.mutate()}>{logout.isPending ? "Signing out…" : "Sign out"}</button>}
       </header><HRNavbarTools /></div>
     {session.error && <p role="alert">Unable to verify your HR session. <button onClick={() => session.refetch()}>Retry</button></p>}
+    {session.data?.user && <ChatNotifications />}
     {session.data?.user && <HRNotifications username={session.data.user.username} compose={view === "notifications"} />}
-    {session.data?.user ? view === "careers" ? <HRCareers /> : view === "leave" ? <section className={styles.card}><h2>Employee leave requests</h2><p>Leave requests are not connected yet.</p><p>This page will display leave applications and approval status when leave management is configured.</p></section> : view === "branches" ? <HRBranches /> : view === "notifications" ? null : view === "hiring" ? <section className={styles.card}><h2>Recruitment</h2><p>Hiring records are not connected yet.</p><p>This page will display vacancies, applications and interview progress when hiring management is configured.</p></section> : view === "attendance" ? <section className={styles.card}><h2>Employee attendance</h2><p>Attendance records are not connected yet.</p><p>This page will display attendance when attendance management is configured.</p></section> : view === "employees" ? <section className={styles.card}><h2>{({ all: "All employees", working: "Working employees", leave: "Employees on leave", past: "Past employees" })[employeeStatus]}</h2><p>Employee records are not connected yet.</p><p>This page will display your employee directory when employee management is configured.</p></section> : <HRDashboard username={session.data.user.username} />  : session.data ? <Link href="/hr/login">Sign in to HR</Link> : <p role="status">Checking HR access...</p>}
+    {session.data?.user ? view === "chat" ? <Chat /> : view === "careers" ? <HRCareers /> : view === "leave" ? <section className={styles.card}><h2>Employee leave requests</h2><p>Leave requests are not connected yet.</p><p>This page will display leave applications and approval status when leave management is configured.</p></section> : view === "branches" ? <HRBranches /> : view === "notifications" ? null : view === "hiring" ? <section className={styles.card}><h2>Recruitment</h2><p>Hiring records are not connected yet.</p><p>This page will display vacancies, applications and interview progress when hiring management is configured.</p></section> : view === "attendance" ? <section className={styles.card}><h2>Employee attendance</h2><p>Attendance records are not connected yet.</p><p>This page will display attendance when attendance management is configured.</p></section> : view === "employees" ? <section className={styles.card}><h2>{({ all: "All employees", working: "Working employees", leave: "Employees on leave", past: "Past employees" })[employeeStatus]}</h2><p>Employee records are not connected yet.</p><p>This page will display your employee directory when employee management is configured.</p></section> : <HRDashboard username={session.data.user.username} />  : session.data ? <Link href="/hr/login">Sign in to HR</Link> : <p role="status">Checking HR access...</p>}
     {logout.error && <p role="alert">{logout.error.message}</p>}
     </main>
   </div>;

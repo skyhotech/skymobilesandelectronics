@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "apps.products",
     "apps.inventory",
     "apps.notifications",
+    "apps.chat",
     "apps.careers",
     "apps.media_library",
 ]
@@ -84,6 +85,9 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "SKY Platform API",
     "VERSION": "1.0.0",
     "ENUM_NAME_OVERRIDES": {
+        "ChatCallKindEnum": ["audio", "video"],
+        "ChatSignalKindEnum": ["offer", "answer", "ice"],
+        "ChatCallStatusEnum": ["ringing", "accepted", "declined", "ended", "missed"],
         "KindEnum": [
             ("products", "Product"), ("brands", "Brand"), ("categories", "Category"),
             ("banners", "Banner"), ("other", "Other"),
@@ -194,3 +198,10 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": 3600.0,
     }
 }
+
+# No paid relay is enabled by default. Configure self-hosted STUN/TURN for remote calls.
+CHAT_ICE_SERVERS = env.json("CHAT_ICE_SERVERS", default=[])
+
+CHAT_TURN_URLS = env.list("CHAT_TURN_URLS", default=[])
+CHAT_TURN_SECRET = env("CHAT_TURN_SECRET", default="")
+CELERY_BEAT_SCHEDULE["clean-chat-call-state"] = {"task": "apps.chat.tasks.clean_call_state", "schedule": 60.0}

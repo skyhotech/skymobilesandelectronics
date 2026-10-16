@@ -3,6 +3,333 @@ info:
   title: SKY Platform API
   version: 1.0.0
 paths:
+  /api/v1/chat/threads/{id}/read/:
+    post:
+      operationId: v1_chat_threads_read_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReadRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+          description: ''
+  /api/v1/chat/threads/{id}/messages/:
+    get:
+      operationId: v1_chat_threads_messages_retrieve
+      parameters:
+      - in: query
+        name: before
+        schema:
+          type: integer
+      - in: query
+        name: files
+        schema:
+          type: string
+          enum:
+          - '1'
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessagePage'
+          description: ''
+    post:
+      operationId: v1_chat_threads_messages_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MessageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MessageRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: ''
+  /api/v1/chat/threads/{id}/calls/:
+    post:
+      operationId: v1_chat_threads_calls_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CallRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CallRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CallRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Call'
+          description: ''
+  /api/v1/chat/session/:
+    get:
+      operationId: v1_chat_session_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementSession'
+          description: ''
+    post:
+      operationId: v1_chat_session_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementSession'
+          description: ''
+    delete:
+      operationId: v1_chat_session_destroy
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementSession'
+          description: ''
+  /api/v1/chat/inbox/:
+    get:
+      operationId: v1_chat_inbox_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inbox'
+          description: ''
+    post:
+      operationId: v1_chat_inbox_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ContactRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ContactRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Identifier'
+          description: ''
+  /api/v1/chat/files/{id}/:
+    get:
+      operationId: v1_chat_files_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: ''
+  /api/v1/chat/calls/{id}/signals/:
+    post:
+      operationId: v1_chat_calls_signals_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignalRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SignalRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SignalRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+          description: ''
+  /api/v1/chat/calls/{id}/:
+    get:
+      operationId: v1_chat_calls_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: integer
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CallState'
+          description: ''
+    post:
+      operationId: v1_chat_calls_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CallAction'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CallAction'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CallAction'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Call'
+          description: ''
   /api/v1/hr/branches/{id}/streetview/:
     get:
       operationId: v1_hr_branches_streetview_retrieve
@@ -1539,6 +1866,287 @@ paths:
           description: ''
 components:
   schemas:
+    Thread:
+      type: object
+      properties:
+        id:
+          type: integer
+        peer:
+          $ref: '#/components/schemas/Person'
+        unread:
+          type: integer
+      required:
+      - id
+      - peer
+      - unread
+    Success:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+      - ok
+    SignalRequest:
+      type: object
+      properties:
+        kind:
+          $ref: '#/components/schemas/ChatSignalKindEnum'
+        payload: {}
+      required:
+      - kind
+      - payload
+    Signal:
+      type: object
+      properties:
+        id:
+          type: integer
+        kind:
+          $ref: '#/components/schemas/ChatSignalKindEnum'
+        payload: {}
+      required:
+      - id
+      - kind
+      - payload
+    ReadRequest:
+      type: object
+      properties:
+        through:
+          type: integer
+          minimum: 1
+      required:
+      - through
+    Person:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        name:
+          type: string
+      required:
+      - id
+      - name
+      - username
+    MessageRequest:
+      type: object
+      properties:
+        client_id:
+          type: string
+          format: uuid
+        text:
+          type: string
+          default: ''
+          maxLength: 4000
+        file:
+          type: string
+          format: uri
+          nullable: true
+      required:
+      - client_id
+    MessagePage:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+        before:
+          type: integer
+          nullable: true
+      required:
+      - before
+      - messages
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        sender_id:
+          type: integer
+          readOnly: true
+        client_id:
+          type: string
+          format: uuid
+        text:
+          type: string
+          maxLength: 4000
+        filename:
+          type: string
+          maxLength: 180
+        size:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        attachment_url:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        read_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - attachment_url
+      - created_at
+      - id
+      - sender_id
+    Inbox:
+      type: object
+      properties:
+        me:
+          $ref: '#/components/schemas/Person'
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+        conversations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Thread'
+        calls:
+          type: array
+          items:
+            $ref: '#/components/schemas/Call'
+        latest_message:
+          type: integer
+      required:
+      - calls
+      - contacts
+      - conversations
+      - latest_message
+      - me
+    Identifier:
+      type: object
+      properties:
+        id:
+          type: integer
+      required:
+      - id
+    ContactRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          minimum: 1
+      required:
+      - user_id
+    ChatSignalKindEnum:
+      enum:
+      - offer
+      - answer
+      - ice
+      type: string
+      description: |-
+        * `offer` - offer
+        * `answer` - answer
+        * `ice` - ice
+    ChatCallStatusEnum:
+      enum:
+      - ringing
+      - accepted
+      - declined
+      - ended
+      - missed
+      type: string
+      description: |-
+        * `ringing` - ringing
+        * `accepted` - accepted
+        * `declined` - declined
+        * `ended` - ended
+        * `missed` - missed
+    ChatCallKindEnum:
+      enum:
+      - audio
+      - video
+      type: string
+      description: |-
+        * `audio` - audio
+        * `video` - video
+    CallState:
+      type: object
+      properties:
+        id:
+          type: integer
+        conversation:
+          type: integer
+        caller:
+          type: integer
+        kind:
+          $ref: '#/components/schemas/ChatCallKindEnum'
+        status:
+          $ref: '#/components/schemas/ChatCallStatusEnum'
+        created_at:
+          type: string
+          format: date-time
+        signals:
+          type: array
+          items:
+            $ref: '#/components/schemas/Signal'
+        ice_servers:
+          type: array
+          items: {}
+      required:
+      - caller
+      - conversation
+      - created_at
+      - ice_servers
+      - id
+      - kind
+      - signals
+      - status
+    CallRequest:
+      type: object
+      properties:
+        kind:
+          $ref: '#/components/schemas/ChatCallKindEnum'
+      required:
+      - kind
+    CallActionActionEnum:
+      enum:
+      - accept
+      - decline
+      - end
+      type: string
+      description: |-
+        * `accept` - accept
+        * `decline` - decline
+        * `end` - end
+    CallAction:
+      type: object
+      properties:
+        action:
+          $ref: '#/components/schemas/CallActionActionEnum'
+      required:
+      - action
+    Call:
+      type: object
+      properties:
+        id:
+          type: integer
+        conversation:
+          type: integer
+        caller:
+          type: integer
+        kind:
+          $ref: '#/components/schemas/ChatCallKindEnum'
+        status:
+          $ref: '#/components/schemas/ChatCallStatusEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - caller
+      - conversation
+      - created_at
+      - id
+      - kind
+      - status
     PatchedBranch:
       type: object
       properties:

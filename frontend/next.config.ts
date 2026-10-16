@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
       { key: "X-Content-Type-Options", value: "nosniff" },
       { key: "X-Frame-Options", value: "DENY" },
       { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-      { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+      { key: "Permissions-Policy", value: "camera=(self), microphone=(self), geolocation=()" },
       { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
       { key: "Content-Security-Policy", value: "frame-ancestors 'none'; object-src 'none'; base-uri 'self'" },
     ] }, {
@@ -29,6 +29,7 @@ const nextConfig: NextConfig = {
       process.env.API_INTERNAL_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api/v1",
     ).origin;
     return [
+      { source: "/chat/api/:path*", destination: `${backend}/api/v1/chat/:path*/` },
       { source: "/catalog/branches/:path*", destination: `${backend}/api/v1/branches/:path*/` },
       { source: "/catalog/brands/:path*", destination: `${backend}/api/v1/brands/:path*/` },
       { source: "/catalog/categories/:path*", destination: `${backend}/api/v1/categories/:path*/` },

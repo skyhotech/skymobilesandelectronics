@@ -1,7 +1,24 @@
 import os
 
-from channels.routing import ProtocolTypeRouter
+from channels.auth import AuthMiddlewareStack
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.security.websocket import OriginValidator
 from django.core.asgi import get_asgi_application
+from django.urls import path
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.development")
-application = ProtocolTypeRouter({"http": get_asgi_application()})
+http_application = get_asgi_application()
+
+from django.conf import settings  # noqa: E402
+
+from apps.chat.consumers import ChatConsumer  # noqa: E402
+
+application = ProtocolTypeRouter(
+    {
+        "http": http_application,
+        "websocket": OriginValidator(
+            AuthMiddlewareStack(URLRouter([path("ws/chat/", ChatConsumer.as_asgi())])),
+            settings.CSRF_TRUSTED_ORIGINS,
+        ),
+    }
+)

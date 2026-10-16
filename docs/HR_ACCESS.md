@@ -192,3 +192,9 @@ showrooms now appear even when location is missing; 2 non-showroom entries stay
 in HR. Customer 360 viewers require recorded human verification. The earlier
 manual preview behavior is retained for HR, but an unverified manual iframe no
 longer publishes automatically. Discovery is disabled until external keys are set.
+
+## Employee messages and calls
+
+HR chat is available at `/hr/chat`; staff sign in at `/employee/login`.
+Private attachments, live alerts and accepted voice/video calls are described in
+[STAFF_CHAT.md](STAFF_CHAT.md), including account access and TURN setup.

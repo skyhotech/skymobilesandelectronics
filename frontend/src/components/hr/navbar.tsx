@@ -5,6 +5,7 @@ import Link from "next/link";
 import styles from "./workspace.module.css";
 
 const sections = [
+  { title: "Messages & Calls", href: "/hr/chat", keywords: "chat message files attachment voice video call employees" },
   { title: "Careers", href: "/hr/careers", keywords: "careers jobs openings vacancies publish" },
   { title: "Leave Requests", href: "/hr/leave-requests", keywords: "leave leaves request requests vacation holiday holidays time off absence approval" },
   { title: "Manage Branches", href: "/hr/branches", keywords: "branch branches store stores location locations office" },

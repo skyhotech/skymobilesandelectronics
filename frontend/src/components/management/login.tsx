@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { managementApi, hrApi, type Session } from "@/lib/management-api";
 import { safeManagementReturn, safeHRReturn } from "@/lib/auth-routes";
+import { chatApi } from "@/lib/chat-api";
 import styles from "./management.module.css";
 
 const schema = z.object({
@@ -17,11 +18,14 @@ const schema = z.object({
   password: z.string().min(1, "Enter your password"),
 });
 
-export function ManagementLogin({ portal = "management" }: { portal?: "management" | "hr" }) {
+function employeeReturn() { return "/employee/chat"; }
+
+export function ManagementLogin({ portal = "management" }: { portal?: "management" | "hr" | "employee" }) {
+  const isEmployee = portal === "employee";
   const isHR = portal === "hr";
-  const api = isHR ? hrApi : managementApi;
-  const returnPath = isHR ? safeHRReturn : safeManagementReturn;
-  const sessionKey = isHR ? "hr" : "management";
+  const api = isEmployee ? chatApi : isHR ? hrApi : managementApi;
+  const returnPath = isEmployee ? employeeReturn : isHR ? safeHRReturn : safeManagementReturn;
+  const sessionKey = isEmployee ? "chat" : isHR ? "hr" : "management";
   const sceneRef = useRef<HTMLElement>(null);
   useEffect(() => {
     const scene = sceneRef.current;
@@ -84,6 +88,7 @@ export function ManagementLogin({ portal = "management" }: { portal?: "managemen
     mutationFn: (values: z.infer<typeof schema>) =>
       api<Session>("session/", "POST", values),
     onSuccess: (data) => {
+      cache.removeQueries({ queryKey: ["chat"] });
       cache.removeQueries({ queryKey: [isHR ? "management" : "hr"] });
       cache.setQueryData([sessionKey, "session"], data);
       router.replace(returnPath(new URLSearchParams(window.location.search).get("next")));
@@ -95,7 +100,7 @@ export function ManagementLogin({ portal = "management" }: { portal?: "managemen
   }, [session.data, router, returnPath]);
   return (
     <main ref={sceneRef} className={styles.authPage}>
-      <aside className={styles.authBrand} aria-label={isHR ? "SKY HR access" : "SKY store management"}>
+      <aside className={styles.authBrand} aria-label={isEmployee ? "SKY employee access" : isHR ? "SKY HR access" : "SKY store management"}>
         <Link href="/" className={styles.authBrandLink}>
           <Image
             src="/images/homepage/545193f58191.webp"
@@ -109,24 +114,24 @@ export function ManagementLogin({ portal = "management" }: { portal?: "managemen
           </span>
         </Link>
         <div className={styles.authBrandContent}>
-          <span className={styles.authPill}>{isHR ? "HR ACCESS" : "STORE MANAGEMENT"}</span>
+          <span className={styles.authPill}>{isEmployee ? "EMPLOYEE ACCESS" : isHR ? "HR ACCESS" : "STORE MANAGEMENT"}</span>
           <h2>
-            {isHR ? "Your people." : "Your catalog."}
+            {isEmployee ? "Your team." : isHR ? "Your people." : "Your catalog."}
             <br />
-            {isHR ? "One secure workspace." : "One clear workspace."}
+            {(isHR || isEmployee) ? "One secure workspace." : "One clear workspace."}
           </h2>
           <p>
-            {isHR ? "Sign in with your authorized SKY HR account." : "Keep your products, prices and brands organized, so your team can focus on what comes next."}
+            {isEmployee ? "Connect with HR through private messages and calls." : isHR ? "Sign in with your authorized SKY HR account." : "Keep your products, prices and brands organized, so your team can focus on what comes next."}
           </p>
           <div className={styles.authCapabilities}>
             <span>
-              <b>01</b> {isHR ? "Secure sign-in" : "Product catalog"}
+              <b>01</b> {(isHR || isEmployee) ? "Secure sign-in" : "Product catalog"}
             </span>
             <span>
-              <b>02</b> {isHR ? "Protected access" : "Brands & categories"}
+              <b>02</b> {(isHR || isEmployee) ? "Protected access" : "Brands & categories"}
             </span>
             <span>
-              <b>03</b> {isHR ? "SKY workspace" : "Pricing & availability"}
+              <b>03</b> {(isHR || isEmployee) ? "SKY workspace" : "Pricing & availability"}
             </span>
           </div>
         </div>
@@ -149,9 +154,9 @@ export function ManagementLogin({ portal = "management" }: { portal?: "managemen
               <path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3" />
             </svg>
           </div>
-          <p className={styles.eyebrow}>{isHR ? "HR ACCESS" : "OWNER ACCESS"}</p>
-          <h1 id="admin-login-title">{isHR ? "HR sign in" : "Welcome back."}</h1>
-          <p className={styles.authSubtitle}>{isHR ? "Welcome to SKY HR access." : "Sign in to manage your SKY store."}</p>
+          <p className={styles.eyebrow}>{isEmployee ? "EMPLOYEE ACCESS" : isHR ? "HR ACCESS" : "OWNER ACCESS"}</p>
+          <h1 id="admin-login-title">{isEmployee ? "Employee sign in" : isHR ? "HR sign in" : "Welcome back."}</h1>
+          <p className={styles.authSubtitle}>{isEmployee ? "Sign in to message HR and join calls." : isHR ? "Welcome to SKY HR access." : "Sign in to manage your SKY store."}</p>
           <form
             onSubmit={form.handleSubmit((values) => login.mutate(values))}
             className={styles.form}
@@ -225,13 +230,13 @@ export function ManagementLogin({ portal = "management" }: { portal?: "managemen
               {login.isPending ? "Signing in…" : session.isPending ? "Connecting…" : "Sign in"}
             </button>
           </form>
-          <p className={styles.authAccessNote}>{isHR ? "For accounts with approved HR access." : "For authorized store administrators."}</p>
+          <p className={styles.authAccessNote}>{isEmployee ? "For employees with approved chat access." : isHR ? "For accounts with approved HR access." : "For authorized store administrators."}</p>
           <Link className={styles.authBackLink} href="/">
             &larr; Back to website
           </Link>
         </div>
         <p className={styles.authPanelFooter}>
-          {isHR ? "SKY HR" : "SKY Management"} <span aria-hidden="true">/</span> Your store, connected.
+          {isEmployee ? "SKY employees" : isHR ? "SKY HR" : "SKY Management"} <span aria-hidden="true">/</span> Your store, connected.
         </p>
       </section>
     </main>
