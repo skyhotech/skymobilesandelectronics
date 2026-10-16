@@ -38,3 +38,23 @@
 .broadcastForm { display: grid; gap: 12px; margin-bottom: 24px; }
 .broadcastForm input, .broadcastForm textarea { width: 100%; min-width: 0; padding: 12px; border: 1px solid #ced9e8; border-radius: 8px; font: inherit; }
 .broadcastItem { padding: 16px 0; border-top: 1px solid #e0e7f0; overflow-wrap: anywhere; }
+
+.navbar { position: sticky; top: 0; z-index: 30; margin-bottom: 28px; padding: 18px 0; background: #f4f7fb; border-bottom: 1px solid #dce5f0; }
+.navbar .header { margin-bottom: 18px; }
+.navbarTools { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.searchArea { position: relative; display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.searchLabel { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.searchArea input, .searchArea select { min-width: 0; padding: 12px; border: 1px solid #ced9e8; border-radius: 10px; background: white; color: #203b5e; font: inherit; font-size: 14px; }
+.searchArea input { flex: 1; width: 100%; }
+.searchArea select { max-width: 185px; }
+.searchArea input:focus-visible, .searchArea select:focus-visible { outline: 3px solid #559cf5; outline-offset: 2px; }
+.searchResults { position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: white; padding: 16px; border: 1px solid #ced9e8; border-radius: 12px; box-shadow: 0 12px 28px #14243c20; max-height: 55dvh; overflow-y: auto; }
+.searchResults p { margin: 0 0 12px; color: #52647e; font-size: 13px; }
+.searchResults nav { display: grid; gap: 6px; }
+.searchResults a { padding: 10px; color: #203b5e; text-decoration: none; border-radius: 6px; }
+.searchResults a:hover { background: #e2edfc; }
+.searchResults button { margin-top: 12px; cursor: pointer; background: none; border: none; color: #274e80; }
+.liveClock { display: grid; gap: 5px; font-size: 13px; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.liveClock span { color: #52647e; font-size: 11px; }
+@media (max-width: 1023px) { .navbarTools { align-items: stretch; flex-direction: column; } }
+@media (max-width: 767px) { .navbar { padding-top: 12px; } .searchArea { flex-wrap: wrap; } .searchArea input { flex-basis: 100%; } .searchArea select { max-width: 100%; width: 100%; } .navbar .header h1 { font-size: 23px; overflow-wrap: anywhere; } }

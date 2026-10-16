@@ -38,6 +38,18 @@ test("separate HR login authenticates only an HR account and protects the worksp
       }
     }
     await expect(page.getByText(`Signed in as ${username}.`, { exact: true })).toBeVisible();
+    const search = page.getByRole("searchbox", { name: "Search HR", exact: true });
+    await search.fill("STAFF");
+    await expect(page.getByRole("navigation", { name: "HR search results" }).getByRole("link", { name: "Employees", exact: true })).toBeVisible();
+    await page.getByLabel("Filter HR search", { exact: true }).selectOption("/hr/hiring");
+    await expect(page.getByText("No matching sections. Try staff, interview or alerts.")).toBeVisible();
+    await search.fill("INTERVIEW");
+    await expect(page.getByRole("navigation", { name: "HR search results" }).getByRole("link", { name: "Hiring Process", exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "Clear search and filters", exact: true }).click();
+    await expect(page.getByLabel("Current India time", { exact: true })).not.toHaveText("Loading time?");
+    const clock = await page.getByLabel("Current India time", { exact: true }).getAttribute("datetime");
+    await expect(page.getByLabel("Current India time", { exact: true })).not.toHaveAttribute("datetime", clock!);
+    expect(await page.locator("header").evaluate(element => getComputedStyle(element.parentElement!).position)).toBe("sticky");
     await page.getByRole("link", { name: "Employees", exact: true }).click();
     await expect(page).toHaveURL(/\/hr\/employees$/);
     await expect(page.getByRole("heading", { name: "Employees", exact: true })).toBeVisible();

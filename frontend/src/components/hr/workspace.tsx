@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { hrApi, type Session } from "@/lib/management-api";
+import { HRNavbarTools } from "./navbar";
 import { HRNotifications } from "./notifications";
 import styles from "./workspace.module.css";
 
@@ -26,9 +27,9 @@ export function HRWorkspace({ view = "dashboard" }: { view?: "dashboard" | "empl
       <Link className={styles.websiteLink} href="/">View website ↗</Link>
     </aside>
     <main className={styles.main} id="hr-dashboard">
-      <header className={styles.header}><div><p className={styles.eyebrow}>SKY HR</p><h1>{view === "notifications" ? "Broadcast Notifications" : view === "hiring" ? "Hiring Process" : view === "attendance" ? "Attendance" : view === "employees" ? "Employees" : "Dashboard"}</h1></div>
+      <div className={styles.navbar}><header className={styles.header}><div><p className={styles.eyebrow}>SKY HR</p><h1>{view === "notifications" ? "Broadcast Notifications" : view === "hiring" ? "Hiring Process" : view === "attendance" ? "Attendance" : view === "employees" ? "Employees" : "Dashboard"}</h1></div>
         {session.data?.user && <button className={styles.signOut} disabled={logout.isPending} onClick={() => logout.mutate()}>{logout.isPending ? "Signing out…" : "Sign out"}</button>}
-      </header>
+      </header><HRNavbarTools /></div>
     {session.error && <p role="alert">Unable to verify your HR session. <button onClick={() => session.refetch()}>Retry</button></p>}
     {session.data?.user && <HRNotifications username={session.data.user.username} compose={view === "notifications"} />}
     {session.data?.user ? view === "notifications" ? null : view === "hiring" ? <section className={styles.card}><h2>Recruitment</h2><p>Hiring records are not connected yet.</p><p>This page will display vacancies, applications and interview progress when hiring management is configured.</p></section> : view === "attendance" ? <section className={styles.card}><h2>Employee attendance</h2><p>Attendance records are not connected yet.</p><p>This page will display attendance when attendance management is configured.</p></section> : view === "employees" ? <section className={styles.card}><h2>Employee directory</h2><p>Employee records are not connected yet.</p><p>This page will display your employee directory when employee management is configured.</p></section> : <><section className={styles.welcome}><p className={styles.eyebrow}>Your workspace</p><h2>Welcome to SKY HR</h2><p>Signed in as {session.data.user.username}.</p><span className={styles.badge}>HR access active</span></section>

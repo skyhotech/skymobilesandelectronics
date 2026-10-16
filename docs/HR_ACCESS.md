@@ -58,3 +58,8 @@ explicit permission via Enable browser notifications and a supported secure cont
 (localhost or HTTPS). Previously received broadcasts are not replayed on navigation.
 This is local browser delivery while HR is open, not push to closed browsers, SMS
 or email. All HR members can broadcast; employee accounts are not configured yet.
+
+The HR navbar stays at the top while scrolling. Search matches HR section names
+and related keywords (for example staff, interview and alerts), regardless of case;
+a section filter narrows results. It searches navigation, not employee records.
+The live clock displays Asia/Kolkata time and updates every second.
