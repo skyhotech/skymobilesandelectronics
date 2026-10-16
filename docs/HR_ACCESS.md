@@ -129,3 +129,7 @@ GET/PATCH/DELETE `/api/v1/hr/branches/<id>/`. Codes are normalized to lowercase
 and checked for uniqueness; duplicate names within a city are rejected. Multiple
 distinct branches can share a city. Branches referenced by inventory return 409
 on deletion and can be deactivated instead. View opens an accessible details dialog.
+
+The global loading video fills the viewport with a centered 16:9 desktop frame
+and 9:16 mobile frame (below 768px). Cover scaling crops outer video edges where
+needed; the loading message stays inside the viewport safe area.

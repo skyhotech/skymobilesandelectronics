@@ -25,6 +25,15 @@ test("SKY loader finishes every playback and also waits for the server", async (
   await expect(loader).toBeVisible();
   const video = loader.locator("video");
   await expect(video).not.toHaveAttribute("loop");
+  for (const [width, height] of [[1440, 810], [1024, 768], [390, 844]]) {
+    await page.setViewportSize({ width, height });
+    const frame = await video.boundingBox();
+    expect(frame!.width / frame!.height).toBeCloseTo(width < 768 ? 9 / 16 : 16 / 9, 2);
+    expect(frame!.width).toBeGreaterThanOrEqual(width - 1);
+    expect(frame!.height).toBeGreaterThanOrEqual(height - 1);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  }
+  await page.setViewportSize({ width: 1440, height: 900 });
   await expect.poll(() => video.evaluate((element: HTMLVideoElement) => element.currentTime)).toBeGreaterThan(0);
   await expect(page.getByText("Test-only invalid credentials.", { exact: true })).toBeVisible();
   await expect(loader).toBeVisible();

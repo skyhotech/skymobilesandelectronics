@@ -34,7 +34,7 @@ export function VideoLoader({ active }: { active: boolean }) {
   return <div className={styles.overlay} role="status" aria-live="polite" aria-label="Loading page">
     <div className={styles.content}>
       <video ref={video} src="/videos/loader.mp4" autoPlay={!reduced} muted playsInline preload="auto" aria-hidden="true" tabIndex={-1} onEnded={finish} onError={finish} onPlaying={clearWatchdog} onWaiting={waitForPlayback} />
-      <p>Loading, please wait...</p>
     </div>
+    <p className={styles.message}>Loading, please wait...</p>
   </div>;
 }

@@ -1,4 +1,5 @@
-.overlay { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; background: #fff; padding: 24px; }
-.content { width: min(420px, 100%); text-align: center; }
-.content video { display: block; width: 100%; height: auto; max-height: 60dvh; object-fit: contain; }
-.content p { margin: 12px 0 0; color: #385574; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.5; }
+.overlay { position: fixed; inset: 0; z-index: 9999; overflow: hidden; background: #fff; }
+.content { position: absolute; left: 50%; top: 50%; width: max(100vw, calc(100dvh * 16 / 9)); aspect-ratio: 16 / 9; transform: translate(-50%, -50%); }
+.content video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.message { position: absolute; left: 16px; right: 16px; bottom: max(24px, env(safe-area-inset-bottom)); margin: 0; text-align: center; color: #385574; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.5; }
+@media (max-width: 767px) { .content { width: max(100vw, calc(100dvh * 9 / 16)); aspect-ratio: 9 / 16; } }
