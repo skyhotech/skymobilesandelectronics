@@ -20,7 +20,7 @@ test("video loader waits for the server and clears on success and failure", asyn
   const loader = page.getByRole("status", { name: "Loading page", exact: true });
   await expect(loader).toBeVisible();
   const video = loader.locator("video");
-  await expect(video).toHaveAttribute("src", "/videos/loader.mp4");
+  await expect(video).toHaveAttribute("src", "/videos/loader-4k.mp4");
   await expect.poll(() => video.evaluate((element: HTMLVideoElement) => element.readyState)).toBeGreaterThanOrEqual(2);
   await expect(video).toHaveJSProperty("muted", true);
   for (const width of [390, 768, 1024, 1440]) {

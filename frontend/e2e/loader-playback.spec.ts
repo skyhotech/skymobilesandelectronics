@@ -35,6 +35,8 @@ test("SKY loader finishes every playback and also waits for the server", async (
   }
   await page.setViewportSize({ width: 1440, height: 900 });
   await expect.poll(() => video.evaluate((element: HTMLVideoElement) => element.currentTime)).toBeGreaterThan(0);
+  await expect(video).toHaveJSProperty("videoWidth", 3840);
+  await expect(video).toHaveJSProperty("videoHeight", 2160);
   await expect(page.getByText("Test-only invalid credentials.", { exact: true })).toBeVisible();
   await expect(loader).toBeVisible();
   await video.evaluate((element: HTMLVideoElement) => element.addEventListener("ended", () => { document.documentElement.dataset.loaderFinished = "true"; }, { once: true }));
@@ -55,7 +57,7 @@ test("SKY loader finishes every playback and also waits for the server", async (
   await expect(loader).toHaveCount(0);
   await page.emulateMedia({ reducedMotion: "no-preference" });
   let videoFailed = false;
-  await page.route("**/videos/loader.mp4", route => { videoFailed = true; return route.abort(); });
+  await page.route("**/videos/loader-4k.mp4", route => { videoFailed = true; return route.abort(); });
   await signIn.click();
   await expect.poll(() => videoFailed).toBe(true);
   await expect(loader).toHaveCount(0, { timeout: 12000 });

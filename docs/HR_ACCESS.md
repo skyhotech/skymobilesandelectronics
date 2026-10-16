@@ -133,3 +133,10 @@ on deletion and can be deactivated instead. View opens an accessible details dia
 The global loading video fills the viewport with a centered 16:9 desktop frame
 and 9:16 mobile frame (below 768px). Cover scaling crops outer video edges where
 needed; the loading message stays inside the viewport safe area.
+
+The loader uses `/videos/loader-4k.mp4`: a 3840x2160, 24fps H.264 upscale
+from the original 1280x720 animation, using Lanczos scaling and mild unsharp
+filtering (5:5:0.65:5:5:0), CRF 21/preset slow, yuv420p and MP4 faststart.
+The unused audio track is removed. File size is approximately 11.6 MB; the
+original `/videos/loader.mp4` is preserved. This is an upscale, not native 4K
+footage; source blur cannot be fully recovered without a higher-quality original.
