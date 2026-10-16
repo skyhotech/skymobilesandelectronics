@@ -46,7 +46,7 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await search.fill("INTERVIEW");
     await expect(page.getByRole("navigation", { name: "HR search results" }).getByRole("link", { name: "Hiring Process", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Clear search and filters", exact: true }).click();
-    await expect(page.getByLabel("Current India time", { exact: true })).not.toHaveText("Loading time?");
+    await expect(page.getByLabel("Current India time", { exact: true })).not.toHaveText("Loading time...");
     const clock = await page.getByLabel("Current India time", { exact: true }).getAttribute("datetime");
     await expect(page.getByLabel("Current India time", { exact: true })).not.toHaveAttribute("datetime", clock!);
     expect(await page.locator("header").evaluate(element => getComputedStyle(element.parentElement!).position)).toBe("sticky");
@@ -81,10 +81,10 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await expect(page.getByRole("status").filter({ hasText: "Broadcast sent to the HR notification feed." })).toBeVisible();
     await expect(page.getByRole("heading", { name: username, exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "Enable browser notifications", exact: true })).toBeVisible();
-    await page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: "Manage Branch", exact: true }).click();
+    await page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: "Manage Branches", exact: true }).click();
     await expect(page).toHaveURL(/\/hr\/branches$/);
-    await expect(page.getByRole("heading", { name: "Manage Branch", exact: true })).toBeVisible();
-    await expect(page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: "Manage Branch", exact: true })).toHaveAttribute("aria-current", "page");
+    await expect(page.getByRole("heading", { name: "Manage Branches", exact: true })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: "Manage Branches", exact: true })).toHaveAttribute("aria-current", "page");
     await page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: "Leave Requests", exact: true }).click();
     await expect(page).toHaveURL(/\/hr\/leave-requests$/);
     await expect(page.getByRole("heading", { name: "Leave Requests", exact: true })).toBeVisible();
@@ -98,7 +98,10 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await page.getByRole("button", { name: "Create opening", exact: true }).click();
     await expect(page.getByText("Job opening saved.", { exact: true })).toBeVisible();
     const publicPage = await page.context().newPage();
-    await publicPage.goto("/carrears");
+    const legacy = await page.request.get("/carrears?page=2", { maxRedirects: 0 });
+    expect(legacy.status()).toBe(308);
+    expect(new URL(legacy.headers().location).pathname + new URL(legacy.headers().location).search).toBe("/careers?page=2");
+    await publicPage.goto("/careers");
     await expect(publicPage.getByRole("heading", { name: username, exact: true })).toHaveCount(0);
     await page.getByRole("button", { name: `Edit ${username}`, exact: true }).click();
     await page.getByLabel("Publish on careers page", { exact: true }).check();

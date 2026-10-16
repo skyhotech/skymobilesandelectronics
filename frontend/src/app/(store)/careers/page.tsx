@@ -15,10 +15,10 @@ export default async function CareersPage({ searchParams }: { searchParams: Prom
     if (response.ok) jobs = await response.json();
   } catch { /* Show an honest service error, never an empty openings claim. */ }
   return <main className={styles.page}><nav><Link href="/">SKY Mobile & Electronics</Link></nav><header><p>JOIN OUR TEAM</p><h1>Careers at SKY</h1><p>Find your next opportunity with SKY Mobile & Electronics.</p></header>
-    {!jobs ? <section role="alert"><h2>Unable to load job openings</h2><p>Please try again shortly.</p><Link href="/carrears">Try again</Link></section> : <>
+    {!jobs ? <section role="alert"><h2>Unable to load job openings</h2><p>Please try again shortly.</p><Link href="/careers">Try again</Link></section> : <>
       {jobs.count === 0 && <section><h2>No current openings</h2><p>Please check back for future opportunities.</p></section>}
-      <div className={styles.grid}>{jobs.results.map(job => <article key={job.id}><p>{job.location} ? {employmentTypes[job.employment_type]}</p><h2>{job.title}</h2><p className={styles.description}>{job.description}</p><a href={`mailto:${encodeURIComponent(job.application_email)}?subject=${encodeURIComponent(`Application: ${job.title}`)}`}>Apply by email ?</a></article>)}</div>
-      <nav aria-label="Job pages">{jobs.previous && <Link href={`/carrears?page=${page - 1}`}>Previous</Link>}{jobs.next && <Link href={`/carrears?page=${page + 1}`}>Next</Link>}</nav>
+      <div className={styles.grid}>{jobs.results.map(job => <article key={job.id}><p>{job.location} | {employmentTypes[job.employment_type]}</p><h2>{job.title}</h2><p className={styles.description}>{job.description}</p><a href={`mailto:${encodeURIComponent(job.application_email)}?subject=${encodeURIComponent(`Application: ${job.title}`)}`}>Apply by email</a></article>)}</div>
+      <nav aria-label="Job pages">{jobs.previous && <Link href={`/careers?page=${page - 1}`}>Previous</Link>}{jobs.next && <Link href={`/careers?page=${page + 1}`}>Next</Link>}</nav>
     </>}
   </main>;
 }

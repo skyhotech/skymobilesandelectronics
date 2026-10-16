@@ -64,7 +64,7 @@ and related keywords (for example staff, interview and alerts), regardless of ca
 a section filter narrows results. It searches navigation, not employee records.
 The live clock displays Asia/Kolkata time and updates every second.
 
-Manage Branch is available at `/hr/branches` in the HR sidebar and navbar search.
+Manage Branches is available at `/hr/branches` in the HR sidebar and navbar search.
 It uses HR session protection; branch management data/actions are not connected.
 
 Leave Requests is available at `/hr/leave-requests` in the sidebar and navbar
@@ -80,7 +80,7 @@ active view. Invalid statuses use All. Employee records remain unconnected.
 Careers in the HR sidebar (`/hr/careers`) supports create, edit, publish/unpublish
 and confirmed deletion of job openings. Required fields: title, location, employment
 type, plain-text description and application email. New openings are drafts.
-`/carrears` publicly lists published openings and supports applications via email.
+`/careers` publicly lists published openings and supports applications via email.
 The public page fetches fresh data per request; refresh an already open page after
 HR updates. No applicant collection or application upload is implemented.
 
@@ -88,3 +88,6 @@ HR CRUD API: `/api/v1/hr/careers/` and `/api/v1/hr/careers/<id>/` (GET/POST,
 GET/PATCH/DELETE respectively), with session/HR membership/CSRF enforcement.
 Public read-only API: `GET /api/v1/careers/`. Lists are paginated (24 per page).
 Run migrations before deployment; existing branch/employee records are unchanged.
+
+The corrected public URL is `/careers`. Legacy `/carrears` requests permanently
+redirect to `/careers`, preserving pagination query parameters.

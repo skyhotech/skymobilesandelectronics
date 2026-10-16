@@ -21,7 +21,7 @@ export function HRWorkspace({ view = "dashboard", employeeStatus = "all" }: { em
       <nav aria-label="HR navigation" className={styles.navigation}>
         <Link href="/hr" aria-current={view === "dashboard" ? "page" : undefined} className={view === "dashboard" ? styles.activeLink : styles.navLink}><span aria-hidden="true">▦</span> Dashboard</Link>
         <details className={styles.employeeMenu} open={view === "employees"}>
-          <summary className={view === "employees" ? styles.activeLink : styles.navLink}><span aria-hidden="true">?</span> Employees <span className={styles.chevron} aria-hidden="true">?</span></summary>
+          <summary className={view === "employees" ? styles.activeLink : styles.navLink}><span aria-hidden="true">&#9823;</span> Employees <span className={styles.chevron} aria-hidden="true">&#8964;</span></summary>
           <div className={styles.employeeSubmenu}>
             {([ ["all", "All"], ["working", "Working"], ["leave", "Leave"], ["past", "Past Employees"] ] as const).map(([status, label]) => <Link key={status} href={`/hr/employees?status=${status}`} aria-current={view === "employees" && employeeStatus === status ? "page" : undefined}>{label}</Link>)}
           </div>
@@ -29,14 +29,14 @@ export function HRWorkspace({ view = "dashboard", employeeStatus = "all" }: { em
         <Link href="/hr/attendance" aria-current={view === "attendance" ? "page" : undefined} className={view === "attendance" ? styles.activeLink : styles.navLink}><span aria-hidden="true">◷</span> Attendance</Link>
         <Link href="/hr/hiring" aria-current={view === "hiring" ? "page" : undefined} className={view === "hiring" ? styles.activeLink : styles.navLink}><span aria-hidden="true">+</span> Hiring Process</Link>
         <Link href="/hr/notifications" aria-current={view === "notifications" ? "page" : undefined} className={view === "notifications" ? styles.activeLink : styles.navLink}>Broadcast Notifications</Link>
-        <Link href="/hr/branches" aria-current={view === "branches" ? "page" : undefined} className={view === "branches" ? styles.activeLink : styles.navLink}>Manage Branch</Link>
+        <Link href="/hr/branches" aria-current={view === "branches" ? "page" : undefined} className={view === "branches" ? styles.activeLink : styles.navLink}>Manage Branches</Link>
         <Link href="/hr/leave-requests" aria-current={view === "leave" ? "page" : undefined} className={view === "leave" ? styles.activeLink : styles.navLink}>Leave Requests</Link>
         <Link href="/hr/careers" aria-current={view === "careers" ? "page" : undefined} className={view === "careers" ? styles.activeLink : styles.navLink}>Careers</Link>
       </nav>
       <Link className={styles.websiteLink} href="/">View website ↗</Link>
     </aside>
     <main className={styles.main} id="hr-dashboard">
-      <div className={styles.navbar}><header className={styles.header}><div><p className={styles.eyebrow}>SKY HR</p><h1>{view === "careers" ? "Careers" : view === "leave" ? "Leave Requests" : view === "branches" ? "Manage Branch" : view === "notifications" ? "Broadcast Notifications" : view === "hiring" ? "Hiring Process" : view === "attendance" ? "Attendance" : view === "employees" ? "Employees" : "Dashboard"}</h1></div>
+      <div className={styles.navbar}><header className={styles.header}><div><p className={styles.eyebrow}>SKY HR</p><h1>{view === "careers" ? "Careers" : view === "leave" ? "Leave Requests" : view === "branches" ? "Manage Branches" : view === "notifications" ? "Broadcast Notifications" : view === "hiring" ? "Hiring Process" : view === "attendance" ? "Attendance" : view === "employees" ? "Employees" : "Dashboard"}</h1></div>
         {session.data?.user && <button className={styles.signOut} disabled={logout.isPending} onClick={() => logout.mutate()}>{logout.isPending ? "Signing out…" : "Sign out"}</button>}
       </header><HRNavbarTools /></div>
     {session.error && <p role="alert">Unable to verify your HR session. <button onClick={() => session.refetch()}>Retry</button></p>}

@@ -48,17 +48,17 @@ export function HRNotifications({ username, compose }: { username: string; compo
         {form.formState.errors.title && <p role="alert">{form.formState.errors.title.message}</p>}
         <label htmlFor="broadcast-message">Message</label><textarea id="broadcast-message" rows={5} maxLength={2000} {...form.register("message")} />
         {form.formState.errors.message && <p role="alert">{form.formState.errors.message.message}</p>}
-        <button className={styles.signOut} disabled={send.isPending} type="submit">{send.isPending ? "Sending?" : "Send broadcast"}</button>
+        <button className={styles.signOut} disabled={send.isPending} type="submit">{send.isPending ? "Sending..." : "Send broadcast"}</button>
       </form>
       {send.error && <p role="alert">{send.error.message}</p>}{notice && <p role="status">{notice}</p>}
       <button className={styles.signOut} disabled={permission === "granted" || permission === "denied" || permission === "unsupported"} onClick={async () => { try { setPermission(await Notification.requestPermission()); } catch { setPermission("unsupported"); } }}>Enable browser notifications</button>
       <p>Browser alerts: {permission}. Browser permission is optional; all broadcasts remain in the feed.</p>
     </section>
     <section className={styles.card}><h2>Recent broadcasts</h2>
-      {feed.isPending && <p role="status">Loading broadcasts?</p>}
+      {feed.isPending && <p role="status">Loading broadcasts...</p>}
       {feed.error && <p role="alert">Unable to load broadcasts. <button onClick={() => feed.refetch()}>Retry</button></p>}
       {feed.data?.length === 0 && <p>No broadcasts yet.</p>}
-      {feed.data?.map(item => <article key={item.id} className={styles.broadcastItem}><h3>{item.title}</h3><p style={{ whiteSpace: "pre-wrap" }}>{item.message}</p><p>{item.sender_name} ? <time dateTime={item.created_at}>{new Date(item.created_at).toLocaleString()}</time></p></article>)}
+      {feed.data?.map(item => <article key={item.id} className={styles.broadcastItem}><h3>{item.title}</h3><p style={{ whiteSpace: "pre-wrap" }}>{item.message}</p><p>{item.sender_name} | <time dateTime={item.created_at}>{new Date(item.created_at).toLocaleString()}</time></p></article>)}
     </section>
   </div>;
 }
