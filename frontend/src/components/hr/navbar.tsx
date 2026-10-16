@@ -5,6 +5,7 @@ import Link from "next/link";
 import styles from "./workspace.module.css";
 
 const sections = [
+  { title: "Leave Requests", href: "/hr/leave-requests", keywords: "leave leaves request requests vacation holiday holidays time off absence approval" },
   { title: "Manage Branch", href: "/hr/branches", keywords: "branch branches store stores location locations office" },
   { title: "Dashboard", href: "/hr", keywords: "overview home summary account" },
   { title: "Employees", href: "/hr/employees", keywords: "employee staff people team directory workers" },

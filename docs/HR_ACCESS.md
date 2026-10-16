@@ -66,3 +66,7 @@ The live clock displays Asia/Kolkata time and updates every second.
 
 Manage Branch is available at `/hr/branches` in the HR sidebar and navbar search.
 It uses HR session protection; branch management data/actions are not connected.
+
+Leave Requests is available at `/hr/leave-requests` in the sidebar and navbar
+search, protected by HR session checks. Leave submission and approvals are not
+connected yet.
