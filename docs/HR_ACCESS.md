@@ -8,6 +8,8 @@ account details and sign-out are available; mobile uses a stacked layout.
 Employee, payroll and attendance features are not implemented.
 The sidebar includes Employees at `/hr/employees`, protected by the same HR
 session checks. It currently shows an explicit unconnected directory state.
+Attendance is available below Employees at `/hr/attendance` with the same HR
+protection; attendance data is not connected yet.
 
 ## Accounts
 

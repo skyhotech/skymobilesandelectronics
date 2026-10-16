@@ -43,6 +43,11 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await expect(page.getByRole("heading", { name: "Employees", exact: true })).toBeVisible();
     await expect(page.getByRole("link", { name: "Employees", exact: true })).toHaveAttribute("aria-current", "page");
     await expect(page.getByText("Employee records are not connected yet.", { exact: true })).toBeVisible();
+    await page.getByRole("link", { name: "Attendance", exact: true }).click();
+    await expect(page).toHaveURL(/\/hr\/attendance$/);
+    await expect(page.getByRole("heading", { name: "Attendance", exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Attendance", exact: true })).toHaveAttribute("aria-current", "page");
+    await expect(page.getByText("Attendance records are not connected yet.", { exact: true })).toBeVisible();
     await page.getByRole("link", { name: "Dashboard", exact: true }).click();
     await expect(page.getByRole("heading", { name: "Dashboard", exact: true })).toBeVisible();
     expect((await page.request.get("/management/api/overview/")).status()).toBe(403);
