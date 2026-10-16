@@ -3,6 +3,33 @@ info:
   title: SKY Platform API
   version: 1.0.0
 paths:
+  /api/v1/hr/branches/:
+    get:
+      operationId: v1_hr_branches_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBranchList'
+          description: ''
   /api/v1/hr/careers/{id}/:
     get:
       operationId: v1_hr_careers_retrieve
@@ -1311,6 +1338,56 @@ paths:
           description: ''
 components:
   schemas:
+    PaginatedBranchList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Branch'
+    Branch:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 160
+        code:
+          type: string
+          maxLength: 40
+          pattern: ^[-a-zA-Z0-9_]+$
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        phone:
+          type: string
+          maxLength: 24
+        is_active:
+          type: boolean
+      required:
+      - code
+      - id
+      - name
     PublicJob:
       type: object
       properties:

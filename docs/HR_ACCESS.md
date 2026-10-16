@@ -65,7 +65,8 @@ a section filter narrows results. It searches navigation, not employee records.
 The live clock displays Asia/Kolkata time and updates every second.
 
 Manage Branches is available at `/hr/branches` in the HR sidebar and navbar search.
-It uses HR session protection; branch management data/actions are not connected.
+It uses HR session protection and shows the stored branch directory, with search
+and pagination. Editing branches from HR is not implemented.
 
 Leave Requests is available at `/hr/leave-requests` in the sidebar and navbar
 search, protected by HR session checks. Leave submission and approvals are not
@@ -91,3 +92,19 @@ Run migrations before deployment; existing branch/employee records are unchanged
 
 The corrected public URL is `/careers`. Legacy `/carrears` requests permanently
 redirect to `/careers`, preserving pagination query parameters.
+
+## Branch workbook import
+
+`python manage.py import_branches <path-to-skydata.xlsx>` previews distinct names
+from the Branch column; add `--apply` to persist. Repeated stock rows, differences
+in case/whitespace, and Total/Grand Total rows do not create duplicate branches.
+Unique branch codes distinguish ARNI-1/ARNI-2, etc.; city is not unique. Existing
+branch details are preserved; conflicting identities abort the entire import.
+The import only adds missing branches, not products, stock or employee records.
+
+The supplied workbook has 33 branches. City labels are derived from branch names
+by removing numbered suffixes, preserving source spelling. HEAD OFFICE and MAINLINE
+RETAILER supply no city, so city is blank. Addresses/phones are blank where absent.
+City labels are not a verified geographical/address directory. Unknown city/address
+fields are optional in the schema; no existing values or stock relations are removed.
+`GET /api/v1/hr/branches/` is HR-only, paginated, and supports `?search=arni`.

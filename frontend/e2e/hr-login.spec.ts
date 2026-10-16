@@ -84,6 +84,8 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: "Manage Branches", exact: true }).click();
     await expect(page).toHaveURL(/\/hr\/branches$/);
     await expect(page.getByRole("heading", { name: "Manage Branches", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Branch directory", exact: true })).toBeVisible();
+    await expect(page.getByLabel("Search branches or cities", { exact: true })).toBeVisible();
     await expect(page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: "Manage Branches", exact: true })).toHaveAttribute("aria-current", "page");
     await page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: "Leave Requests", exact: true }).click();
     await expect(page).toHaveURL(/\/hr\/leave-requests$/);
