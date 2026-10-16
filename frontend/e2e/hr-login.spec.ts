@@ -34,13 +34,13 @@ test("separate HR login authenticates only an HR account and protects the worksp
       await page.setViewportSize({ width, height: 900 });
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       if (width >= 768) {
-        const sidebar = await page.locator("aside").boundingBox();
+        const sidebar = await page.locator("aside").filter({ has: page.getByRole("navigation", { name: "HR navigation" }) }).boundingBox();
         expect(sidebar!.width / width).toBeCloseTo(0.2, 2);
       }
     }
     await expect(page.getByText(`Signed in as ${username}.`, { exact: true })).toBeVisible();
     await expect(page.getByRole("region", { name: "HR statistics" })).toBeVisible();
-    await expect(page.getByRole("region", { name: "HR sections" }).getByRole("article")).toHaveCount(7);
+    await expect(page.getByRole("region", { name: "HR sections" }).getByRole("article")).toHaveCount(8);
     await expect(page.getByRole("heading", { name: "Branches by city", exact: true })).toBeVisible();
     const search = page.getByRole("searchbox", { name: "Search HR", exact: true });
     await search.fill("STAFF");

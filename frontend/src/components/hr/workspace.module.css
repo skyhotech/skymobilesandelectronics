@@ -113,3 +113,10 @@
 .locationReview input[type="checkbox"] { width: 18px; height: 18px; }
 .locationReview textarea, .locationReview select { padding: 10px; border: 1px solid #ced9e8; border-radius: 8px; width: 100%; max-width: 100%; }
 .locationReview p { overflow-wrap: anywhere; font-size: 13px; }
+
+.branchSearch { grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr)) auto; align-items: end; gap: 16px; }
+.branchSearch label { display: flex; flex-direction: column; gap: 8px; min-width: 0; font-size: 14px; font-weight: 600; }
+.branchSearch input, .branchSearch select { width: 100%; min-width: 0; height: 46px; box-sizing: border-box; background: #fff; color: #203b5e; font-weight: 400; }
+.branchSearch button { min-height: 46px; margin: 0; white-space: nowrap; }
+@media (max-width: 1279px) { .branchSearch { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 767px) { .branchSearch { grid-template-columns: minmax(0, 1fr); } }
