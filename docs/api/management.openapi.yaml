@@ -3,6 +3,20 @@ info:
   title: SKY Platform API
   version: 1.0.0
 paths:
+  /api/v1/hr/overview/:
+    get:
+      operationId: v1_hr_overview_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HROverview'
+          description: ''
   /api/v1/hr/branches/:
     get:
       operationId: v1_hr_branches_list
@@ -1338,6 +1352,50 @@ paths:
           description: ''
 components:
   schemas:
+    HROverview:
+      type: object
+      properties:
+        branches:
+          type: integer
+        active_branches:
+          type: integer
+        jobs:
+          type: integer
+        published_jobs:
+          type: integer
+        broadcasts:
+          type: integer
+        cities:
+          type: array
+          items:
+            $ref: '#/components/schemas/HRCity'
+        recent_jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Job'
+        recent_broadcasts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Broadcast'
+      required:
+      - active_branches
+      - branches
+      - broadcasts
+      - cities
+      - jobs
+      - published_jobs
+      - recent_broadcasts
+      - recent_jobs
+    HRCity:
+      type: object
+      properties:
+        city:
+          type: string
+        total:
+          type: integer
+      required:
+      - city
+      - total
     PaginatedBranchList:
       type: object
       required:

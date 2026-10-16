@@ -117,3 +117,9 @@ visible loading cycle and waits for active requests, including route loading.
 Overlapping requests share one cycle. Reduced-motion mode shows a static loader;
 blocked, failed or stalled video playback falls back without holding completed
 requests indefinitely (10-second playback-start/stall timeout).
+
+The HR dashboard (`/hr`) includes all seven HR sections, live branch/job/broadcast
+counts, branches grouped by city, recent jobs and recent broadcasts. Employee,
+attendance, hiring workflow and leave tools are explicitly marked unconnected;
+no counts are invented. HR-only `GET /api/v1/hr/overview/` supplies real database
+summaries, refreshed each minute while visible and via Refresh overview.

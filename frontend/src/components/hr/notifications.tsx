@@ -27,7 +27,7 @@ export function HRNotifications({ username, compose }: { username: string; compo
   const latest = useRef<number | null>(null);
   const form = useForm<Values>({ resolver: zodResolver(schema) });
   const feed = useQuery({ queryKey: ["hr", "notifications"], queryFn: () => hrApi<Broadcast[]>("notifications/"), refetchInterval: 30000, retry: false });
-  const send = useMutation({ mutationFn: (values: Values) => hrApi<Broadcast>("notifications/", "POST", values), onSuccess: () => { form.reset(); setNotice("Broadcast sent to the HR notification feed."); cache.invalidateQueries({ queryKey: ["hr", "notifications"] }); } });
+  const send = useMutation({ mutationFn: (values: Values) => hrApi<Broadcast>("notifications/", "POST", values), onSuccess: () => { form.reset(); setNotice("Broadcast sent to the HR notification feed."); cache.invalidateQueries({ queryKey: ["hr", "overview"] }); cache.invalidateQueries({ queryKey: ["hr", "notifications"] }); } });
   useEffect(() => {
     if (!feed.data?.length) { if (feed.data) latest.current ??= 0; return; }
     const newest = feed.data[0].id;

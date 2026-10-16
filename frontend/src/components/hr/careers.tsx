@@ -19,7 +19,7 @@ export function HRCareers() {
   const [notice, setNotice] = useState("");
   const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: defaults });
   const jobs = useQuery({ queryKey: ["hr", "careers", page], queryFn: () => hrApi<Page<JobOpening>>(`careers/?page=${page}`) });
-  const refresh = () => { cache.invalidateQueries({ queryKey: ["hr", "careers"] }); };
+  const refresh = () => { cache.invalidateQueries({ queryKey: ["hr", "overview"] }); cache.invalidateQueries({ queryKey: ["hr", "careers"] }); };
   const save = useMutation({ mutationFn: (values: Values) => hrApi(editing ? `careers/${editing}/` : "careers/", editing ? "PATCH" : "POST", values), onSuccess: () => { setNotice("Job opening saved."); setEditing(null); form.reset(defaults); refresh(); } });
   const remove = useMutation({ mutationFn: (id: number) => hrApi(`careers/${id}/`, "DELETE"), onSuccess: (_, id) => { if (editing === id) { setEditing(null); form.reset(defaults); } setNotice("Job opening deleted."); setPage(1); refresh(); } });
   return <><p><Link href="/careers" target="_blank" rel="noopener noreferrer">View public careers page</Link></p><div className={styles.details}>

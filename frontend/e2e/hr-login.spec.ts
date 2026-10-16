@@ -38,6 +38,9 @@ test("separate HR login authenticates only an HR account and protects the worksp
       }
     }
     await expect(page.getByText(`Signed in as ${username}.`, { exact: true })).toBeVisible();
+    await expect(page.getByRole("region", { name: "HR statistics" })).toBeVisible();
+    await expect(page.getByRole("region", { name: "HR sections" }).getByRole("article")).toHaveCount(7);
+    await expect(page.getByRole("heading", { name: "Branches by city", exact: true })).toBeVisible();
     const search = page.getByRole("searchbox", { name: "Search HR", exact: true });
     await search.fill("STAFF");
     await expect(page.getByRole("navigation", { name: "HR search results" }).getByRole("link", { name: "Employees", exact: true })).toBeVisible();
@@ -51,7 +54,7 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await expect(page.getByLabel("Current India time", { exact: true })).not.toHaveAttribute("datetime", clock!);
     expect(await page.locator("header").evaluate(element => getComputedStyle(element.parentElement!).position)).toBe("sticky");
     await page.locator("summary").filter({ hasText: "Employees" }).click();
-    await page.getByRole("link", { name: "All", exact: true }).click();
+    await page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: "All", exact: true }).click();
     await expect(page.getByRole("heading", { name: "All employees", exact: true })).toBeVisible();
     for (const [label, status, heading] of [["Working", "working", "Working employees"], ["Leave", "leave", "Employees on leave"], ["Past Employees", "past", "Past employees"]]) {
       await page.getByRole("navigation", { name: "HR navigation" }).getByRole("link", { name: label, exact: true }).click();
