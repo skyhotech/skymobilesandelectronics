@@ -6,6 +6,7 @@ class Branch(models.Model):
     code = models.SlugField(max_length=40, unique=True)
     address = models.TextField(blank=True)
     city = models.CharField(max_length=100, blank=True)
+    street_view_embed_url = models.URLField(max_length=8000, blank=True)
     google_maps_url = models.URLField(max_length=2000, blank=True)
     phone = models.CharField(max_length=24, blank=True)
     is_active = models.BooleanField(default=True)

@@ -60,3 +60,41 @@ def test_public_locations_and_maps_validation(client):
         ).status_code
         == 200
     )
+
+
+def test_street_view_accepts_share_embed_only(client):
+    user = User.objects.create_user("streetview-hr")
+    user.groups.add(Group.objects.create(name="HR"))
+    client.force_login(user)
+    branch = Branch.objects.create(name="Panorama test", code="panorama-test")
+    url = f"/api/v1/hr/branches/{branch.id}/"
+    embed = "https://www.google.com/maps/embed?pb=test-only-panorama"
+    response = client.patch(
+        url,
+        {"street_view_embed_url": f'<iframe src="{embed}" onload="alert(1)"></iframe>'},
+        content_type="application/json",
+    )
+    assert response.status_code == 200
+    assert response.json()["street_view_embed_url"] == embed
+    public = client.get("/api/v1/branches/").json()
+    assert public[0]["street_view_embed_url"] == embed
+    for invalid in [
+        "javascript:alert(1)",
+        "https://evil.example/maps/embed?pb=x",
+        "https://www.google.com/maps/embed/v1/streetview?key=test",
+        "https://www.google.com/maps/embed?pb=x&key=test",
+        "https://www.google.com:bad/maps/embed?pb=x",
+        "<iframe src='javascript:alert(1)'></iframe>",
+    ]:
+        assert (
+            client.patch(
+                url, {"street_view_embed_url": invalid}, content_type="application/json"
+            ).status_code
+            == 400
+        )
+    assert (
+        client.patch(
+            url, {"street_view_embed_url": ""}, content_type="application/json"
+        ).status_code
+        == 200
+    )

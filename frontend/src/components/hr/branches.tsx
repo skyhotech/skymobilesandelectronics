@@ -6,12 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { hrApi, type Page } from "@/lib/management-api";
 import { BranchLocationCard } from "@/components/branch-location-card";
+import { BranchStreetView } from "@/components/branch-street-view";
 import { branchDirections } from "@/lib/branch-directions";
 import styles from "./workspace.module.css";
-const schema = z.object({ name: z.string().trim().min(1).max(160), code: z.string().trim().min(1).max(40).regex(/^[a-zA-Z0-9_-]+$/, "Use letters, numbers, hyphens or underscores"), city: z.string().trim().max(100), address: z.string().trim().max(5000), phone: z.string().trim().max(24), google_maps_url: z.string().trim().max(2000).refine(value => !value || /^https:\/\//.test(value), "Use an HTTPS Google Maps link"), is_active: z.boolean() });
+const schema = z.object({ name: z.string().trim().min(1).max(160), code: z.string().trim().min(1).max(40).regex(/^[a-zA-Z0-9_-]+$/, "Use letters, numbers, hyphens or underscores"), city: z.string().trim().max(100), address: z.string().trim().max(5000), phone: z.string().trim().max(24), google_maps_url: z.string().trim().max(2000).refine(value => !value || /^https:\/\//.test(value), "Use an HTTPS Google Maps link"), street_view_embed_url: z.string().trim().max(12000), is_active: z.boolean() });
 type Values = z.infer<typeof schema>;
 type Branch = Values & { id: number };
-const defaults: Values = { name: "", code: "", city: "", address: "", phone: "", google_maps_url: "", is_active: true };
+const defaults: Values = { name: "", code: "", city: "", address: "", phone: "", google_maps_url: "", street_view_embed_url: "", is_active: true };
 
 function BranchForm({ branch, onSaved, onCancel }: { branch: Branch | null; onSaved: () => void; onCancel: () => void }) {
   const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: branch || defaults });
@@ -21,6 +22,7 @@ function BranchForm({ branch, onSaved, onCancel }: { branch: Branch | null; onSa
   return <section ref={section} className={styles.card} style={{ marginBottom: 24 }}><h2>{branch ? "Edit branch" : "Add branch"}</h2><form className={styles.broadcastForm} onSubmit={form.handleSubmit(values => save.mutate(values))}>
     {([ ["name", "Branch name", 160], ["code", "Branch code", 40], ["city", "City", 100], ["phone", "Phone", 24] ] as const).map(([name, label, max]) => <label key={name}>{label}<input {...form.register(name)} maxLength={max} /></label>)}
     <label>Google Maps link<input {...form.register("google_maps_url")} type="url" maxLength={2000} /></label>
+    <label>Street View embed URL or iframe<textarea {...form.register("street_view_embed_url")} rows={3} maxLength={12000} /></label><p>In Google Maps, open the branch Street View, choose Share or embed image, then Embed a map and Copy HTML. No API key is needed.</p>
     <label>Address<textarea {...form.register("address")} rows={3} maxLength={5000} /></label>
     <label><input type="checkbox" {...form.register("is_active")} /> Active branch</label>
     <p>Use a unique code for each branch. Multiple branches can share a city.</p>
@@ -37,7 +39,7 @@ function BranchView({ id, close }: { id: number; close: () => void }) {
   return <dialog ref={dialog} className={styles.branchDialog} aria-labelledby="branch-view-title" onCancel={event => { event.preventDefault(); close(); }}>
     <div className={styles.dashboardHeading}><h2 id="branch-view-title">Branch details</h2><button className={styles.signOut} onClick={close}>Close</button></div>
     {detail.isPending && <p role="status">Loading branch...</p>}{detail.error && <p role="alert">Unable to load branch. <button onClick={() => detail.refetch()}>Retry</button></p>}
-    {detail.data && <><h3>{detail.data.name}</h3><dl>{([ ["Code", detail.data.code], ["City", detail.data.city], ["Address", detail.data.address], ["Phone", detail.data.phone], ["Status", detail.data.is_active ? "Active" : "Inactive"] ]).map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value || "Not supplied"}</dd></div>)}</dl>{branchDirections(detail.data) && <p><a href={branchDirections(detail.data)!} target="_blank" rel="noopener noreferrer">Get directions</a></p>}{detail.data.google_maps_url && <p><a href={detail.data.google_maps_url} target="_blank" rel="noopener noreferrer">Open in Google Maps</a></p>}</>}
+    {detail.data && <><h3>{detail.data.name}</h3><dl>{([ ["Code", detail.data.code], ["City", detail.data.city], ["Address", detail.data.address], ["Phone", detail.data.phone], ["Status", detail.data.is_active ? "Active" : "Inactive"] ]).map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value || "Not supplied"}</dd></div>)}</dl><BranchStreetView name={detail.data.name} embedUrl={detail.data.street_view_embed_url} />{branchDirections(detail.data) && <p><a href={branchDirections(detail.data)!} target="_blank" rel="noopener noreferrer">Get directions</a></p>}{detail.data.google_maps_url && <p><a href={detail.data.google_maps_url} target="_blank" rel="noopener noreferrer">Open in Google Maps</a></p>}</>}
   </dialog>;
 }
 

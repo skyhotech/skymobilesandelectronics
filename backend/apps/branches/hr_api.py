@@ -11,9 +11,66 @@ from .models import Branch
 
 
 class BranchSerializer(serializers.ModelSerializer):
+    street_view_embed_url = serializers.CharField(
+        max_length=12000, required=False, allow_blank=True
+    )
+
     class Meta:
         model = Branch
-        fields = ["id", "name", "code", "city", "address", "phone", "google_maps_url", "is_active"]
+        fields = [
+            "id",
+            "name",
+            "code",
+            "city",
+            "address",
+            "phone",
+            "google_maps_url",
+            "street_view_embed_url",
+            "is_active",
+        ]
+
+    def validate_street_view_embed_url(self, value):
+        from html import unescape
+        from html.parser import HTMLParser
+        from urllib.parse import parse_qs, urlsplit
+
+        class EmbedParser(HTMLParser):
+            sources = None
+
+            def handle_starttag(self, tag, attrs):
+                if tag.lower() == "iframe":
+                    self.sources = dict(attrs).get("src")
+
+        value = value.strip()
+        if not value:
+            return value
+        if value.startswith("<"):
+            parser = EmbedParser()
+            parser.feed(value)
+            value = parser.sources or ""
+        value = unescape(value)
+        try:
+            parsed = urlsplit(value)
+            port = parsed.port
+        except ValueError:
+            raise serializers.ValidationError("Invalid Google embed URL.") from None
+        params = parse_qs(parsed.query)
+        if (
+            len(value) > 8000
+            or parsed.scheme != "https"
+            or parsed.hostname != "www.google.com"
+            or parsed.path not in {"/maps/embed", "/maps/embed/"}
+            or parsed.username
+            or parsed.password
+            or port not in {None, 443}
+            or not params.get("pb")
+            or "key" in params
+        ):
+            raise serializers.ValidationError(
+                "Paste a Google Maps Share/Embed URL or iframe with a pb parameter; "
+                "API-key embeds are not supported."
+            )
+        return value
 
     def validate_google_maps_url(self, value):
         if not value:

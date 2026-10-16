@@ -170,3 +170,15 @@ address for separate directions. Locations are never guessed from city alone.
 HR edits invalidate the local locator cache and notify other same-browser tabs
 through a storage event; periodic refresh still handles other browsers/devices.
 Official reference: https://developers.google.com/maps/documentation/urls/get-started
+
+## Optional embedded 360-degree Street View
+
+In Edit branch, paste a Google Street View Share/Embed iframe or its src URL into
+Street View embed URL or iframe. The server extracts only the src; HTML and event
+handlers are never rendered. Only HTTPS www.google.com/maps/embed?pb=... share
+embeds are accepted; /embed/v1 API-key URLs and other domains are rejected.
+Branch cards in HR and the public locator offer an on-demand 360-degree viewer,
+plus the HR View dialog. No Google API key/SDK, panorama discovery or scraping
+is used. Missing panoramas are explicitly unconfigured; no real branch panorama
+has been supplied/verified yet. Google controls coverage and viewer availability.
+Use the viewer fullscreen control for a larger panorama. Run migrations on deploy.

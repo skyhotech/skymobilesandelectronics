@@ -10,7 +10,15 @@ from .models import Branch
 class StoreLocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Branch
-        fields = ["id", "name", "city", "address", "phone", "google_maps_url"]
+        fields = [
+            "id",
+            "name",
+            "city",
+            "address",
+            "phone",
+            "google_maps_url",
+            "street_view_embed_url",
+        ]
 
 
 @method_decorator(never_cache, name="dispatch")
@@ -21,6 +29,6 @@ class StoreLocations(ListAPIView):
     pagination_class = None
     queryset = (
         Branch.objects.filter(is_active=True)
-        .filter(~Q(address="") | ~Q(google_maps_url=""))
+        .filter(~Q(address="") | ~Q(google_maps_url="") | ~Q(street_view_embed_url=""))
         .order_by("city", "name")[:200]
     )

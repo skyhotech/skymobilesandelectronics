@@ -92,7 +92,7 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await expect(page.getByLabel("Search branches or cities", { exact: true })).toBeVisible();
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: 900 });
-      await page.evaluate(() => window.scrollTo(0, 1000));
+      await page.locator("form").filter({ has: page.getByLabel("Search branches or cities", { exact: true }) }).evaluate(element => window.scrollTo({ top: window.scrollY + element.getBoundingClientRect().top + 500, behavior: "instant" }));
       await expect.poll(() => page.locator("form").filter({ has: page.getByLabel("Search branches or cities", { exact: true }) }).evaluate(element => Math.abs(element.getBoundingClientRect().top - Number.parseFloat(getComputedStyle(element).top)))).toBeLessThan(2);
     }
     await page.setViewportSize({ width: 1440, height: 900 });
@@ -102,6 +102,9 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await page.getByLabel("Branch code", { exact: true }).fill(username);
     await page.getByLabel("City", { exact: true }).fill("Test city");
     await page.getByLabel("Google Maps link", { exact: true }).fill("https://www.google.com/maps/search/?api=1&query=Test");
+    const panorama = "https://www.google.com/maps/embed?pb=test-only-panorama";
+    await page.context().route("**/maps/embed?pb=test-only-panorama", route => route.fulfill({ contentType: "text/html", body: "<p>Test-only panorama iframe fixture</p>" }));
+    await page.getByLabel("Street View embed URL or iframe", { exact: true }).fill(`<iframe src="${panorama}"></iframe>`);
     await page.getByRole("button", { name: "Save branch", exact: true }).click();
     await expect(page.getByText("Branch saved.", { exact: true })).toBeVisible();
     await page.getByLabel("Search branches or cities", { exact: true }).fill(username);
@@ -113,12 +116,18 @@ test("separate HR login authenticates only an HR account and protects the worksp
     await locator.getByLabel("Search stores", { exact: true }).fill(username);
     await expect(locator.getByRole("heading", { name: username, exact: true })).toBeVisible();
     await expect(locator.getByRole("link", { name: "Get directions", exact: true })).toHaveAttribute("href", "https://www.google.com/maps/dir/?api=1&destination=Test&dir_action=navigate");
+    await expect(locator.locator(`iframe[src="${panorama}"]`)).toHaveCount(0);
+    await locator.getByRole("button", { name: /View 360.* Street View/ }).click();
+    await expect(locator.locator(`iframe[src="${panorama}"]`)).toBeVisible();
+    await locator.getByRole("button", { name: /Close 360.* Street View/ }).click();
     for (const width of [390, 1440]) {
       await locatorPage.setViewportSize({ width, height: 900 });
-      expect(await locatorPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      await expect.poll(() => locatorPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     }
     await page.getByRole("button", { name: `View ${username}`, exact: true }).click();
     await expect(page.getByRole("dialog", { name: "Branch details", exact: true })).toContainText("Test city");
+    await page.getByRole("dialog").getByRole("button", { name: /View 360.* Street View/ }).click();
+    await expect(page.getByRole("dialog").locator(`iframe[src="${panorama}"]`)).toBeVisible();
     await page.getByRole("button", { name: "Close", exact: true }).click();
     await page.getByRole("button", { name: `Edit ${username}`, exact: true }).click();
     await page.getByLabel("City", { exact: true }).fill("Updated city");

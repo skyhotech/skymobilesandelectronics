@@ -1482,6 +1482,13 @@ components:
             maxLength: 2000
           - type: string
             maxLength: 0
+        street_view_embed_url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 8000
+          - type: string
+            maxLength: 0
       required:
       - id
       - name
@@ -1580,6 +1587,9 @@ components:
             maxLength: 2000
           - type: string
             maxLength: 0
+        street_view_embed_url:
+          type: string
+          maxLength: 12000
         is_active:
           type: boolean
       required:

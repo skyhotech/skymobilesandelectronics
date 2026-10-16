@@ -1,8 +1,9 @@
+import { BranchStreetView } from "./branch-street-view";
 import type { ReactNode } from "react";
 import { branchDirections } from "@/lib/branch-directions";
 import styles from "./branch-location-card.module.css";
 
-type Branch = { name: string; city: string; address: string; phone: string; google_maps_url: string; code?: string; is_active?: boolean };
+type Branch = { name: string; city: string; address: string; phone: string; google_maps_url: string; street_view_embed_url?: string; code?: string; is_active?: boolean };
 export function BranchLocationCard({ branch, actions }: { branch: Branch; actions?: ReactNode }) {
   const directions = branchDirections(branch);
   return <article className={styles.card}>
@@ -11,6 +12,7 @@ export function BranchLocationCard({ branch, actions }: { branch: Branch; action
     <p className={styles.address}>{branch.address || "Street address not supplied. Contact the store for its exact location."}</p>
     {branch.phone && <a className={styles.phone} href={`tel:${branch.phone.replace(/[^+0-9]/g, "")}`}>Call {branch.phone}</a>}
     <div className={styles.links}>{directions ? <a className={styles.directions} href={directions} target="_blank" rel="noopener noreferrer">Get directions <span aria-hidden="true">&#8599;</span></a> : <span className={styles.unset}>Add an address or Maps destination for directions</span>}{branch.google_maps_url && <a className={styles.mapLink} href={branch.google_maps_url} target="_blank" rel="noopener noreferrer">View map</a>}</div>
+    <BranchStreetView name={branch.name} embedUrl={branch.street_view_embed_url || ""} />
     {actions && <div className={styles.actions}>{actions}</div>}
   </article>;
 }
