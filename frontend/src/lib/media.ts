@@ -32,7 +32,8 @@ export function resolveMediaUrl(
     )
   )
     return null;
-  return origin ? new URL(path, origin).toString() : path;
+    return path;
+  //return origin ? new URL(path, origin).toString() : path;
 }
 
 export async function uploadMedia(file: File, kind: string): Promise<string> {

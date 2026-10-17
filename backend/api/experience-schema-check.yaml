@@ -1,0 +1,5502 @@
+openapi: 3.0.3
+info:
+  title: SKY Platform API
+  version: 1.0.0
+paths:
+  /api/schema/:
+    get:
+      operationId: schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - ckb
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - ug
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - schema
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/branches/:
+    get:
+      operationId: v1_branches_list
+      tags:
+      - v1
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StoreLocation'
+          description: ''
+  /api/v1/brands/:
+    get:
+      operationId: v1_brands_list
+      tags:
+      - v1
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PublicBrand'
+          description: ''
+  /api/v1/careers/:
+    get:
+      operationId: v1_careers_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPublicJobList'
+          description: ''
+  /api/v1/categories/:
+    get:
+      operationId: v1_categories_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPublicCategoryList'
+          description: ''
+  /api/v1/categories/tree/:
+    get:
+      operationId: v1_categories_tree_retrieve
+      tags:
+      - v1
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryTree'
+          description: ''
+  /api/v1/chat/calls/{id}/:
+    get:
+      operationId: v1_chat_calls_retrieve
+      parameters:
+      - in: query
+        name: after
+        schema:
+          type: integer
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CallState'
+          description: ''
+    post:
+      operationId: v1_chat_calls_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CallAction'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CallAction'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CallAction'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Call'
+          description: ''
+  /api/v1/chat/calls/{id}/signals/:
+    post:
+      operationId: v1_chat_calls_signals_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignalRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SignalRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SignalRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+          description: ''
+  /api/v1/chat/files/{id}/:
+    get:
+      operationId: v1_chat_files_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: ''
+  /api/v1/chat/inbox/:
+    get:
+      operationId: v1_chat_inbox_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inbox'
+          description: ''
+    post:
+      operationId: v1_chat_inbox_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ContactRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ContactRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Identifier'
+          description: ''
+  /api/v1/chat/session/:
+    get:
+      operationId: v1_chat_session_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementSession'
+          description: ''
+    post:
+      operationId: v1_chat_session_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementSession'
+          description: ''
+    delete:
+      operationId: v1_chat_session_destroy
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementSession'
+          description: ''
+  /api/v1/chat/threads/{id}/calls/:
+    post:
+      operationId: v1_chat_threads_calls_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CallRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CallRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CallRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Call'
+          description: ''
+  /api/v1/chat/threads/{id}/messages/:
+    get:
+      operationId: v1_chat_threads_messages_retrieve
+      parameters:
+      - in: query
+        name: before
+        schema:
+          type: integer
+      - in: query
+        name: files
+        schema:
+          type: string
+          enum:
+          - '1'
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessagePage'
+          description: ''
+    post:
+      operationId: v1_chat_threads_messages_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MessageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MessageRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: ''
+  /api/v1/chat/threads/{id}/read/:
+    post:
+      operationId: v1_chat_threads_read_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReadRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+          description: ''
+  /api/v1/hr/branches/:
+    get:
+      operationId: v1_hr_branches_list
+      parameters:
+      - in: query
+        name: is_showroom
+        schema:
+          type: boolean
+      - in: query
+        name: location_verified
+        schema:
+          type: boolean
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: street_view_status
+        schema:
+          type: string
+          enum:
+          - available_nearby
+          - error
+          - needs_review
+          - pending
+          - storefront_verified
+          - unavailable
+        description: |-
+          * `pending` - pending
+          * `needs_review` - needs review
+          * `available_nearby` - available nearby
+          * `storefront_verified` - storefront verified
+          * `unavailable` - unavailable
+          * `error` - error
+      - in: query
+        name: street_view_verified
+        schema:
+          type: boolean
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBranchList'
+          description: ''
+    post:
+      operationId: v1_hr_branches_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Branch'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Branch'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Branch'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Branch'
+          description: ''
+  /api/v1/hr/branches/{id}/:
+    get:
+      operationId: v1_hr_branches_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Branch'
+          description: ''
+    patch:
+      operationId: v1_hr_branches_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBranch'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBranch'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBranch'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Branch'
+          description: ''
+    delete:
+      operationId: v1_hr_branches_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/hr/branches/{id}/streetview/:
+    get:
+      operationId: v1_hr_branches_streetview_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewState'
+          description: ''
+    post:
+      operationId: v1_hr_branches_streetview_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReviewRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReviewRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewState'
+          description: ''
+  /api/v1/hr/careers/:
+    get:
+      operationId: v1_hr_careers_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedJobList'
+          description: ''
+    post:
+      operationId: v1_hr_careers_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Job'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Job'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Job'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+          description: ''
+  /api/v1/hr/careers/{id}/:
+    get:
+      operationId: v1_hr_careers_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this job opening.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+          description: ''
+    patch:
+      operationId: v1_hr_careers_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this job opening.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedJob'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedJob'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedJob'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+          description: ''
+    delete:
+      operationId: v1_hr_careers_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this job opening.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/hr/notifications/:
+    get:
+      operationId: v1_hr_notifications_list
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Broadcast'
+          description: ''
+    post:
+      operationId: v1_hr_notifications_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Broadcast'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Broadcast'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Broadcast'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Broadcast'
+          description: ''
+  /api/v1/hr/overview/:
+    get:
+      operationId: v1_hr_overview_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HROverview'
+          description: ''
+  /api/v1/hr/session/:
+    get:
+      operationId: v1_hr_session_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementSession'
+          description: ''
+    post:
+      operationId: v1_hr_session_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementSession'
+          description: ''
+    delete:
+      operationId: v1_hr_session_destroy
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementSession'
+          description: ''
+  /api/v1/management/brands/:
+    get:
+      operationId: v1_management_brands_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBrandList'
+          description: ''
+    post:
+      operationId: v1_management_brands_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Brand'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Brand'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Brand'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+          description: ''
+  /api/v1/management/brands/{id}/:
+    get:
+      operationId: v1_management_brands_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this brand.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+          description: ''
+    put:
+      operationId: v1_management_brands_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this brand.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Brand'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Brand'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Brand'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+          description: ''
+    patch:
+      operationId: v1_management_brands_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this brand.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBrand'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBrand'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBrand'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+          description: ''
+    delete:
+      operationId: v1_management_brands_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this brand.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/management/brands/move/:
+    post:
+      operationId: v1_management_brands_move_create
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandMove'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BrandMove'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BrandMove'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBrandList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementError'
+          description: ''
+  /api/v1/management/categories/:
+    get:
+      operationId: v1_management_categories_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCategoryList'
+          description: ''
+    post:
+      operationId: v1_management_categories_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Category'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Category'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /api/v1/management/categories/{id}/:
+    get:
+      operationId: v1_management_categories_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this category.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    put:
+      operationId: v1_management_categories_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this category.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Category'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Category'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    patch:
+      operationId: v1_management_categories_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this category.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCategory'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCategory'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCategory'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    delete:
+      operationId: v1_management_categories_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this category.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/management/categories/move/:
+    post:
+      operationId: v1_management_categories_move_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryMove'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CategoryMove'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CategoryMove'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryRevision'
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementError'
+          description: ''
+  /api/v1/management/categories/tree/:
+    get:
+      operationId: v1_management_categories_tree_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementCategoryTree'
+          description: ''
+  /api/v1/management/category-images/:
+    post:
+      operationId: v1_management_category_images_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CategoryUpload'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaAsset'
+          description: ''
+  /api/v1/management/customers/lookup/:
+    post:
+      operationId: v1_management_customers_lookup_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerLookupInput'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CustomerLookupInput'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CustomerLookupInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerLookupOutput'
+          description: ''
+  /api/v1/management/experience/assets/:
+    get:
+      operationId: v1_management_experience_assets_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    post:
+      operationId: v1_management_experience_assets_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/management/experience/carousels/:
+    get:
+      operationId: v1_management_experience_carousels_list
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Carousel'
+          description: ''
+    post:
+      operationId: v1_management_experience_carousels_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Carousel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Carousel'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Carousel'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carousel'
+          description: ''
+  /api/v1/management/experience/carousels/{id}/:
+    get:
+      operationId: v1_management_experience_carousels_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this carousel.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carousel'
+          description: ''
+    put:
+      operationId: v1_management_experience_carousels_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this carousel.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Carousel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Carousel'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Carousel'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carousel'
+          description: ''
+    patch:
+      operationId: v1_management_experience_carousels_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this carousel.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCarousel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCarousel'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCarousel'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carousel'
+          description: ''
+    delete:
+      operationId: v1_management_experience_carousels_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this carousel.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/management/experience/carousels/{id}/reorder/:
+    post:
+      operationId: v1_management_experience_carousels_reorder_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this carousel.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Carousel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Carousel'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Carousel'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carousel'
+          description: ''
+  /api/v1/management/experience/festivals/:
+    get:
+      operationId: v1_management_experience_festivals_list
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Festival'
+          description: ''
+    post:
+      operationId: v1_management_experience_festivals_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Festival'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Festival'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Festival'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Festival'
+          description: ''
+  /api/v1/management/experience/festivals/{id}/:
+    get:
+      operationId: v1_management_experience_festivals_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this festival event.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Festival'
+          description: ''
+    put:
+      operationId: v1_management_experience_festivals_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this festival event.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Festival'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Festival'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Festival'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Festival'
+          description: ''
+    patch:
+      operationId: v1_management_experience_festivals_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this festival event.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedFestival'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedFestival'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedFestival'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Festival'
+          description: ''
+    delete:
+      operationId: v1_management_experience_festivals_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this festival event.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/management/experience/festivals/sync/:
+    post:
+      operationId: v1_management_experience_festivals_sync_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Festival'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Festival'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Festival'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Festival'
+          description: ''
+  /api/v1/management/experience/health/:
+    get:
+      operationId: v1_management_experience_health_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/management/experience/history/:
+    get:
+      operationId: v1_management_experience_history_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    post:
+      operationId: v1_management_experience_history_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/management/experience/schedules/:
+    get:
+      operationId: v1_management_experience_schedules_list
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Schedule'
+          description: ''
+    post:
+      operationId: v1_management_experience_schedules_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Schedule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Schedule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Schedule'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: ''
+  /api/v1/management/experience/schedules/{id}/:
+    get:
+      operationId: v1_management_experience_schedules_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this theme schedule.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: ''
+    put:
+      operationId: v1_management_experience_schedules_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this theme schedule.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Schedule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Schedule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Schedule'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: ''
+    patch:
+      operationId: v1_management_experience_schedules_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this theme schedule.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSchedule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSchedule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSchedule'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: ''
+    delete:
+      operationId: v1_management_experience_schedules_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this theme schedule.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/management/experience/settings/:
+    get:
+      operationId: v1_management_experience_settings_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    patch:
+      operationId: v1_management_experience_settings_partial_update
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/management/experience/slides/:
+    get:
+      operationId: v1_management_experience_slides_list
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Slide'
+          description: ''
+    post:
+      operationId: v1_management_experience_slides_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Slide'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Slide'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Slide'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slide'
+          description: ''
+  /api/v1/management/experience/slides/{id}/:
+    get:
+      operationId: v1_management_experience_slides_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this carousel slide.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slide'
+          description: ''
+    put:
+      operationId: v1_management_experience_slides_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this carousel slide.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Slide'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Slide'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Slide'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slide'
+          description: ''
+    patch:
+      operationId: v1_management_experience_slides_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this carousel slide.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSlide'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSlide'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSlide'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slide'
+          description: ''
+    delete:
+      operationId: v1_management_experience_slides_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this carousel slide.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/management/experience/themes/:
+    get:
+      operationId: v1_management_experience_themes_list
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Theme'
+          description: ''
+    post:
+      operationId: v1_management_experience_themes_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Theme'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Theme'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Theme'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Theme'
+          description: ''
+  /api/v1/management/experience/themes/{id}/:
+    get:
+      operationId: v1_management_experience_themes_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this theme.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Theme'
+          description: ''
+    put:
+      operationId: v1_management_experience_themes_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this theme.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Theme'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Theme'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Theme'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Theme'
+          description: ''
+    patch:
+      operationId: v1_management_experience_themes_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this theme.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTheme'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTheme'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTheme'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Theme'
+          description: ''
+    delete:
+      operationId: v1_management_experience_themes_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this theme.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/management/experience/themes/{id}/apply/:
+    post:
+      operationId: v1_management_experience_themes_apply_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this theme.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Theme'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Theme'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Theme'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Theme'
+          description: ''
+  /api/v1/management/experience/themes/{id}/duplicate/:
+    post:
+      operationId: v1_management_experience_themes_duplicate_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this theme.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Theme'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Theme'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Theme'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Theme'
+          description: ''
+  /api/v1/management/experience/themes/{id}/preview/:
+    get:
+      operationId: v1_management_experience_themes_preview_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this theme.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Theme'
+          description: ''
+  /api/v1/management/inventory/:
+    get:
+      operationId: v1_management_inventory_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryReport'
+          description: ''
+  /api/v1/management/media/:
+    get:
+      operationId: v1_management_media_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMediaAssetList'
+          description: ''
+  /api/v1/management/media/{id}/:
+    get:
+      operationId: v1_management_media_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this media asset.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaAsset'
+          description: ''
+    delete:
+      operationId: v1_management_media_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this media asset.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/management/media/{id}/original/:
+    get:
+      operationId: v1_management_media_original_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this media asset.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: ''
+  /api/v1/management/media/upload/:
+    post:
+      operationId: v1_management_media_upload_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MediaUpload'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaAsset'
+          description: ''
+  /api/v1/management/overview/:
+    get:
+      operationId: v1_management_overview_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementOverview'
+          description: ''
+  /api/v1/management/products/:
+    get:
+      operationId: v1_management_products_list
+      parameters:
+      - in: query
+        name: brand
+        schema:
+          type: integer
+          minimum: 1
+        description: Limit reads and writes to this brand. Supplied product brands
+          must match.
+      - in: query
+        name: category
+        schema:
+          type: integer
+          minimum: 1
+      - in: query
+        name: max_price
+        schema:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+      - in: query
+        name: min_price
+        schema:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+      - in: query
+        name: ordering
+        schema:
+          enum:
+          - name
+          - -name
+          - price
+          - -price
+          - -id
+          type: string
+          default: name
+          minLength: 1
+        description: |-
+          * `name` - name
+          * `-name` - -name
+          * `price` - price
+          * `-price` - -price
+          * `-id` - -id
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          enum:
+          - all
+          - active
+          - inactive
+          type: string
+          default: all
+          minLength: 1
+        description: |-
+          * `all` - all
+          * `active` - active
+          * `inactive` - inactive
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProductList'
+          description: ''
+    post:
+      operationId: v1_management_products_create
+      parameters:
+      - in: query
+        name: brand
+        schema:
+          type: integer
+          minimum: 1
+        description: Limit reads and writes to this brand. Supplied product brands
+          must match.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Product'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Product'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+  /api/v1/management/products/{id}/:
+    get:
+      operationId: v1_management_products_retrieve
+      parameters:
+      - in: query
+        name: brand
+        schema:
+          type: integer
+          minimum: 1
+        description: Limit reads and writes to this brand. Supplied product brands
+          must match.
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this product.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+    put:
+      operationId: v1_management_products_update
+      parameters:
+      - in: query
+        name: brand
+        schema:
+          type: integer
+          minimum: 1
+        description: Limit reads and writes to this brand. Supplied product brands
+          must match.
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this product.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Product'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Product'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+    patch:
+      operationId: v1_management_products_partial_update
+      parameters:
+      - in: query
+        name: brand
+        schema:
+          type: integer
+          minimum: 1
+        description: Limit reads and writes to this brand. Supplied product brands
+          must match.
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this product.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProduct'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProduct'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProduct'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+    delete:
+      operationId: v1_management_products_destroy
+      parameters:
+      - in: query
+        name: brand
+        schema:
+          type: integer
+          minimum: 1
+        description: Limit reads and writes to this brand. Supplied product brands
+          must match.
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this product.
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/management/search/:
+    get:
+      operationId: v1_management_search_retrieve
+      parameters:
+      - in: query
+        name: q
+        schema:
+          type: string
+          default: ''
+          maxLength: 120
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementSearchResponse'
+          description: ''
+  /api/v1/management/session/:
+    get:
+      operationId: v1_management_session_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementSession'
+          description: ''
+    post:
+      operationId: v1_management_session_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementSession'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementError'
+          description: ''
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementError'
+          description: ''
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementError'
+          description: ''
+    delete:
+      operationId: v1_management_session_destroy
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementSession'
+          description: ''
+  /api/v1/products/:
+    get:
+      operationId: v1_products_list
+      parameters:
+      - in: query
+        name: brand
+        schema:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+          minLength: 1
+      - in: query
+        name: category
+        schema:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+          minLength: 1
+      - in: query
+        name: max_price
+        schema:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+      - in: query
+        name: min_price
+        schema:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+      - in: query
+        name: ordering
+        schema:
+          enum:
+          - name
+          - -name
+          - price
+          - -price
+          type: string
+          default: name
+          minLength: 1
+        description: |-
+          * `name` - name
+          * `-name` - -name
+          * `price` - price
+          * `-price` - -price
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: search
+        schema:
+          type: string
+          maxLength: 120
+      tags:
+      - v1
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCatalogProductList'
+          description: ''
+  /api/v1/products/{slug}/:
+    get:
+      operationId: v1_products_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogProduct'
+          description: ''
+  /api/v1/products/filters/options/:
+    get:
+      operationId: v1_products_filters_options_retrieve
+      tags:
+      - v1
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductFilterOptions'
+          description: ''
+  /api/v1/site/experience/:
+    get:
+      operationId: v1_site_experience_retrieve
+      tags:
+      - v1
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/site/experience/metrics/:
+    post:
+      operationId: v1_site_experience_metrics_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/site/experience/weather/:
+    get:
+      operationId: v1_site_experience_weather_retrieve
+      tags:
+      - v1
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+components:
+  schemas:
+    Audit:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        action:
+          type: string
+          maxLength: 40
+        status:
+          type: string
+          maxLength: 32
+        note:
+          type: string
+          maxLength: 500
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        actor_name:
+          type: string
+          readOnly: true
+          default: System
+      required:
+      - action
+      - actor_name
+      - created_at
+      - id
+      - status
+    Branch:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 160
+        code:
+          type: string
+          maxLength: 40
+          pattern: ^[-a-zA-Z0-9_]+$
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        phone:
+          type: string
+          maxLength: 24
+        google_maps_url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 2000
+          - type: string
+            maxLength: 0
+        street_view_embed_url:
+          type: string
+          maxLength: 12000
+        is_active:
+          type: boolean
+        imagery_date:
+          type: string
+          readOnly: true
+        location_embed_url:
+          type: string
+          readOnly: true
+        branch_id:
+          type: string
+          readOnly: true
+        is_showroom:
+          type: boolean
+        google_place_id:
+          type: string
+          nullable: true
+          maxLength: 255
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,7})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,7})?$
+          nullable: true
+        location_verified:
+          type: boolean
+        manual_override:
+          type: boolean
+        street_view_enabled:
+          type: boolean
+        street_view_status:
+          allOf:
+          - $ref: '#/components/schemas/StreetViewStatusEnum'
+          readOnly: true
+        street_view_verified:
+          type: boolean
+          readOnly: true
+        panorama_id:
+          type: string
+          readOnly: true
+        panorama_latitude:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        panorama_longitude:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        panorama_distance_m:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        heading:
+          type: number
+          format: double
+          maximum: 360
+          minimum: 0
+        pitch:
+          type: number
+          format: double
+          maximum: 90
+          minimum: -90
+        last_checked_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        last_verified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        location_candidates:
+          readOnly: true
+        sync_error:
+          type: string
+          readOnly: true
+        street_view_preview_url:
+          type: string
+          readOnly: true
+        google_data_expires_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        location_source:
+          type: string
+          readOnly: true
+      required:
+      - branch_id
+      - code
+      - google_data_expires_at
+      - id
+      - imagery_date
+      - last_checked_at
+      - last_verified_at
+      - location_candidates
+      - location_embed_url
+      - location_source
+      - name
+      - panorama_distance_m
+      - panorama_id
+      - panorama_latitude
+      - panorama_longitude
+      - street_view_preview_url
+      - street_view_status
+      - street_view_verified
+      - sync_error
+    Brand:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        slug:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_active:
+          type: boolean
+        logo_url:
+          type: string
+        show_on_homepage:
+          type: boolean
+        display_order:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+      required:
+      - id
+      - name
+      - slug
+    BrandMove:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        before:
+          type: integer
+          minimum: 1
+          nullable: true
+      required:
+      - before
+      - id
+    Broadcast:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 120
+        message:
+          type: string
+          maxLength: 2000
+        sender_name:
+          type: string
+          readOnly: true
+          default: Former user
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - message
+      - sender_name
+      - title
+    Call:
+      type: object
+      properties:
+        id:
+          type: integer
+        conversation:
+          type: integer
+        caller:
+          type: integer
+        kind:
+          $ref: '#/components/schemas/ChatCallKindEnum'
+        status:
+          $ref: '#/components/schemas/ChatCallStatusEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - caller
+      - conversation
+      - created_at
+      - id
+      - kind
+      - status
+    CallAction:
+      type: object
+      properties:
+        action:
+          $ref: '#/components/schemas/CallActionActionEnum'
+      required:
+      - action
+    CallActionActionEnum:
+      enum:
+      - accept
+      - decline
+      - end
+      type: string
+      description: |-
+        * `accept` - accept
+        * `decline` - decline
+        * `end` - end
+    CallRequest:
+      type: object
+      properties:
+        kind:
+          $ref: '#/components/schemas/ChatCallKindEnum'
+      required:
+      - kind
+    CallState:
+      type: object
+      properties:
+        id:
+          type: integer
+        conversation:
+          type: integer
+        caller:
+          type: integer
+        kind:
+          $ref: '#/components/schemas/ChatCallKindEnum'
+        status:
+          $ref: '#/components/schemas/ChatCallStatusEnum'
+        created_at:
+          type: string
+          format: date-time
+        signals:
+          type: array
+          items:
+            $ref: '#/components/schemas/Signal'
+        ice_servers:
+          type: array
+          items: {}
+      required:
+      - caller
+      - conversation
+      - created_at
+      - ice_servers
+      - id
+      - kind
+      - signals
+      - status
+    Carousel:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        placement:
+          $ref: '#/components/schemas/PlacementEnum'
+        transition:
+          allOf:
+          - $ref: '#/components/schemas/TransitionEnum'
+          default: fade
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 500
+        published:
+          type: boolean
+        archived:
+          type: boolean
+          readOnly: true
+        display_order:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        theme:
+          type: integer
+          nullable: true
+      required:
+      - archived
+      - id
+      - name
+      - placement
+    CatalogBrand:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        slug:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+      required:
+      - id
+      - name
+      - slug
+    CatalogCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        slug:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+      required:
+      - id
+      - name
+      - slug
+    CatalogProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 220
+        slug:
+          type: string
+          maxLength: 240
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        compare_at_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          nullable: true
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        image_url:
+          type: string
+          readOnly: true
+        brand:
+          allOf:
+          - $ref: '#/components/schemas/CatalogBrand'
+          readOnly: true
+        category:
+          allOf:
+          - $ref: '#/components/schemas/CatalogCategory'
+          readOnly: true
+      required:
+      - brand
+      - category
+      - id
+      - image_url
+      - name
+      - price
+      - slug
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        parent:
+          type: integer
+          nullable: true
+        parent_name:
+          type: string
+          readOnly: true
+          default: ''
+        name:
+          type: string
+          maxLength: 120
+        slug:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_active:
+          type: boolean
+        image_url:
+          type: string
+        badge:
+          type: string
+          maxLength: 40
+        description:
+          type: string
+          maxLength: 240
+        starting_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          nullable: true
+        destination:
+          $ref: '#/components/schemas/DestinationEnum'
+        display_order:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        show_on_homepage:
+          type: boolean
+      required:
+      - id
+      - name
+      - parent_name
+      - slug
+    CategoryMove:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        parent:
+          type: integer
+          minimum: 1
+          nullable: true
+        before:
+          type: integer
+          minimum: 1
+          nullable: true
+        revision:
+          type: integer
+          minimum: 0
+      required:
+      - id
+      - parent
+      - revision
+    CategoryRevision:
+      type: object
+      properties:
+        revision:
+          type: integer
+      required:
+      - revision
+    CategoryTree:
+      type: object
+      properties:
+        revision:
+          type: integer
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicCategory'
+      required:
+      - nodes
+      - revision
+    CategoryUpload:
+      type: object
+      properties:
+        file:
+          type: string
+          format: uri
+      required:
+      - file
+    ChatCallKindEnum:
+      enum:
+      - audio
+      - video
+      type: string
+      description: |-
+        * `audio` - audio
+        * `video` - video
+    ChatCallStatusEnum:
+      enum:
+      - ringing
+      - accepted
+      - declined
+      - ended
+      - missed
+      type: string
+      description: |-
+        * `ringing` - ringing
+        * `accepted` - accepted
+        * `declined` - declined
+        * `ended` - ended
+        * `missed` - missed
+    ChatSignalKindEnum:
+      enum:
+      - offer
+      - answer
+      - ice
+      type: string
+      description: |-
+        * `offer` - offer
+        * `answer` - answer
+        * `ice` - ice
+    ConfigurationState:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        server_ready:
+          type: boolean
+        embed_ready:
+          type: boolean
+        keys_separate:
+          type: boolean
+      required:
+      - embed_ready
+      - enabled
+      - keys_separate
+      - server_ready
+    ContactRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          minimum: 1
+      required:
+      - user_id
+    CurrencyEnum:
+      enum:
+      - INR
+      type: string
+      description: '* `INR` - Indian Rupee'
+    CustomerLookupInput:
+      type: object
+      properties:
+        mobile:
+          type: string
+          maxLength: 16
+          pattern: ^\+?[0-9]{7,15}$
+      required:
+      - mobile
+    CustomerLookupOutput:
+      type: object
+      properties:
+        columns:
+          type: array
+          items:
+            type: string
+        rows:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+      required:
+      - columns
+      - rows
+    DestinationEnum:
+      enum:
+      - '#smartphones'
+      - '#laptops'
+      - '#gadgets'
+      - '#entertainment'
+      type: string
+      description: |-
+        * `#smartphones` - Smartphones
+        * `#laptops` - Laptops & tablets
+        * `#gadgets` - Gadgets & audio
+        * `#entertainment` - TVs & appliances
+    EffectEnum:
+      enum:
+      - none
+      - lights
+      - kolam
+      - flowers
+      - snow
+      - hearts
+      - tricolor
+      - rain
+      - sun
+      - mist
+      type: string
+      description: |-
+        * `none` - none
+        * `lights` - lights
+        * `kolam` - kolam
+        * `flowers` - flowers
+        * `snow` - snow
+        * `hearts` - hearts
+        * `tricolor` - tricolor
+        * `rain` - rain
+        * `sun` - sun
+        * `mist` - mist
+    EmploymentTypeEnum:
+      enum:
+      - full_time
+      - part_time
+      - contract
+      - internship
+      type: string
+      description: |-
+        * `full_time` - Full time
+        * `part_time` - Part time
+        * `contract` - Contract
+        * `internship` - Internship
+    Festival:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        start_offset:
+          type: integer
+          maximum: 31
+          minimum: -31
+          default: 0
+        end_offset:
+          type: integer
+          maximum: 31
+          minimum: -31
+          default: 0
+        name:
+          type: string
+          maxLength: 150
+        date:
+          type: string
+          format: date
+        region:
+          type: string
+          default: IN-TN
+          maxLength: 20
+        source:
+          type: string
+          maxLength: 200
+        enabled:
+          type: boolean
+        priority:
+          type: integer
+          maximum: 65535
+          minimum: 0
+        theme:
+          type: integer
+          nullable: true
+      required:
+      - date
+      - id
+      - name
+    FontEnum:
+      enum:
+      - Inter
+      - Arial
+      - Georgia
+      type: string
+      description: |-
+        * `Inter` - Inter
+        * `Arial` - Arial
+        * `Georgia` - Georgia
+    HRCity:
+      type: object
+      properties:
+        city:
+          type: string
+        total:
+          type: integer
+      required:
+      - city
+      - total
+    HROverview:
+      type: object
+      properties:
+        branches:
+          type: integer
+        active_branches:
+          type: integer
+        jobs:
+          type: integer
+        published_jobs:
+          type: integer
+        broadcasts:
+          type: integer
+        cities:
+          type: array
+          items:
+            $ref: '#/components/schemas/HRCity'
+        recent_jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Job'
+        recent_broadcasts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Broadcast'
+      required:
+      - active_branches
+      - branches
+      - broadcasts
+      - cities
+      - jobs
+      - published_jobs
+      - recent_broadcasts
+      - recent_jobs
+    Identifier:
+      type: object
+      properties:
+        id:
+          type: integer
+      required:
+      - id
+    Inbox:
+      type: object
+      properties:
+        me:
+          $ref: '#/components/schemas/Person'
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+        conversations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Thread'
+        calls:
+          type: array
+          items:
+            $ref: '#/components/schemas/Call'
+        latest_message:
+          type: integer
+      required:
+      - calls
+      - contacts
+      - conversations
+      - latest_message
+      - me
+    InventoryReport:
+      type: object
+      properties:
+        columns:
+          type: array
+          items:
+            type: string
+        rows:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+      required:
+      - columns
+      - rows
+    Job:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 150
+        location:
+          type: string
+          maxLength: 150
+        employment_type:
+          $ref: '#/components/schemas/EmploymentTypeEnum'
+        description:
+          type: string
+          maxLength: 10000
+        application_email:
+          type: string
+          format: email
+          maxLength: 254
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        is_active:
+          type: boolean
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - application_email
+      - created_at
+      - description
+      - id
+      - location
+      - title
+      - updated_at
+    KindEnum:
+      enum:
+      - products
+      - brands
+      - categories
+      - banners
+      - other
+      type: string
+      description: |-
+        * `products` - Product
+        * `brands` - Brand
+        * `categories` - Category
+        * `banners` - Banner
+        * `other` - Other
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 1024
+      required:
+      - password
+      - username
+    ManagementCategoryTree:
+      type: object
+      properties:
+        revision:
+          type: integer
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+      required:
+      - nodes
+      - revision
+    ManagementError:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    ManagementHomepageCounts:
+      type: object
+      properties:
+        total:
+          type: integer
+          minimum: 0
+        active:
+          type: integer
+          minimum: 0
+        homepage:
+          type: integer
+          minimum: 0
+      required:
+      - active
+      - homepage
+      - total
+    ManagementOverview:
+      type: object
+      properties:
+        brands:
+          $ref: '#/components/schemas/ManagementHomepageCounts'
+        categories:
+          $ref: '#/components/schemas/ManagementHomepageCounts'
+        products:
+          $ref: '#/components/schemas/ManagementProductCounts'
+        recent_products:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecentProduct'
+      required:
+      - brands
+      - categories
+      - products
+      - recent_products
+    ManagementProductCounts:
+      type: object
+      properties:
+        total:
+          type: integer
+          minimum: 0
+        active:
+          type: integer
+          minimum: 0
+        published:
+          type: integer
+          minimum: 0
+        missing_images:
+          type: integer
+          minimum: 0
+      required:
+      - active
+      - missing_images
+      - published
+      - total
+    ManagementSearchResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManagementSearchResult'
+      required:
+      - results
+    ManagementSearchResult:
+      type: object
+      properties:
+        kind:
+          $ref: '#/components/schemas/ManagementSearchResultKindEnum'
+        id:
+          type: integer
+          minimum: 1
+        name:
+          type: string
+        brand_id:
+          type: integer
+          minimum: 1
+          nullable: true
+      required:
+      - brand_id
+      - id
+      - kind
+      - name
+    ManagementSearchResultKindEnum:
+      enum:
+      - brand
+      - category
+      - product
+      type: string
+      description: |-
+        * `brand` - brand
+        * `category` - category
+        * `product` - product
+    ManagementSession:
+      type: object
+      properties:
+        user:
+          allOf:
+          - $ref: '#/components/schemas/ManagementUser'
+          nullable: true
+        csrfToken:
+          type: string
+      required:
+      - csrfToken
+      - user
+    ManagementUser:
+      type: object
+      properties:
+        username:
+          type: string
+      required:
+      - username
+    MediaAsset:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        kind:
+          allOf:
+          - $ref: '#/components/schemas/KindEnum'
+          readOnly: true
+        file_name:
+          type: string
+          readOnly: true
+        image_url:
+          type: string
+          readOnly: true
+        thumbnail_url:
+          type: string
+          readOnly: true
+        width:
+          type: integer
+          readOnly: true
+        height:
+          type: integer
+          readOnly: true
+        total_bytes:
+          type: integer
+          readOnly: true
+        original_bytes:
+          type: integer
+          readOnly: true
+        sha256:
+          type: string
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/MediaAssetStatusEnum'
+          readOnly: true
+        is_archived:
+          type: boolean
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - file_name
+      - height
+      - id
+      - image_url
+      - is_archived
+      - kind
+      - original_bytes
+      - sha256
+      - status
+      - thumbnail_url
+      - total_bytes
+      - width
+    MediaAssetStatusEnum:
+      enum:
+      - processing
+      - ready
+      - failed
+      type: string
+      description: |-
+        * `processing` - Processing
+        * `ready` - Ready
+        * `failed` - Failed
+    MediaUpload:
+      type: object
+      properties:
+        file:
+          type: string
+          format: uri
+        kind:
+          $ref: '#/components/schemas/KindEnum'
+      required:
+      - file
+      - kind
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        sender_id:
+          type: integer
+          readOnly: true
+        client_id:
+          type: string
+          format: uuid
+        text:
+          type: string
+          maxLength: 4000
+        filename:
+          type: string
+          maxLength: 180
+        size:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        attachment_url:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        read_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - attachment_url
+      - created_at
+      - id
+      - sender_id
+    MessagePage:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+        before:
+          type: integer
+          nullable: true
+      required:
+      - before
+      - messages
+    MessageRequest:
+      type: object
+      properties:
+        client_id:
+          type: string
+          format: uuid
+        text:
+          type: string
+          default: ''
+          maxLength: 4000
+        file:
+          type: string
+          format: uri
+          nullable: true
+      required:
+      - client_id
+    PaginatedBranchList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Branch'
+    PaginatedBrandList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Brand'
+    PaginatedCatalogProductList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogProduct'
+    PaginatedCategoryList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+    PaginatedJobList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Job'
+    PaginatedMediaAssetList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaAsset'
+    PaginatedProductList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+    PaginatedPublicCategoryList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicCategory'
+    PaginatedPublicJobList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicJob'
+    PatchedBranch:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 160
+        code:
+          type: string
+          maxLength: 40
+          pattern: ^[-a-zA-Z0-9_]+$
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        phone:
+          type: string
+          maxLength: 24
+        google_maps_url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 2000
+          - type: string
+            maxLength: 0
+        street_view_embed_url:
+          type: string
+          maxLength: 12000
+        is_active:
+          type: boolean
+        imagery_date:
+          type: string
+          readOnly: true
+        location_embed_url:
+          type: string
+          readOnly: true
+        branch_id:
+          type: string
+          readOnly: true
+        is_showroom:
+          type: boolean
+        google_place_id:
+          type: string
+          nullable: true
+          maxLength: 255
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,7})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,7})?$
+          nullable: true
+        location_verified:
+          type: boolean
+        manual_override:
+          type: boolean
+        street_view_enabled:
+          type: boolean
+        street_view_status:
+          allOf:
+          - $ref: '#/components/schemas/StreetViewStatusEnum'
+          readOnly: true
+        street_view_verified:
+          type: boolean
+          readOnly: true
+        panorama_id:
+          type: string
+          readOnly: true
+        panorama_latitude:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        panorama_longitude:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        panorama_distance_m:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        heading:
+          type: number
+          format: double
+          maximum: 360
+          minimum: 0
+        pitch:
+          type: number
+          format: double
+          maximum: 90
+          minimum: -90
+        last_checked_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        last_verified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        location_candidates:
+          readOnly: true
+        sync_error:
+          type: string
+          readOnly: true
+        street_view_preview_url:
+          type: string
+          readOnly: true
+        google_data_expires_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        location_source:
+          type: string
+          readOnly: true
+    PatchedBrand:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        slug:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_active:
+          type: boolean
+        logo_url:
+          type: string
+        show_on_homepage:
+          type: boolean
+        display_order:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+    PatchedCarousel:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        placement:
+          $ref: '#/components/schemas/PlacementEnum'
+        transition:
+          allOf:
+          - $ref: '#/components/schemas/TransitionEnum'
+          default: fade
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 500
+        published:
+          type: boolean
+        archived:
+          type: boolean
+          readOnly: true
+        display_order:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        theme:
+          type: integer
+          nullable: true
+    PatchedCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        parent:
+          type: integer
+          nullable: true
+        parent_name:
+          type: string
+          readOnly: true
+          default: ''
+        name:
+          type: string
+          maxLength: 120
+        slug:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_active:
+          type: boolean
+        image_url:
+          type: string
+        badge:
+          type: string
+          maxLength: 40
+        description:
+          type: string
+          maxLength: 240
+        starting_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          nullable: true
+        destination:
+          $ref: '#/components/schemas/DestinationEnum'
+        display_order:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        show_on_homepage:
+          type: boolean
+    PatchedFestival:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        start_offset:
+          type: integer
+          maximum: 31
+          minimum: -31
+          default: 0
+        end_offset:
+          type: integer
+          maximum: 31
+          minimum: -31
+          default: 0
+        name:
+          type: string
+          maxLength: 150
+        date:
+          type: string
+          format: date
+        region:
+          type: string
+          default: IN-TN
+          maxLength: 20
+        source:
+          type: string
+          maxLength: 200
+        enabled:
+          type: boolean
+        priority:
+          type: integer
+          maximum: 65535
+          minimum: 0
+        theme:
+          type: integer
+          nullable: true
+    PatchedJob:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 150
+        location:
+          type: string
+          maxLength: 150
+        employment_type:
+          $ref: '#/components/schemas/EmploymentTypeEnum'
+        description:
+          type: string
+          maxLength: 10000
+        application_email:
+          type: string
+          format: email
+          maxLength: 254
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        is_active:
+          type: boolean
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        sku:
+          type: string
+          maxLength: 80
+        name:
+          type: string
+          maxLength: 220
+        slug:
+          type: string
+          maxLength: 240
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+        image_url:
+          type: string
+        brand:
+          type: integer
+        category:
+          type: integer
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        compare_at_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          nullable: true
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedSchedule:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        start_at:
+          type: string
+          format: date-time
+        end_at:
+          type: string
+          format: date-time
+        priority:
+          type: integer
+          maximum: 65535
+          minimum: 0
+        enabled:
+          type: boolean
+        weekdays: {}
+        start_time:
+          type: string
+          format: time
+          nullable: true
+        end_time:
+          type: string
+          format: time
+          nullable: true
+        theme:
+          type: integer
+    PatchedSlide:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        duration:
+          type: integer
+          maximum: 60
+          minimum: 3
+          default: 7
+        season_name:
+          type: string
+          maxLength: 100
+        offer_name:
+          type: string
+          maxLength: 200
+        finance_offer:
+          type: string
+          maxLength: 800
+        cta_label:
+          type: string
+          maxLength: 80
+        cta_url:
+          type: string
+          maxLength: 500
+        cta_enabled:
+          type: boolean
+        published:
+          type: boolean
+        archived:
+          type: boolean
+          readOnly: true
+        sort_order:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        start_at:
+          type: string
+          format: date-time
+          nullable: true
+        end_at:
+          type: string
+          format: date-time
+          nullable: true
+        carousel:
+          type: integer
+        asset:
+          type: integer
+    PatchedTheme:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+          maxLength: 500
+        category:
+          type: string
+          maxLength: 40
+        config:
+          $ref: '#/components/schemas/ThemeConfig'
+        is_default:
+          type: boolean
+          readOnly: true
+        archived:
+          type: boolean
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    Person:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        name:
+          type: string
+      required:
+      - id
+      - name
+      - username
+    PlacementEnum:
+      enum:
+      - hero
+      - offers
+      - footer
+      type: string
+      description: |-
+        * `hero` - hero
+        * `offers` - offers
+        * `footer` - footer
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        sku:
+          type: string
+          maxLength: 80
+        name:
+          type: string
+          maxLength: 220
+        slug:
+          type: string
+          maxLength: 240
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+        image_url:
+          type: string
+        brand:
+          type: integer
+        category:
+          type: integer
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        compare_at_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          nullable: true
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - brand
+      - category
+      - created_at
+      - id
+      - name
+      - price
+      - sku
+      - slug
+      - updated_at
+    ProductFilterOptions:
+      type: object
+      properties:
+        brands:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogBrand'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogCategory'
+      required:
+      - brands
+      - categories
+    PublicBrand:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        logo_url:
+          type: string
+          readOnly: true
+        display_order:
+          type: integer
+          readOnly: true
+      required:
+      - display_order
+      - id
+      - logo_url
+      - name
+      - slug
+    PublicCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        parent:
+          type: integer
+          nullable: true
+        parent_name:
+          type: string
+          readOnly: true
+          default: ''
+        name:
+          type: string
+          maxLength: 120
+        slug:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+        is_active:
+          type: boolean
+        image_url:
+          type: string
+        badge:
+          type: string
+          maxLength: 40
+        description:
+          type: string
+          maxLength: 240
+        starting_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          nullable: true
+        destination:
+          $ref: '#/components/schemas/DestinationEnum'
+        display_order:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        show_on_homepage:
+          type: boolean
+        image_absolute_url:
+          type: string
+          readOnly: true
+      required:
+      - id
+      - image_absolute_url
+      - name
+      - parent_name
+      - slug
+    PublicJob:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 150
+        location:
+          type: string
+          maxLength: 150
+        employment_type:
+          $ref: '#/components/schemas/EmploymentTypeEnum'
+        description:
+          type: string
+          maxLength: 10000
+        application_email:
+          type: string
+          format: email
+          maxLength: 254
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - application_email
+      - created_at
+      - description
+      - id
+      - location
+      - title
+    ReadRequest:
+      type: object
+      properties:
+        through:
+          type: integer
+          minimum: 1
+      required:
+      - through
+    RecentProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 220
+        brand:
+          type: integer
+        brand_name:
+          type: string
+          readOnly: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        is_active:
+          type: boolean
+        image_url:
+          type: string
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - brand
+      - brand_name
+      - id
+      - image_url
+      - name
+      - price
+      - updated_at
+    ReviewRequest:
+      type: object
+      properties:
+        action:
+          $ref: '#/components/schemas/ReviewRequestActionEnum'
+        place_id:
+          type: string
+          pattern: ^[A-Za-z0-9_-]{1,255}$
+        confirmed:
+          type: boolean
+          default: false
+        note:
+          type: string
+          maxLength: 500
+      required:
+      - action
+    ReviewRequestActionEnum:
+      enum:
+      - sync
+      - metadata
+      - review_location
+      - confirm_storefront
+      - revoke
+      type: string
+      description: |-
+        * `sync` - sync
+        * `metadata` - metadata
+        * `review_location` - review_location
+        * `confirm_storefront` - confirm_storefront
+        * `revoke` - revoke
+    ReviewState:
+      type: object
+      properties:
+        configuration:
+          $ref: '#/components/schemas/ConfigurationState'
+        branch:
+          $ref: '#/components/schemas/Branch'
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/Audit'
+      required:
+      - branch
+      - configuration
+      - history
+    Schedule:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        start_at:
+          type: string
+          format: date-time
+        end_at:
+          type: string
+          format: date-time
+        priority:
+          type: integer
+          maximum: 65535
+          minimum: 0
+        enabled:
+          type: boolean
+        weekdays: {}
+        start_time:
+          type: string
+          format: time
+          nullable: true
+        end_time:
+          type: string
+          format: time
+          nullable: true
+        theme:
+          type: integer
+      required:
+      - end_at
+      - id
+      - name
+      - start_at
+      - theme
+    Signal:
+      type: object
+      properties:
+        id:
+          type: integer
+        kind:
+          $ref: '#/components/schemas/ChatSignalKindEnum'
+        payload: {}
+      required:
+      - id
+      - kind
+      - payload
+    SignalRequest:
+      type: object
+      properties:
+        kind:
+          $ref: '#/components/schemas/ChatSignalKindEnum'
+        payload: {}
+      required:
+      - kind
+      - payload
+    Slide:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        duration:
+          type: integer
+          maximum: 60
+          minimum: 3
+          default: 7
+        season_name:
+          type: string
+          maxLength: 100
+        offer_name:
+          type: string
+          maxLength: 200
+        finance_offer:
+          type: string
+          maxLength: 800
+        cta_label:
+          type: string
+          maxLength: 80
+        cta_url:
+          type: string
+          maxLength: 500
+        cta_enabled:
+          type: boolean
+        published:
+          type: boolean
+        archived:
+          type: boolean
+          readOnly: true
+        sort_order:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        start_at:
+          type: string
+          format: date-time
+          nullable: true
+        end_at:
+          type: string
+          format: date-time
+          nullable: true
+        carousel:
+          type: integer
+        asset:
+          type: integer
+      required:
+      - archived
+      - asset
+      - carousel
+      - id
+      - offer_name
+      - season_name
+    StoreLocation:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 160
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        phone:
+          type: string
+          maxLength: 24
+        google_maps_url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 2000
+          - type: string
+            maxLength: 0
+        location_embed_url:
+          type: string
+          readOnly: true
+        street_view_embed_url:
+          type: string
+          readOnly: true
+        branch_id:
+          type: string
+          readOnly: true
+        street_view_status:
+          type: string
+          readOnly: true
+        street_view_verified:
+          type: boolean
+          readOnly: true
+        latitude:
+          type: string
+          nullable: true
+          readOnly: true
+        longitude:
+          type: string
+          nullable: true
+          readOnly: true
+        google_place_id:
+          type: string
+          readOnly: true
+      required:
+      - branch_id
+      - google_place_id
+      - id
+      - latitude
+      - location_embed_url
+      - longitude
+      - name
+      - street_view_embed_url
+      - street_view_status
+      - street_view_verified
+    StreetViewStatusEnum:
+      enum:
+      - pending
+      - needs_review
+      - available_nearby
+      - storefront_verified
+      - unavailable
+      - error
+      type: string
+      description: |-
+        * `pending` - pending
+        * `needs_review` - needs review
+        * `available_nearby` - available nearby
+        * `storefront_verified` - storefront verified
+        * `unavailable` - unavailable
+        * `error` - error
+    Success:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+      - ok
+    Theme:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+          maxLength: 500
+        category:
+          type: string
+          maxLength: 40
+        config:
+          $ref: '#/components/schemas/ThemeConfig'
+        is_default:
+          type: boolean
+          readOnly: true
+        archived:
+          type: boolean
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - archived
+      - config
+      - id
+      - is_default
+      - name
+      - slug
+      - updated_at
+    ThemeConfig:
+      type: object
+      properties:
+        tokens:
+          $ref: '#/components/schemas/Tokens'
+        radius:
+          type: integer
+          maximum: 32
+          minimum: 0
+          default: 16
+        font:
+          allOf:
+          - $ref: '#/components/schemas/FontEnum'
+          default: Inter
+        effect:
+          allOf:
+          - $ref: '#/components/schemas/EffectEnum'
+          default: none
+        intensity:
+          type: integer
+          maximum: 32
+          minimum: 0
+          default: 12
+        speed:
+          type: integer
+          maximum: 40
+          minimum: 4
+          default: 12
+        transition_ms:
+          type: integer
+          maximum: 1000
+          minimum: 0
+          default: 450
+        asset_ids:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+          maxItems: 8
+        weather:
+          type: boolean
+          default: true
+      required:
+      - tokens
+    Thread:
+      type: object
+      properties:
+        id:
+          type: integer
+        peer:
+          $ref: '#/components/schemas/Person'
+        unread:
+          type: integer
+      required:
+      - id
+      - peer
+      - unread
+    Tokens:
+      type: object
+      properties:
+        primary:
+          type: string
+          pattern: ^#[0-9a-fA-F]{6}$
+        secondary:
+          type: string
+          pattern: ^#[0-9a-fA-F]{6}$
+        background:
+          type: string
+          pattern: ^#[0-9a-fA-F]{6}$
+        surface:
+          type: string
+          pattern: ^#[0-9a-fA-F]{6}$
+        text:
+          type: string
+          pattern: ^#[0-9a-fA-F]{6}$
+        accent:
+          type: string
+          pattern: ^#[0-9a-fA-F]{6}$
+        border:
+          type: string
+          pattern: ^#[0-9a-fA-F]{6}$
+      required:
+      - accent
+      - background
+      - border
+      - primary
+      - secondary
+      - surface
+      - text
+    TransitionEnum:
+      enum:
+      - fade
+      - slide
+      - zoom
+      type: string
+      description: |-
+        * `fade` - fade
+        * `slide` - slide
+        * `zoom` - zoom
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid

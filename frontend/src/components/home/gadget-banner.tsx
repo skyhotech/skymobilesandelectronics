@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
+import { BannerClock } from "@/components/experience/provider";
 
 // Disjoint rows: each product occurs once before its seamless loop copy.
 const rows = [
@@ -80,6 +81,7 @@ export function GadgetBanner() {
       className="sky-gadget-banner"
       aria-label="SKY Mobile and Electronics - technology for every day"
     >
+      <BannerClock />
       <div className="gadget-pattern-motion" aria-hidden="true">
         <div className="gadget-pattern">
           {rows.map((row, rowIndex) => (

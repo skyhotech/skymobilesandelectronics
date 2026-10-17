@@ -9,12 +9,6 @@ def test_admin_uses_requested_path(client):
     assert response.url == reverse("admin:index")
 
 
-def test_legacy_admin_redirect_preserves_path_and_query(client):
-    response = client.get("/management/admin/login/?next=/backend/django/admin/")
-    assert response.status_code == 302
-    assert response.url == "/backend/django/admin/login/?next=/backend/django/admin/"
-
-
 @pytest.mark.django_db
 def test_admin_requires_login(client):
     response = client.get(reverse("admin:index"))

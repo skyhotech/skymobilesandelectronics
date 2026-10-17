@@ -1,0 +1,271 @@
+.sky-experience {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+}
+.sky-experience[data-custom="true"] {
+  background: var(--sky-background);
+  color: var(--sky-text);
+  font-family: var(--sky-font), sans-serif;
+}
+.sky-experience[data-custom="true"]
+  :is(.store-header, .store-header-main, .store-search, .product-card, .catalog-card) {
+  background: var(--sky-surface);
+  color: var(--sky-text);
+  border-color: var(--sky-border);
+  transition:
+    background-color var(--sky-transition),
+    color var(--sky-transition);
+}
+.sky-experience[data-custom="true"] :is(.store-utility, .store-nav, footer) {
+  background: var(--sky-primary);
+  color: white;
+}
+.sky-experience[data-custom="true"] :is(button, .product-card, .catalog-card, input, select) {
+  border-radius: var(--sky-radius);
+}
+.sky-experience[data-custom="true"] :is(.gadget-banner) {
+  background: linear-gradient(120deg, var(--sky-primary), var(--sky-secondary));
+  color: white;
+}
+.sky-experience[data-custom="true"] :focus-visible {
+  outline: 3px solid var(--sky-secondary);
+  outline-offset: 3px;
+}
+.experience-effects,
+.experience-weather {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 25;
+  overflow: hidden;
+  opacity: 0.2;
+}
+.experience-effects i {
+  position: absolute;
+  font-style: normal;
+  color: var(--sky-accent, #d4a017);
+  font-size: 22px;
+  animation: sky-drift var(--effect-speed, 12s) linear infinite;
+}
+.effect-none,
+.weather-none,
+.weather-clear {
+  display: none;
+}
+.effect-rain i {
+  font-size: 0;
+  width: 1px;
+  height: 14px;
+  background: #4076b5;
+}
+.effect-tricolor i:nth-child(3n) {
+  color: #d67700;
+}
+.effect-tricolor i:nth-child(3n + 1) {
+  color: #167039;
+}
+.weather-rain,
+.weather-storm {
+  opacity: 0.06;
+  background: repeating-linear-gradient(105deg, transparent 0 35px, #5488bd 36px, transparent 37px);
+  animation: sky-rain 3s linear infinite;
+}
+.weather-cloud,
+.weather-mist {
+  opacity: 0.07;
+  background: radial-gradient(ellipse at 15% 10%, #778899, transparent 70%);
+  animation: sky-cloud 25s ease-in-out infinite alternate;
+}
+.weather-sun {
+  opacity: 0.06;
+  background: radial-gradient(ellipse at 90% 0, #ffac00, transparent 70%);
+}
+.weather-snow {
+  opacity: 0.1;
+  background-image: radial-gradient(#7296b0 2px, transparent 3px);
+  background-size: 60px 60px;
+  animation: sky-rain 15s linear infinite;
+}
+.sky-experience[data-night="true"] .sky-banner-clock {
+  box-shadow: 0 0 18px #aac5ff55;
+}
+.sky-experience[data-motion="false"] :is(.experience-effects, .experience-weather) {
+  display: none;
+}
+.sky-banner-clock {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  min-height: 30px;
+  background: #0b1c48;
+  color: white;
+  font:
+    12px/1.5 Arial,
+    sans-serif;
+  padding: 6px 12px;
+  font-variant-numeric: tabular-nums;
+}
+.experience-announcement,
+.experience-preview {
+  padding: 12px;
+  background: var(--sky-primary, #0b1c48);
+  color: white;
+  text-align: center;
+}
+.experience-preview {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.experience-preview button,
+.experience-preview a {
+  margin-left: 16px;
+  text-decoration: underline;
+}
+.weather-location {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 12px;
+  padding: 14px;
+  background: #fff;
+  color: #172033;
+}
+.weather-location select {
+  border: 1px solid #aaa;
+  padding: 5px;
+  margin-left: 8px;
+}
+.weather-location a {
+  text-decoration: underline;
+}
+@keyframes sky-drift {
+  to {
+    transform: translate3d(15px, 80px, 0) rotate(30deg);
+  }
+}
+@keyframes sky-rain {
+  to {
+    background-position: 60px 120px;
+  }
+}
+@keyframes sky-cloud {
+  to {
+    transform: translateX(15%);
+  }
+}
+@media (max-width: 600px) {
+  .experience-effects i:nth-child(n + 9) {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .experience-effects,
+  .experience-weather {
+    display: none;
+  }
+  .sky-experience * {
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+  }
+  .cms-carousel * {
+    animation: none !important;
+  }
+}
+.cms-carousel {
+  position: relative;
+  max-width: 1440px;
+  margin: auto;
+  background: var(--sky-primary, #0b1c48);
+  color: #fff;
+  overflow: hidden;
+}
+.cms-carousel-media {
+  aspect-ratio: 16/9;
+  position: relative;
+}
+.cms-carousel-media img,
+.cms-carousel-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.cms-carousel-copy {
+  position: relative;
+  padding: clamp(18px, 4vw, 48px);
+  max-width: 900px;
+  overflow-wrap: anywhere;
+}
+.cms-carousel-copy h2 {
+  font-size: clamp(24px, 4vw, 48px);
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 10px 0;
+}
+.cms-carousel-copy p {
+  margin: 12px 0;
+  line-height: 1.6;
+}
+.cms-carousel-copy a {
+  display: inline-block;
+  padding: 12px 20px;
+  background: var(--sky-secondary, #bb0014);
+  border: 1px solid white;
+  border-radius: 12px;
+  color: white;
+}
+.cms-carousel-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  flex-wrap: wrap;
+}
+.cms-carousel-controls button {
+  border: 1px solid #fff;
+  padding: 8px 14px;
+}
+.cms-carousel-controls button[aria-current="true"] {
+  background: white;
+  color: #0b1c48;
+}
+.cms-transition-fade {
+  animation: cms-fade 0.5s;
+}
+.cms-transition-slide {
+  animation: cms-slide 0.5s;
+}
+.cms-transition-zoom {
+  animation: cms-zoom 0.5s;
+}
+@keyframes cms-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes cms-slide {
+  from {
+    transform: translateX(20px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes cms-zoom {
+  from {
+    transform: scale(0.98);
+  }
+  to {
+    transform: scale(1);
+  }
+}

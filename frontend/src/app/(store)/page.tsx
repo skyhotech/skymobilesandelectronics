@@ -7,6 +7,7 @@ import { FeaturedOffers } from "@/components/home/featured-offers";
 import { FinancePartners } from "@/components/home/finance-partners";
 import { GadgetCollection } from "@/components/home/gadget-collection";
 import { HeroCarousel } from "@/components/home/hero-carousel";
+import { ExperienceCarousels } from "@/components/experience/carousel";
 import { HomeEntertainment } from "@/components/home/home-entertainment";
 import { HomepageInteractions } from "@/components/home/homepage-interactions";
 import { LaptopCollection } from "@/components/home/laptop-collection";
@@ -37,7 +38,7 @@ export default async function HomePage() {
       <main id="main-content" className="sky-main w-full pt-40 bg-surface min-h-screen">
         <div className="flex flex-col w-full">
           <GadgetBanner />
-          <HeroCarousel />
+          <ExperienceCarousels placement="hero" fallback={<HeroCarousel />} />
           <ServiceAssurance />
           <CategoryCollection
             initialCategories={categoryData.categories}
@@ -46,6 +47,7 @@ export default async function HomePage() {
           <BrandCollection brands={brands} />
           <SmartphoneCollection />
           <FeaturedOffers />
+          <ExperienceCarousels placement="offers" />
           <LaptopCollection />
           <GadgetCollection />
           <HomeEntertainment />
@@ -57,6 +59,7 @@ export default async function HomePage() {
       </main>
       <WhatsAppLink />
       <StoreFooter />
+      <ExperienceCarousels placement="footer" />
     </HomepageInteractions>
   );
 }

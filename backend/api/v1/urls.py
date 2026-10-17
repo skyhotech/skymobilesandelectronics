@@ -27,6 +27,8 @@ hr_router = DefaultRouter()
 hr_router.register("careers", HRJobs, basename="hr-careers")
 
 urlpatterns = [
+    path("site/experience/", include("apps.experience.urls_public")),
+    path("management/experience/", include("apps.experience.urls_admin")),
     path("chat/session/", chat.ChatSession.as_view()),
     path("chat/inbox/", chat.Inbox.as_view()),
     path("chat/threads/<int:pk>/messages/", chat.Messages.as_view()),

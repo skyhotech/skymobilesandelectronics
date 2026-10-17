@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "apps.chat",
     "apps.careers",
     "apps.media_library",
+    "apps.experience",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

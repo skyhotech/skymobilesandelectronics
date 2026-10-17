@@ -1,0 +1,332 @@
+[
+  {
+    "source": "autumn.png",
+    "bytes": 2673298,
+    "category": "unassigned",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "27f18aa93d45579e7b39a2560348c46604c9d3472067e1fa5450e3900dbf6984",
+    "asset_id": 1
+  },
+  {
+    "source": "bakrid.png",
+    "bytes": 2684538,
+    "category": "unassigned",
+    "width": 1953,
+    "height": 805,
+    "format": "PNG",
+    "sha256": "de74388ce55cb350a8dcd0c3ba7b806df849a7a1b3645fa7615d18d70d028479",
+    "asset_id": 2
+  },
+  {
+    "source": "bogi.png",
+    "bytes": 2769037,
+    "category": "unassigned",
+    "width": 1672,
+    "height": 941,
+    "format": "PNG",
+    "sha256": "45fb15d33e5f79f6847bdf15935acfccc59c9a7edd6a7d4fa8290ea5f4a40112",
+    "asset_id": 3
+  },
+  {
+    "source": "childrens day.png",
+    "bytes": 2451340,
+    "category": "unassigned",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "dc4cb83063b1f9043166bad12f530151c3caf7cb950d1e24f5dbf2da0b12f2cd",
+    "asset_id": 4
+  },
+  {
+    "source": "christmas.png",
+    "bytes": 2706139,
+    "category": "Christmas",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "e89cc481f36bd35f1f82bc708cc15f941b280f378c913088f4f56723e7002bd7",
+    "asset_id": 5
+  },
+  {
+    "source": "diwali.png",
+    "bytes": 2843481,
+    "category": "Deepavali",
+    "width": 1672,
+    "height": 941,
+    "format": "PNG",
+    "sha256": "3ec919a701a546233586b0dcee3045ffeffbe3661b4e1d9428abe1cef13e2b72",
+    "asset_id": 6
+  },
+  {
+    "source": "fathers day.png",
+    "bytes": 2272787,
+    "category": "unassigned",
+    "width": 1953,
+    "height": 805,
+    "format": "PNG",
+    "sha256": "a1a09e20fcbd4bd17425c61bd50657b76a83ab7af4cbe63d9dbb94c47c42fd46",
+    "asset_id": 7
+  },
+  {
+    "source": "gandhi jayanthi.png",
+    "bytes": 2435848,
+    "category": "unassigned",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "3b4aa4edef55e683f3e25e0f4d90b940de32bc2554698e24846a15f9d2684a39",
+    "asset_id": 8
+  },
+  {
+    "source": "good Friday.png",
+    "bytes": 2440559,
+    "category": "unassigned",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "98ec80f7c95811452d3e393987777c01bafd91227260ad9dece91c7115fe3024",
+    "asset_id": 9
+  },
+  {
+    "source": "inddependence day.png",
+    "bytes": 2416669,
+    "category": "Independence Day",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "76e826d47b0c2f570587a251c5acbc39d92f536d6535558c4f9a905d5225be41",
+    "asset_id": 10
+  },
+  {
+    "source": "kaanum pongal.png",
+    "bytes": 3169926,
+    "category": "Pongal",
+    "width": 2098,
+    "height": 750,
+    "format": "PNG",
+    "sha256": "c62226efb21b7df9104990b76425b371662227455e2dbbeb5b13eb98cdb7e47a",
+    "asset_id": 11
+  },
+  {
+    "source": "krishna.png",
+    "bytes": 2704691,
+    "category": "unassigned",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "db65731211007bd475f4fb8612ca9d7b5c7834423e72ef092af4eefcb1c4ab6d",
+    "asset_id": 12
+  },
+  {
+    "source": "labours day.png",
+    "bytes": 2440692,
+    "category": "unassigned",
+    "width": 1953,
+    "height": 805,
+    "format": "PNG",
+    "sha256": "18f1b2cac68889184846203f501eec1307258eef90343a7e117c322d95ed43a5",
+    "asset_id": 13
+  },
+  {
+    "source": "milad un nabi.png",
+    "bytes": 2532963,
+    "category": "unassigned",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "e90babd046bec7b55bbd382e75a8407c4f3c2253e4cd50d0d3de66910bb7026d",
+    "asset_id": 14
+  },
+  {
+    "source": "monsoon.png",
+    "bytes": 2839670,
+    "category": "Monsoon",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "3b5d6187501c53408ed606b3346a49734b99f01a312c07ba7607069f91ca215c",
+    "asset_id": 15
+  },
+  {
+    "source": "mothers day.png",
+    "bytes": 2375268,
+    "category": "unassigned",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "db7e5949c2e7437ed508c4d32eeed4c0c19c3ccd4aba7f5927d293518da5107b",
+    "asset_id": 16
+  },
+  {
+    "source": "navarathri.png",
+    "bytes": 2445430,
+    "category": "Navaratri",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "34e586e0366513794bdf5eb373477bf010ee3d1314569a4c1c88dc1aaa9e9ce3",
+    "asset_id": 17
+  },
+  {
+    "source": "new year.png",
+    "bytes": 2694863,
+    "category": "New Year",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "3e059ed9e838da2a2015f5f28514f5f0838ccddfbd058ad69523da28dc920da8",
+    "asset_id": 18
+  },
+  {
+    "source": "pongal thai.png",
+    "bytes": 2786848,
+    "category": "Pongal",
+    "width": 1956,
+    "height": 804,
+    "format": "PNG",
+    "sha256": "e0d85a5d7d70b45503ac891bc5b60df2a5426b505f35f6fc79e9af68be92e570",
+    "asset_id": 19
+  },
+  {
+    "source": "raksha bandan.png",
+    "bytes": 2550435,
+    "category": "Raksha Bandhan",
+    "width": 1672,
+    "height": 941,
+    "format": "PNG",
+    "sha256": "cee7430fd81e11260c8453fca4d3c7fb9bf9a8b7ba499c9484114826e552a6b4",
+    "asset_id": 20
+  },
+  {
+    "source": "ramzan.png",
+    "bytes": 2559627,
+    "category": "unassigned",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "c2066a0a81de998521fc8793719e9d968ba4044cbbd10dd9bb02f1c0a064db09",
+    "asset_id": 21
+  },
+  {
+    "source": "republic day.png",
+    "bytes": 2381836,
+    "category": "Republic Day",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "5ea94e2ed41f0ae718a6e11ebd8c788f6b6e4324576161b8e1d77b954fad858a",
+    "asset_id": 22
+  },
+  {
+    "source": "saraswathi pooja.png",
+    "bytes": 2695192,
+    "category": "Ayudha Pooja",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "fa898e81af360e8e695a26b82c339f1304003194fbb7fe598575e0238dcc5501",
+    "asset_id": 23
+  },
+  {
+    "source": "SKY Mattu Pongal Festival Storefront.png",
+    "bytes": 3091619,
+    "category": "Pongal",
+    "width": 2087,
+    "height": 754,
+    "format": "PNG",
+    "sha256": "f5dffd9ffaa4c6346d915a5ec6ec4d9404c25d9e6cb94922e32d11ba6fee399b",
+    "asset_id": 24
+  },
+  {
+    "source": "spring.png",
+    "bytes": 2918750,
+    "category": "unassigned",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "209b86fdaed9acfe4d07c9fc680104467a75467575776a194450f26de0955c2d",
+    "asset_id": 25
+  },
+  {
+    "source": "summeer.png",
+    "bytes": 2672730,
+    "category": "Summer",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "fcb484bfd4f9b8e817e5029dd34733997a882dec46cd1768a38dd66f1fe1e253",
+    "asset_id": 26
+  },
+  {
+    "source": "Tamil New Year Electronics Celebration.png",
+    "bytes": 2780008,
+    "category": "New Year",
+    "width": 1672,
+    "height": 941,
+    "format": "PNG",
+    "sha256": "c4c22ea724df57063008a17eb8e159f40ede8ca496614a5ba16326b374311072",
+    "asset_id": 27
+  },
+  {
+    "source": "teachers day.png",
+    "bytes": 2361188,
+    "category": "unassigned",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "c31054a5cf974f251b4ddc525814b186c7a0f10883bbe324ca32c9a19cc7cf27",
+    "asset_id": 28
+  },
+  {
+    "source": "ugadi.png",
+    "bytes": 2777713,
+    "category": "unassigned",
+    "width": 1672,
+    "height": 941,
+    "format": "PNG",
+    "sha256": "f8ad71dd8779a0c7cff8115aa929c7c8c6a112c24cd19ad8ee46d5d4cdc42aac",
+    "asset_id": 29
+  },
+  {
+    "source": "valentines day.png",
+    "bytes": 2469240,
+    "category": "Valentine's Day",
+    "width": 1672,
+    "height": 941,
+    "format": "PNG",
+    "sha256": "4246a96dd05466fb1388a72c875e29ec4a4c07a495e96ef99dde18350e712bca",
+    "asset_id": 30
+  },
+  {
+    "source": "vijya dasami.png",
+    "bytes": 2630556,
+    "category": "unassigned",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "3142d69a3e900632f22192a7da39e989896af2040b4cc48b1fa750b805b34323",
+    "asset_id": 31
+  },
+  {
+    "source": "vinayakar.png",
+    "bytes": 2734295,
+    "category": "unassigned",
+    "width": 1952,
+    "height": 806,
+    "format": "PNG",
+    "sha256": "958bb3fce7a2de3a876b15c4156e10159de789d7186fec2d954bb2221915d60d",
+    "asset_id": 32
+  },
+  {
+    "source": "WINTER.png",
+    "bytes": 2778272,
+    "category": "Winter",
+    "width": 1671,
+    "height": 941,
+    "format": "PNG",
+    "sha256": "492d6e66ac38072c5a154e5f98eedcc3eeedf0db6604b0966f835e14666ba1e3",
+    "asset_id": 33
+  }
+]
